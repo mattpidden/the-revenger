@@ -2,27 +2,22 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <unordered_map>
+#include <sstream> 
 
 class RubiksCube4x4 {
 private:
-    // Vector to store the 96 facelet colors
     std::vector<char> facelets;
 
 public:
     RubiksCube4x4() {
         facelets = {
-            // Up face 
-            'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W',
-            // Down face
-            'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y',
-            // Back face
-            'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B',
-            // Front face
-            'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G',
-            // Left face
-            'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O',
-            // Right face
-            'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R'
+            'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W',  // Up face  
+            'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y',  // Down face
+            'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B',  // Back face
+            'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G',  // Front face
+            'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O',  // Left face
+            'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R',    // Right face
         };
     }
 
@@ -66,36 +61,60 @@ public:
         }
     }
 
-    void moveR() {
-        // Rotate the right face clockwise
-        std::vector<char> newRight(16);
-        newRight[0] = facelets[92]; newRight[1] = facelets[88]; newRight[2] = facelets[84]; newRight[3] = facelets[80];
-        newRight[4] = facelets[93]; newRight[5] = facelets[89]; newRight[6] = facelets[85]; newRight[7] = facelets[81];
-        newRight[8] = facelets[94]; newRight[9] = facelets[90]; newRight[10] = facelets[86]; newRight[11] = facelets[82];
-        newRight[12] = facelets[95]; newRight[13] = facelets[91]; newRight[14] = facelets[87]; newRight[15] = facelets[83];
-        for (int i = 0; i < 16; ++i) {
-            facelets[80 + i] = newRight[i];
+    void apply_moves(const std::string& moves) {
+        std::istringstream iss(moves);
+        std::string move;
+        
+        while (iss >> move) {
+            apply_move(move);
         }
-        // Cycle adjacent facelets (U, F, D, B)
-        std::vector<char> temp = {
-            facelets[3], facelets[7], facelets[11], facelets[15] // Last column of U
-        };
-        // U = F
-        for (int i = 0; i < 4; ++i) {
-            facelets[0 + i * 4 + 3] = facelets[48 + i * 4 + 3];
+    }
+
+    void apply_move(const std::string& move) {
+        bool clockwise = (move.back() != '\''); 
+
+        std::string base_move = move;
+        if (!clockwise) base_move = move.substr(0, move.size() - 1); // Remove ' if present
+        int repeat = (base_move.back() == '2') ? 2 : 1;
+        if (repeat == 2) base_move = base_move.substr(0, base_move.size() - 1); // Remove '2' if present
+
+        for (int i = 0; i < repeat; i++) {
+            if (base_move == "R") move_R(clockwise);
+            else if (base_move == "r") move_r(clockwise);
+            else if (base_move == "Rw") move_Rw(clockwise);
+            else std::cout << "Invalid move: " << move << "\n";
         }
-        // F = D
-        for (int i = 0; i < 4; ++i) {
-            facelets[48 + i * 4 + 3] = facelets[16 + i * 4 + 3];
+    }
+
+    void apply_index_swaps(const std::unordered_map<int, int>& index_move_map, bool clockwise) {
+        std::vector<char> facelets_copy = facelets;
+        for (const auto& [a, b] : index_move_map) {
+            if (clockwise) {
+                facelets[a] = facelets_copy[b];
+            } else {
+                facelets[b] = facelets_copy[a];
+            }
         }
-        // D = B
-        for (int i = 0; i < 4; ++i) {
-            facelets[16 + i * 4 + 3] = facelets[44 - i * 4];
-        }
-        // B = U
-        for (int i = 0; i < 4; ++i) {
-            facelets[32 + i * 4] = temp[3 - i];
-        }
+    }
+
+    void move_R(bool clockwise) {
+        std::unordered_map<int, int> index_move_map = {
+            {3, 51}, {7, 55}, {11, 59}, {15, 63}, {51, 19}, {55, 23}, {59, 27}, {63, 31}, {19, 44}, {23,40}, {27, 36}, {31, 32}, {44, 3}, {40, 7}, {36, 11}, {32,15},
+            {80, 92}, {81, 88}, {82, 84}, {83, 80}, {84, 93}, {85, 89}, {86, 85}, {87, 81}, {88, 94}, {89, 90}, {90, 86}, {91, 82}, {92, 95}, {93, 91}, {94, 87}, {95, 83}
+        };       
+        apply_index_swaps(index_move_map, clockwise);
+    }
+
+    void move_r(bool clockwise) {
+        std::unordered_map<int, int> index_move_map = {
+            {2, 50}, {6, 54}, {10, 58}, {14, 62}, {50, 18}, {54, 22}, {58, 26}, {62, 30}, {18, 45}, {22,41}, {26, 37}, {30, 33}, {45, 2}, {41, 6}, {37, 10}, {33,14},
+        };       
+        apply_index_swaps(index_move_map, clockwise);
+    }
+
+    void move_Rw(bool clockwise){
+        move_r(clockwise);
+        move_R(clockwise);
     }
 
 };
@@ -103,7 +122,7 @@ public:
 int main() {
     RubiksCube4x4 cube;
 
-    cube.moveR();
+    cube.apply_moves("R' R' R2");
 
     cube.displayCube();
 
