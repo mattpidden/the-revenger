@@ -1,0 +1,272 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <map>
+#include <unordered_map>
+#include <sstream> 
+#include <random>
+#include <unordered_set>
+#include "vector_cube.h"
+
+RubiksCube4x4::RubiksCube4x4() {
+    facelets = {
+        'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W',  // Up face  
+        'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y',  // Down face
+        'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B',  // Back face
+        'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G',  // Front face
+        'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O',  // Left face
+        'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R',  // Right face
+    };
+}
+
+// Method to display the cube's facelets
+void RubiksCube4x4::display_cube() {
+    std::map<char, std::string> colours_to_emojis = {
+        {'W', "⬜"}, {'Y', "🟨"}, {'G', "🟩"}, 
+        {'B', "🟦"}, {'O', "🟧"}, {'R', "🟥"}
+    };
+
+    std::cout << "          Up (U)\n";
+    for (int i = 0; i < 4; ++i) {
+        std::cout << "          ";
+        for (int j = 0; j < 4; ++j) {
+            std::cout << colours_to_emojis[facelets[0 + i * 4 + j]];
+        }
+        std::cout << "\n";
+    }
+    std::cout << "\nLeft (L)  Front (F) Right (R) Back (B)\n";
+    for (int row = 0; row < 4; ++row) {
+        for (int col = 0; col < 4; ++col)
+            std::cout << colours_to_emojis[facelets[64 + row * 4 + col]];
+        std::cout << "  ";
+        for (int col = 0; col < 4; ++col)
+            std::cout << colours_to_emojis[facelets[48 + row * 4 + col]];
+        std::cout << "  ";
+        for (int col = 0; col < 4; ++col)
+            std::cout << colours_to_emojis[facelets[80 + row * 4 + col]];
+        std::cout << "  ";
+        for (int col = 0; col < 4; ++col)
+            std::cout << colours_to_emojis[facelets[32 + row * 4 + col]];
+        std::cout << "\n";
+    }
+    std::cout << "\n          Down (D)\n";
+    for (int i = 0; i < 4; ++i) {
+        std::cout << "          ";
+        for (int j = 0; j < 4; ++j) {
+            std::cout << colours_to_emojis[facelets[16 + i * 4 + j]];
+        }
+        std::cout << "\n";
+    }
+}
+
+void RubiksCube4x4::apply_random_moves() {
+    std::vector<std::string> UD_moves = {"U", "U2", "U'", "Uw", "Uw2", "Uw'", "D", "D2", "D'", "Dw", "Dw2", "Dw'"};
+    std::vector<std::string> FB_moves = {"F", "F2", "F'", "Fw", "Fw2", "Fw'", "B", "B2", "B'", "Bw", "Bw2", "Bw'"};
+    std::vector<std::string> RL_moves = {"R", "R2", "R'", "Rw", "Rw2", "Rw'", "L", "L2", "L'", "Lw", "Lw2", "Lw'"};
+    std::vector<std::vector<std::string>> move_groups = {UD_moves, FB_moves, RL_moves};
+    std::random_device rd;
+    std::mt19937 rng(rd());
+
+    std::string scramble;
+    int prev_group = -1;
+
+    for (int i = 0; i < 40; i++) {
+        int group;
+        do {
+            group = rng() % 3; // Pick a random group (0, 1, or 2)
+        } while (group == prev_group); // Ensure it's not the same as the last group
+
+        std::vector<std::string>& selected_moves = move_groups[group];
+        std::uniform_int_distribution<int> dist(0, selected_moves.size() - 1);
+        std::string move = selected_moves[dist(rng)];
+
+        if (!scramble.empty()) scramble += " ";
+        scramble += move;
+        prev_group = group;
+    }
+
+    std::cout << "Scramble: " << scramble << std::endl << '\n';
+
+    std::istringstream iss(scramble);
+    std::string move;
+    while (iss >> move) {
+        std::cout << "Move: " << move << std::endl << '\n';
+        apply_move(move);
+        display_cube();
+        std::cout << "Press Enter to continue...";
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
+}
+
+
+void RubiksCube4x4::apply_moves(const std::string& moves) {
+    std::istringstream iss(moves);
+    std::string move;
+    
+    while (iss >> move) {
+        apply_move(move);
+    }
+}
+
+void RubiksCube4x4::apply_move(const std::string& move) {
+    bool clockwise = (move.back() != '\''); 
+
+    std::string base_move = move;
+    if (!clockwise) base_move = move.substr(0, move.size() - 1); // Remove ' if present
+    int repeat = (base_move.back() == '2') ? 2 : 1;
+    if (repeat == 2) base_move = base_move.substr(0, base_move.size() - 1); // Remove '2' if present
+
+    for (int i = 0; i < repeat; i++) {
+        if (base_move == "R") move_R(clockwise);
+        else if (base_move == "r") move_r(clockwise);
+        else if (base_move == "Rw") move_Rw(clockwise);
+        else if (base_move == "L") move_L(clockwise);
+        else if (base_move == "l") move_l(clockwise);
+        else if (base_move == "Lw") move_Lw(clockwise);
+        else if (base_move == "U") move_U(clockwise);
+        else if (base_move == "u") move_u(clockwise);
+        else if (base_move == "Uw") move_Uw(clockwise);
+        else if (base_move == "D") move_D(clockwise);
+        else if (base_move == "d") move_d(clockwise);
+        else if (base_move == "Dw") move_Dw(clockwise);
+        else if (base_move == "F") move_F(clockwise);
+        else if (base_move == "f") move_f(clockwise);
+        else if (base_move == "Fw") move_Fw(clockwise);
+        else if (base_move == "B") move_B(clockwise);
+        else if (base_move == "b") move_b(clockwise);
+        else if (base_move == "Bw") move_Bw(clockwise);
+        else std::cout << "Invalid move: " << move << "\n";
+    }
+}
+
+void RubiksCube4x4::apply_index_swaps(const std::unordered_map<int, int>& index_move_map, bool clockwise) {
+    std::vector<char> facelets_copy = facelets;
+    for (const auto& [a, b] : index_move_map) {
+        if (clockwise) {
+            facelets[a] = facelets_copy[b];
+        } else {
+            facelets[b] = facelets_copy[a];
+        }
+    }
+}
+
+void RubiksCube4x4::move_R(bool clockwise) {
+    std::unordered_map<int, int> index_move_map = {
+        {3, 51}, {7, 55}, {11, 59}, {15, 63}, {51, 19}, {55, 23}, {59, 27}, {63, 31}, {19, 44}, {23,40}, {27, 36}, {31, 32}, {44, 3}, {40, 7}, {36, 11}, {32,15},
+        {80, 92}, {81, 88}, {82, 84}, {83, 80}, {84, 93}, {85, 89}, {86, 85}, {87, 81}, {88, 94}, {89, 90}, {90, 86}, {91, 82}, {92, 95}, {93, 91}, {94, 87}, {95, 83}
+    };       
+    apply_index_swaps(index_move_map, clockwise);
+}
+
+void RubiksCube4x4::move_r(bool clockwise) {
+    std::unordered_map<int, int> index_move_map = {
+        {2, 50}, {6, 54}, {10, 58}, {14, 62}, {50, 18}, {54, 22}, {58, 26}, {62, 30}, {18, 45}, {22,41}, {26, 37}, {30, 33}, {45, 2}, {41, 6}, {37, 10}, {33,14},
+    };       
+    apply_index_swaps(index_move_map, clockwise);
+}
+
+void RubiksCube4x4::move_Rw(bool clockwise){
+    move_r(clockwise);
+    move_R(clockwise);
+}
+
+void RubiksCube4x4::move_L(bool clockwise) {
+    std::unordered_map<int, int> index_move_map = {
+        {48, 0}, {52, 4}, {56, 8}, {60, 12}, {16, 48}, {20, 52}, {24, 56}, {28, 60}, {47, 16}, {43, 20}, {39, 24}, {35, 28}, {0, 47}, {4, 43}, {8, 39}, {12, 35},
+        {64, 76}, {65, 72}, {66, 68}, {67, 64}, {68, 77}, {69, 73}, {70, 69}, {71, 65}, {72, 78}, {73, 74}, {74, 70}, {75, 66}, {76, 79}, {77, 75}, {78, 71}, {79, 67}
+    };       
+    apply_index_swaps(index_move_map, clockwise);
+}
+
+void RubiksCube4x4::move_l(bool clockwise) {
+    std::unordered_map<int, int> index_move_map = {
+        {49, 1}, {53, 5}, {57, 9}, {61, 13}, {17, 49}, {21, 53}, {25, 57}, {29, 61}, {46, 17}, {42, 21}, {38, 25}, {34, 29}, {1, 46}, {5, 42}, {9, 38}, {13, 34},
+    };       
+    apply_index_swaps(index_move_map, clockwise);
+}
+
+void RubiksCube4x4::move_Lw(bool clockwise){
+    move_l(clockwise);
+    move_L(clockwise);
+}
+
+void RubiksCube4x4::move_U(bool clockwise) {
+    std::unordered_map<int, int> index_move_map = {
+        {48, 80}, {49, 81}, {50, 82}, {51, 83}, {80, 32}, {81, 33}, {82, 34}, {83, 35}, {32, 64}, {33, 65}, {34, 66}, {35, 67}, {64, 48}, {65, 49}, {66, 50}, {67, 51},
+        {0, 12}, {1, 8}, {2, 4}, {3, 0}, {4, 13}, {5, 9}, {6, 5}, {7, 1}, {8, 14}, {9, 10}, {10, 6}, {11, 2}, {12, 15}, {13, 11}, {14, 7}, {15, 3}
+    };       
+    apply_index_swaps(index_move_map, clockwise);
+}
+
+void RubiksCube4x4::move_u(bool clockwise) {
+    std::unordered_map<int, int> index_move_map = {
+        {52, 84}, {53, 85}, {54, 86}, {55, 86}, {84, 36}, {85, 37}, {86, 38}, {87, 39}, {36, 68}, {37, 69}, {38, 70}, {39, 71}, {68, 52}, {69, 53}, {70, 54}, {71, 55},
+    };       
+    apply_index_swaps(index_move_map, clockwise);
+}
+
+void RubiksCube4x4::move_Uw(bool clockwise){
+    move_u(clockwise);
+    move_U(clockwise);
+}
+
+void RubiksCube4x4::move_D(bool clockwise) {
+    std::unordered_map<int, int> index_move_map = {
+        {92, 60}, {93, 61}, {94, 62}, {95, 63}, {44, 92}, {45, 93}, {46, 94}, {47, 95}, {76, 44}, {77, 45}, {78, 46}, {79, 47}, {60, 76}, {61, 77}, {62, 78}, {63, 79},
+        {16, 28}, {17, 24}, {18, 20}, {19, 16}, {20, 29}, {21, 25}, {22, 21}, {23, 17}, {24, 30}, {25, 26}, {26, 22}, {27, 18}, {28, 31}, {29, 27}, {30, 23}, {31, 19}
+    };        
+    apply_index_swaps(index_move_map, clockwise);
+}
+
+void RubiksCube4x4::move_d(bool clockwise) {
+    std::unordered_map<int, int> index_move_map = {
+        {88, 56}, {89, 57}, {90, 58}, {91, 59}, {40, 88}, {41, 89}, {42, 90}, {43, 91}, {72, 40}, {73, 41}, {74, 42}, {75, 43}, {56, 72}, {57, 73}, {58, 74}, {59, 75},
+    };       
+    apply_index_swaps(index_move_map, clockwise);
+}
+
+void RubiksCube4x4::move_Dw(bool clockwise){
+    move_d(clockwise);
+    move_D(clockwise);
+}
+
+void RubiksCube4x4::move_F(bool clockwise) {
+    std::unordered_map<int, int> index_move_map = {
+        {80, 12}, {84, 13}, {88, 14}, {92, 15}, {19, 80}, {18, 84}, {17, 88}, {16, 92}, {79, 19}, {75, 18}, {71, 17}, {67, 16}, {12, 79}, {13, 75}, {14, 71}, {15, 67},
+        {48, 60}, {49, 56}, {50, 52}, {51, 48}, {52, 61}, {53, 57}, {54, 53}, {55, 49}, {56, 62}, {57, 58}, {58, 54}, {59, 50}, {60, 63}, {61, 59}, {62, 55}, {63, 51}
+    };        
+    apply_index_swaps(index_move_map, clockwise);
+}
+
+void RubiksCube4x4::move_f(bool clockwise) {
+    std::unordered_map<int, int> index_move_map = {
+        {81, 8}, {85, 9}, {89, 10}, {93, 11}, {23, 81}, {22, 85}, {21, 89}, {20, 93}, {66, 20}, {70, 21}, {74, 22}, {78, 23}, {8, 78}, {9, 74}, {10, 70}, {11, 66},
+    };       
+    apply_index_swaps(index_move_map, clockwise);
+}
+
+void RubiksCube4x4::move_Fw(bool clockwise){
+    move_f(clockwise);
+    move_F(clockwise);
+}
+
+void RubiksCube4x4::move_B(bool clockwise) {
+    std::unordered_map<int, int> index_move_map = {
+        {64, 3}, {68, 2}, {72, 1}, {76, 0}, {31, 76}, {30, 72}, {29, 68}, {28, 64}, {83, 31}, {87, 30}, {91, 29}, {95, 28}, {0, 83}, {1, 87}, {2, 91}, {3, 95},
+        {32, 44}, {33, 40}, {34, 36}, {35, 32}, {36, 45}, {37, 41}, {38, 37}, {39, 33}, {40, 46}, {41, 42}, {42, 38}, {43, 34}, {44, 47}, {45, 43}, {46, 39}, {47, 35},
+    };        
+    apply_index_swaps(index_move_map, clockwise);
+}
+
+void RubiksCube4x4::move_b(bool clockwise) {
+    std::unordered_map<int, int> index_move_map = {
+        {65, 7}, {69, 6}, {73, 5}, {77, 4}, {27, 77}, {26, 73}, {25, 69}, {24, 65}, {82, 27}, {86, 26}, {90, 25}, {94, 24}, {4, 82}, {5, 86}, {6, 90}, {7, 94},
+    };       
+    apply_index_swaps(index_move_map, clockwise);
+}
+
+void RubiksCube4x4::move_Bw(bool clockwise){
+    move_b(clockwise);
+    move_B(clockwise);
+}
+
