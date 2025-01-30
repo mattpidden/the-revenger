@@ -6,6 +6,8 @@
 #include <sstream> 
 #include <random>
 #include <unordered_set>
+#include <utility>
+
 #include "vector_cube.h"
 
 RubiksCube4x4::RubiksCube4x4() {
@@ -57,9 +59,100 @@ void RubiksCube4x4::display_cube() {
         }
         std::cout << "\n";
     }
+    std::cout << "\n";
 }
 
-void RubiksCube4x4::apply_random_moves() {
+char RubiksCube4x4::get_index_face(int index) {
+    if (index >= 0 && index <= 15){
+        return 'U';
+    } else if (index >= 16 && index <= 31){
+        return 'D';
+    } else if (index >= 32 && index <= 47){
+        return 'B';
+    } else if (index >= 48 && index <= 63){
+        return 'F';
+    } else if (index >= 64 && index <= 79){
+        return 'L';
+    } else {
+        return 'R';
+    }
+}
+
+std::vector<int> RubiksCube4x4::find_centre_pieces(char colour) {
+    std::vector<int> centres = {5,6,9,10,21,22,25,26,37,38,41,42,53,54,57,58,69,70,73,74,85,86,89,90};
+    std::vector<int> matching_centres;
+    for (int index : centres) {
+        if (facelets[index] == colour) {
+            matching_centres.push_back(index);
+        }
+    }
+
+    return matching_centres;
+}
+
+std::vector<int> RubiksCube4x4::find_edge_pieces(char colour) {
+    std::vector<int> edges = {1,2,4,7,8,11,13,14,17,18,20,23,24,27,29,30,33,34,36,39,40,43,45,46,49,50,52,55,56,59,61,62,65,66,68,71,72,75,77,78,81,82,84,87,88,91,93,94};
+    std::vector<int> matching_edges;
+    for (int index : edges) {
+        if (facelets[index] == colour) {
+            matching_edges.push_back(index);
+        }
+    }
+
+    return matching_edges;
+}
+
+std::vector<int> RubiksCube4x4::find_corner_pieces(char colour) {
+    std::vector<int> corners = {0,3,12,15,16,19,28,31,32,35,44,47,48,51,60,63,64,67,76,79,80,83,92,95};
+    std::vector<int> matching_corners;
+    for (int index : corners) {
+        if (facelets[index] == colour) {
+            matching_corners.push_back(index);
+        }
+    }
+
+    return matching_corners;
+}
+
+std::pair<std::vector<int>, std::vector<int>> RubiksCube4x4::find_spots_in_centre(char face, char colour) {
+    std::map<char, std::vector<int>> faces_centres = {
+        {'U', {5,6,9,10}}, {'D', {21,22,25,26}}, {'B', {37,38,41,42}}, 
+        {'F', {53,54,57,58}}, {'L', {69,70,73,74}}, {'R', {85,86,89,90}}
+    };
+    std::vector<int> spots;
+    std::vector<int> empty_spots;
+    std::vector<int> centres = faces_centres[face];
+    for (int index : centres) {
+        if (facelets[index] == colour) {
+            spots.push_back(index);
+        } else {
+            empty_spots.push_back(index);
+        }
+    }
+
+    return {spots, empty_spots};
+}
+
+std::string RubiksCube4x4::rotate_cube_so_piece_on_face(int index, char face) {
+    char piece_face = get_index_face(index);
+    if (piece_face == face) {
+        return "";
+    } else if (face == 'U' && piece_face == 'F') {
+        return "x";
+    }  else if (face == 'U' && piece_face == 'B') {
+        return "x'";
+    } else if (face == 'U' && piece_face == 'D') {
+        return "x2";
+    } else if (face == 'U' && piece_face == 'R') {
+        return "z'";
+    } else if (face == 'U' && piece_face == 'L') {
+        return "z";
+    } else {
+        return "";
+    }
+}
+
+void RubiksCube4x4::apply_random_moves(bool pause) {
     std::vector<std::string> UD_moves = {"U", "U2", "U'", "Uw", "Uw2", "Uw'", "D", "D2", "D'", "Dw", "Dw2", "Dw'"};
     std::vector<std::string> FB_moves = {"F", "F2", "F'", "Fw", "Fw2", "Fw'", "B", "B2", "B'", "Bw", "Bw2", "Bw'"};
     std::vector<std::string> RL_moves = {"R", "R2", "R'", "Rw", "Rw2", "Rw'", "L", "L2", "L'", "Lw", "Lw2", "Lw'"};
@@ -76,7 +169,7 @@ void RubiksCube4x4::apply_random_moves() {
             group = rng() % 3; // Pick a random group (0, 1, or 2)
         } while (group == prev_group); // Ensure it's not the same as the last group
 
-        std::vector<std::string>& selected_moves = move_groups[group];
+        std::vector<std::string> selected_moves = move_groups[group];
         std::uniform_int_distribution<int> dist(0, selected_moves.size() - 1);
         std::string move = selected_moves[dist(rng)];
 
@@ -89,26 +182,58 @@ void RubiksCube4x4::apply_random_moves() {
 
     std::istringstream iss(scramble);
     std::string move;
-    while (iss >> move) {
-        std::cout << "Move: " << move << std::endl << '\n';
-        apply_move(move);
+    if (pause) {
+        while (iss >> move) {
+            std::cout << "Move: " << move << std::endl << '\n';
+            apply_move(move);
+            display_cube();
+            std::cout << "Press Enter to continue...";
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
+    } else {
+        while (iss >> move) {
+            apply_move(move);
+        }
         display_cube();
-        std::cout << "Press Enter to continue...";
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }
 }
 
 
-void RubiksCube4x4::apply_moves(const std::string& moves) {
-    std::istringstream iss(moves);
+void RubiksCube4x4::apply_moves(const std::vector<std::string> moves) {
     std::string move;
     
-    while (iss >> move) {
-        apply_move(move);
+    for (const std::string& move : moves) {
+            apply_move(move);
+        
     }
+
 }
 
-void RubiksCube4x4::apply_move(const std::string& move) {
+std::vector<std::string> RubiksCube4x4::apply_opposite_moves(const std::vector<std::string> moves) {
+    std::vector<std::string> opposite_moves;
+
+    for (const std::string& move : moves) {
+        opposite_moves.push_back(apply_opposite_move(move));
+    }
+    return opposite_moves;
+}
+
+std::string RubiksCube4x4::apply_opposite_move(const std::string move) {
+    bool double_move = (move.back() == '2');
+    bool clockwise = (move.back() != '\''); 
+    std::string opposite_move;
+    if (double_move) {
+        opposite_move = move;
+    } else if (clockwise) {
+        opposite_move = move + "'";
+    } else {
+        opposite_move = move.substr(0, move.size() - 1);
+    }
+    apply_move(opposite_move);
+    return opposite_move;
+}
+
+void RubiksCube4x4::apply_move(const std::string move) {
     bool clockwise = (move.back() != '\''); 
 
     std::string base_move = move;
@@ -116,6 +241,7 @@ void RubiksCube4x4::apply_move(const std::string& move) {
     int repeat = (base_move.back() == '2') ? 2 : 1;
     if (repeat == 2) base_move = base_move.substr(0, base_move.size() - 1); // Remove '2' if present
 
+    std::cout << "Applying Move: " << move << "\n";
     for (int i = 0; i < repeat; i++) {
         if (base_move == "R") move_R(clockwise);
         else if (base_move == "r") move_r(clockwise);
@@ -135,11 +261,14 @@ void RubiksCube4x4::apply_move(const std::string& move) {
         else if (base_move == "B") move_B(clockwise);
         else if (base_move == "b") move_b(clockwise);
         else if (base_move == "Bw") move_Bw(clockwise);
+        else if (base_move == "x") rotate_x(clockwise);
+        else if (base_move == "y") rotate_y(clockwise);
+        else if (base_move == "z") rotate_z(clockwise);
         else std::cout << "Invalid move: " << move << "\n";
     }
 }
 
-void RubiksCube4x4::apply_index_swaps(const std::unordered_map<int, int>& index_move_map, bool clockwise) {
+void RubiksCube4x4::apply_index_swaps(const std::unordered_map<int, int> index_move_map, bool clockwise) {
     std::vector<char> facelets_copy = facelets;
     for (const auto& [a, b] : index_move_map) {
         if (clockwise) {
@@ -148,6 +277,47 @@ void RubiksCube4x4::apply_index_swaps(const std::unordered_map<int, int>& index_
             facelets[b] = facelets_copy[a];
         }
     }
+}
+
+bool RubiksCube4x4::verify_valid_cube() {
+    std::cout << "Checking cube is valid: " << "\n";
+    std::vector<char> colours = {'W', 'Y', 'O', 'R', 'G', 'B'};
+    std::vector<int> pieces;
+    for (const char& color : colours) {
+        pieces = find_centre_pieces(color);
+        if (pieces.size() != 4) {
+            std::cout << "Not Valid (found " << pieces.size() << " " << color << " centre pieces instead of 4)\n";
+            return false;
+        }
+        pieces = find_edge_pieces(color);
+        if (pieces.size() != 8) {
+            std::cout << "Not Valid (found " << pieces.size() << " " << color << " edge pieces instead of 8)\n";
+            return false;
+        }
+        pieces = find_corner_pieces(color);
+        if (pieces.size() != 4) {
+            std::cout << "Not Valid (found " << pieces.size() << " " << color << " corner pieces instead of 4)\n";
+            return false;
+        }
+    }
+    std::cout << "Valid (all checks passed)\n";
+    return true;
+}
+
+
+void RubiksCube4x4::rotate_x(bool clockwise) {
+    move_Rw(clockwise);
+    move_Lw(!clockwise);
+}
+
+void RubiksCube4x4::rotate_y(bool clockwise) {
+    move_Uw(clockwise);
+    move_Dw(!clockwise);
+}
+
+void RubiksCube4x4::rotate_z(bool clockwise) {
+    move_Fw(clockwise);
+    move_Bw(!clockwise);
 }
 
 void RubiksCube4x4::move_R(bool clockwise) {
@@ -200,7 +370,7 @@ void RubiksCube4x4::move_U(bool clockwise) {
 
 void RubiksCube4x4::move_u(bool clockwise) {
     std::unordered_map<int, int> index_move_map = {
-        {52, 84}, {53, 85}, {54, 86}, {55, 86}, {84, 36}, {85, 37}, {86, 38}, {87, 39}, {36, 68}, {37, 69}, {38, 70}, {39, 71}, {68, 52}, {69, 53}, {70, 54}, {71, 55},
+        {52, 84}, {53, 85}, {54, 86}, {55, 87}, {84, 36}, {85, 37}, {86, 38}, {87, 39}, {36, 68}, {37, 69}, {38, 70}, {39, 71}, {68, 52}, {69, 53}, {70, 54}, {71, 55},
     };       
     apply_index_swaps(index_move_map, clockwise);
 }

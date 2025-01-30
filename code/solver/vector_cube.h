@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include <iostream>
 
 class RubiksCube4x4 {
 private:
@@ -13,10 +14,25 @@ public:
     RubiksCube4x4();
 
     void display_cube();
-    void apply_random_moves();
-    void apply_moves(const std::string& moves);
-    void apply_move(const std::string& move);
-    void apply_index_swaps(const std::unordered_map<int, int>& index_move_map, bool clockwise);
+
+    char get_index_face(int index);
+    std::vector<int> find_centre_pieces(char colour);
+    std::vector<int> find_edge_pieces(char colour);
+    std::vector<int> find_corner_pieces(char colour);
+    std::pair<std::vector<int>, std::vector<int>> find_spots_in_centre(char face, char colour);
+    std::string rotate_cube_so_piece_on_face(int index, char face);
+
+    void apply_random_moves(bool pause);
+    void apply_moves(const std::vector<std::string> moves);
+    std::vector<std::string>  apply_opposite_moves(const std::vector<std::string> moves);
+    std::string apply_opposite_move(const std::string move);
+    void apply_move(const std::string move);
+    void apply_index_swaps(const std::unordered_map<int, int> index_move_map, bool clockwise);
+    bool verify_valid_cube();
+
+    void rotate_x(bool clockwise);
+    void rotate_y(bool clockwise);
+    void rotate_z(bool clockwise);
 
     void move_R(bool clockwise);
     void move_r(bool clockwise);
