@@ -12,6 +12,44 @@
 #include "reduce_centres.h"
 #include "vector_cube.h"
 
+std::vector<std::string> reduce_centres(RubiksCube4x4& cube) {
+    std::vector<std::string> solution = {};
+    std::vector<std::string> white_centre_solution = create_white_centre(cube);
+    solution.insert(solution.end(), white_centre_solution.begin(), white_centre_solution.end());
+    std::cout << "Created white centre." << "\n";
+    solution.push_back("x2");
+    cube.apply_move("x2");
+    std::vector<std::string> yellow_centre_solution = create_any_centre(cube, 'Y');
+    solution.insert(solution.end(), yellow_centre_solution.begin(), yellow_centre_solution.end());
+    std::cout << "Created yellow centre." << "\n";    
+    solution.push_back("z");
+    cube.apply_move("z");
+    std::vector<std::string> orange_centre_solution = create_any_centre(cube, 'O');
+    solution.insert(solution.end(), orange_centre_solution.begin(), orange_centre_solution.end());
+    std::cout << "Created orange centre." << "\n";    
+    solution.push_back("x");
+    cube.apply_move("x");
+    std::vector<std::string> blue_centre_solution = create_any_centre(cube, 'B');
+    solution.insert(solution.end(), blue_centre_solution.begin(), blue_centre_solution.end());
+    std::cout << "Created blue centre." << "\n";    
+    solution.push_back("x");
+    cube.apply_move("x");
+    std::vector<std::string> red_centre_solution = create_any_centre(cube, 'R');
+    solution.insert(solution.end(), red_centre_solution.begin(), red_centre_solution.end());
+    std::cout << "Created red centre." << "\n";    
+    solution.push_back("x");
+    cube.apply_move("x");
+    std::vector<std::string> green_centre_solution = create_any_centre(cube, 'G');
+    solution.insert(solution.end(), green_centre_solution.begin(), green_centre_solution.end());
+    std::cout << "Created green centre." << "\n";    
+    solution.push_back("z");
+    cube.apply_move("z");
+    solution.push_back("y");
+    cube.apply_move("y");
+    return solution;
+}
+
+
 
 std::vector<std::string> create_white_centre(RubiksCube4x4& cube) {
     std::map<int, std::vector<std::string>> centre_piecie_moves_to_front_tr_centre = {{53, {"F"}}, {54, {}}, {57, {"F2"}}, {58, {"F'"}}, {85, {"u", "F"}}, {86, {"u"}}, {89, {"d'", "F2"}}, {90, {"d'", "F'"}}, {69, {"u'", "F"}}, {70, {"u'"}}, {73, {"d", "F2"}}, {74, {"d", "F'"}}, {37, {"u2", "F"}}, {38, {"u2"}}, {41, {"d2", "F2"}}, {42, {"d2", "F'"}}, {21, {"l'", "F", "l"}}, {22, {"r", "F'", "r'", "F"}}, {25, {"l'", "F2", "l"}}, {26, {"r", "F", "r'", "F2"}},};

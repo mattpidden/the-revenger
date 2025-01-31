@@ -9,32 +9,17 @@ int main() {
     cube.apply_random_moves(false);
     cube.verify_valid_cube();
 
-    std::vector<std::string> white_centre_solution = create_white_centre(cube);
-    solution.insert(solution.end(), white_centre_solution.begin(), white_centre_solution.end());
-    solution.push_back("x2");
-    cube.apply_move("x2");
-    std::vector<std::string> yellow_centre_solution = create_any_centre(cube, 'Y');
-    solution.insert(solution.end(), yellow_centre_solution.begin(), yellow_centre_solution.end());
-    solution.push_back("z");
-    cube.apply_move("z");
-    std::vector<std::string> orange_centre_solution = create_any_centre(cube, 'O');
-    solution.insert(solution.end(), orange_centre_solution.begin(), orange_centre_solution.end());
-    solution.push_back("x");
-    cube.apply_move("x");
-    std::vector<std::string> blue_centre_solution = create_any_centre(cube, 'B');
-    solution.insert(solution.end(), blue_centre_solution.begin(), blue_centre_solution.end());
-    solution.push_back("x");
-    cube.apply_move("x");
-    std::vector<std::string> red_centre_solution = create_any_centre(cube, 'R');
-    solution.insert(solution.end(), red_centre_solution.begin(), red_centre_solution.end());
-    solution.push_back("x");
-    cube.apply_move("x");
-    std::vector<std::string> green_centre_solution = create_any_centre(cube, 'G');
-    solution.insert(solution.end(), green_centre_solution.begin(), green_centre_solution.end());
-    solution.push_back("z");
-    cube.apply_move("z");
-    solution.push_back("y");
-    cube.apply_move("y");
+    std::vector<std::string> reduce_centres_solution = reduce_centres(cube);
+    solution.insert(solution.end(), reduce_centres_solution.begin(), reduce_centres_solution.end());
+
+    std::vector<std::vector<std::vector<std::vector<int>>>> edges = cube.find_unpaired_edges();
+    if (edges[0].size() > 0) {
+      std::string move = cube.rotate_cube_so_piece_on_face(edges[0][0][0][0], 'U');
+      solution.push_back(move);
+      cube.apply_move(move);
+    }
+
+
 
     cube.display_cube();    
     std::cout << "Total Moves: " << solution.size() << "\n";

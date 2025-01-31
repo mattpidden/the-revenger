@@ -114,6 +114,38 @@ std::vector<int> RubiksCube4x4::find_corner_pieces(char colour) {
     return matching_corners;
 }
 
+std::vector<std::vector<std::vector<std::vector<int>>>> RubiksCube4x4::find_unpaired_edges() {
+    std::vector<std::vector<std::vector<int>>> edge_pieces = {{{4,65}, {8,66}}, {{7,82}, {11,81}}, {{13,49}, {14,50}}, {{52,71}, {56,75}}, {{55,84}, {59,88}}, {{61,17}, {62,18}}, {{36,87}, {40,91}}, {{39,68}, {43,72}}, {{1,34}, {2,33}}, {{20,78}, {24,77}}, {{23,93}, {27,94}}, {{29,46}, {30,45}}};
+    std::vector<std::vector<std::vector<int>>> unpaired_edges = {};
+    std::vector<std::vector<std::vector<int>>> paired_edges = {};
+    for (const auto& edge : edge_pieces) {
+        if (facelets[edge[0][0]] != facelets[edge[1][0]] || facelets[edge[0][1]] != facelets[edge[1][1]]) {
+            unpaired_edges.push_back(edge);
+        } else {
+            paired_edges.push_back(edge);
+        }
+    }
+    return {paired_edges, unpaired_edges};
+}
+
+std::vector<int> RubiksCube4x4::find_matching_edge_piece(std::vector<int> single_edge) {
+    std::vector<std::vector<std::vector<int>>> edge_pieces = {{{4,65}, {8,66}}, {{7,82}, {11,81}}, {{13,49}, {14,50}}, {{52,71}, {56,75}}, {{55,84}, {59,88}}, {{61,17}, {62,18}}, {{36,87}, {40,91}}, {{39,68}, {43,72}}, {{1,34}, {2,33}}, {{20,78}, {24,77}}, {{23,93}, {27,94}}, {{29,46}, {30,45}}};
+    for (const auto& edge : edge_pieces) {
+        if (((facelets[edge[0][0]] == facelets[single_edge[0]] && facelets[edge[0][1]] == facelets[single_edge[1]]) || (facelets[edge[0][0]] == facelets[single_edge[1]] && facelets[edge[0][1]] == facelets[single_edge[0]])) && single_edge != edge[0]) {
+            return edge[0];
+        }
+        if (((facelets[edge[1][0]] == facelets[single_edge[0]] && facelets[edge[1][1]] == facelets[single_edge[1]]) || (facelets[edge[1][0]] == facelets[single_edge[1]] && facelets[edge[1][1]] == facelets[single_edge[0]])) && single_edge != edge[1]) {
+            return edge[1];
+        }
+    }
+    return {};
+}
+
+std::string RubiksCube4x4 find_edges_in_slice(){
+    {56 == 84} && {55 == 75}
+    {52 == 88} && {59 == 71}
+}
+
 std::pair<std::vector<int>, std::vector<int>> RubiksCube4x4::find_spots_in_centre(char face, char colour) {
     std::map<char, std::vector<int>> faces_centres = {
         {'U', {5,6,9,10}}, {'D', {21,22,25,26}}, {'B', {37,38,41,42}}, 
@@ -264,6 +296,7 @@ void RubiksCube4x4::apply_move(const std::string move) {
         else if (base_move == "x") rotate_x(clockwise);
         else if (base_move == "y") rotate_y(clockwise);
         else if (base_move == "z") rotate_z(clockwise);
+        else if (base_move == "");
         else std::cout << "Invalid move: " << move << "\n";
     }
 }
