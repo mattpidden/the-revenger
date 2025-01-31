@@ -63,9 +63,9 @@ std::vector<std::string> create_white_centre(RubiksCube4x4& cube) {
     }
     
     if (white_centre_pieces_on_U.size() == 0) {
-      std::string move = cube.rotate_cube_so_piece_on_face(white_centre_pieces[0], 'U');
-      solution.push_back(move);
-      cube.apply_move(move);
+      std::vector<std::string> move = cube.rotate_cube_so_piece_on_face(white_centre_pieces[0], 'U');
+      solution.insert(solution.end(), move.begin(), move.end());
+      cube.apply_moves(move);
     }
     std::tie(white_centre_pieces_on_U, non_white_centre_pieces_on_U) = cube.find_spots_in_centre('U', 'W');
     

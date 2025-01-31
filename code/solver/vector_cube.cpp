@@ -21,6 +21,27 @@ RubiksCube4x4::RubiksCube4x4() {
     };
 }
 
+/*
+             Up (U)
+             0  1  2  3
+             4  5  6  7
+             8  9  10 11
+             12 13 14 15
+
+Left (L)     Front (F)    Right (R)    Back (B)
+64 65 66 67  48 49 50 51  80 81 82 83  32 33 34 35
+68 69 70 71  52 53 54 55  84 85 86 87  36 37 38 39
+72 73 74 75  56 57 58 59  88 89 90 91  40 41 42 43
+76 77 78 79  60 61 62 63  92 93 94 95  44 45 46 47
+
+             Down (D)
+             16 17 18 19
+             20 21 22 23
+             24 25 26 27
+             28 29 30 31
+*/
+
+
 // Method to display the cube's facelets
 void RubiksCube4x4::display_cube() {
     std::map<char, std::string> colours_to_emojis = {
@@ -114,7 +135,7 @@ std::vector<int> RubiksCube4x4::find_corner_pieces(char colour) {
     return matching_corners;
 }
 
-std::vector<std::vector<std::vector<std::vector<int>>>> RubiksCube4x4::find_unpaired_edges() {
+std::vector<std::vector<std::vector<std::vector<int>>>> RubiksCube4x4::find_paired_edges() {
     std::vector<std::vector<std::vector<int>>> edge_pieces = {{{4,65}, {8,66}}, {{7,82}, {11,81}}, {{13,49}, {14,50}}, {{52,71}, {56,75}}, {{55,84}, {59,88}}, {{61,17}, {62,18}}, {{36,87}, {40,91}}, {{39,68}, {43,72}}, {{1,34}, {2,33}}, {{20,78}, {24,77}}, {{23,93}, {27,94}}, {{29,46}, {30,45}}};
     std::vector<std::vector<std::vector<int>>> unpaired_edges = {};
     std::vector<std::vector<std::vector<int>>> paired_edges = {};
@@ -141,10 +162,7 @@ std::vector<int> RubiksCube4x4::find_matching_edge_piece(std::vector<int> single
     return {};
 }
 
-std::string RubiksCube4x4 find_edges_in_slice(){
-    {56 == 84} && {55 == 75}
-    {52 == 88} && {59 == 71}
-}
+
 
 std::pair<std::vector<int>, std::vector<int>> RubiksCube4x4::find_spots_in_centre(char face, char colour) {
     std::map<char, std::vector<int>> faces_centres = {
@@ -165,22 +183,30 @@ std::pair<std::vector<int>, std::vector<int>> RubiksCube4x4::find_spots_in_centr
     return {spots, empty_spots};
 }
 
-std::string RubiksCube4x4::rotate_cube_so_piece_on_face(int index, char face) {
+std::vector<std::string> RubiksCube4x4::rotate_cube_so_piece_on_face(int index, char face) {
     char piece_face = get_index_face(index);
     if (piece_face == face) {
-        return "";
+        return {};
     } else if (face == 'U' && piece_face == 'F') {
-        return "x";
+        return {"x"};
     }  else if (face == 'U' && piece_face == 'B') {
-        return "x'";
+        return {"x'"};
     } else if (face == 'U' && piece_face == 'D') {
-        return "x2";
+        return {"x2"};
     } else if (face == 'U' && piece_face == 'R') {
-        return "z'";
+        return {"z'"};
     } else if (face == 'U' && piece_face == 'L') {
-        return "z";
+        return {"z"};
     } else {
-        return "";
+        return {};
+    }
+}
+
+std::vector<std::string> RubiksCube4x4::decide_edge_flip() {
+    if (facelets[52] != facelets[55] || facelets[56] != facelets[59]) {
+        return {"R", "F'", "U", "R'", "F"};
+    } else {
+        return {};
     }
 }
 

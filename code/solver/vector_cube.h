@@ -19,11 +19,12 @@ public:
     std::vector<int> find_centre_pieces(char colour);
     std::vector<int> find_edge_pieces(char colour);
     std::vector<int> find_corner_pieces(char colour);
-    std::vector<std::vector<std::vector<std::vector<int>>>> find_unpaired_edges();
+    std::vector<std::vector<std::vector<std::vector<int>>>> find_paired_edges();
     std::vector<int> find_matching_edge_piece(std::vector<int> edge);
 
     std::pair<std::vector<int>, std::vector<int>> find_spots_in_centre(char face, char colour);
-    std::string rotate_cube_so_piece_on_face(int index, char face);
+    std::vector<std::string> rotate_cube_so_piece_on_face(int index, char face);
+    std::vector<std::string> decide_edge_flip();
 
     void apply_random_moves(bool pause);
     void apply_moves(const std::vector<std::string> moves);
