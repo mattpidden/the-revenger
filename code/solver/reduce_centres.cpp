@@ -17,35 +17,57 @@ std::vector<std::string> reduce_centres(RubiksCube4x4& cube) {
     std::vector<std::string> white_centre_solution = create_white_centre(cube);
     solution.insert(solution.end(), white_centre_solution.begin(), white_centre_solution.end());
     std::cout << "Created white centre." << "\n";
+
     solution.push_back("x2");
     cube.apply_move("x2");
     std::vector<std::string> yellow_centre_solution = create_any_centre(cube, 'Y');
     solution.insert(solution.end(), yellow_centre_solution.begin(), yellow_centre_solution.end());
-    std::cout << "Created yellow centre." << "\n";    
+    std::cout << "Created yellow centre." << "\n"; 
+   
     solution.push_back("z");
     cube.apply_move("z");
     std::vector<std::string> orange_centre_solution = create_any_centre(cube, 'O');
     solution.insert(solution.end(), orange_centre_solution.begin(), orange_centre_solution.end());
-    std::cout << "Created orange centre." << "\n";    
+    std::cout << "Created orange centre." << "\n";  
+  
     solution.push_back("x");
     cube.apply_move("x");
     std::vector<std::string> blue_centre_solution = create_any_centre(cube, 'B');
     solution.insert(solution.end(), blue_centre_solution.begin(), blue_centre_solution.end());
-    std::cout << "Created blue centre." << "\n";    
+    std::cout << "Created blue centre." << "\n";   
+ 
     solution.push_back("x");
     cube.apply_move("x");
     std::vector<std::string> red_centre_solution = create_any_centre(cube, 'R');
     solution.insert(solution.end(), red_centre_solution.begin(), red_centre_solution.end());
-    std::cout << "Created red centre." << "\n";    
+    std::cout << "Created red centre." << "\n";  
+  
     solution.push_back("x");
     cube.apply_move("x");
     std::vector<std::string> green_centre_solution = create_any_centre(cube, 'G');
     solution.insert(solution.end(), green_centre_solution.begin(), green_centre_solution.end());
-    std::cout << "Created green centre." << "\n";    
+    std::cout << "Created green centre." << "\n";   
+ 
     solution.push_back("z");
     cube.apply_move("z");
     solution.push_back("y");
     cube.apply_move("y");
+
+    for (const std::string& str : solution) {
+        if (str == "ERR") {
+            std::vector<std::string> moves = {"U", "D", "F", "B", "R", "L"};
+            std::random_device rd;
+            std::mt19937 gen(rd());
+            std::uniform_int_distribution<int> dist(0, moves.size() - 1);
+            std::string random_move = moves[dist(gen)];
+            solution.push_back(random_move);
+            cube.apply_move(random_move);
+            std::vector<std::string> new_solution = reduce_centres(cube);
+            solution.insert(solution.end(), new_solution.begin(), new_solution.end());
+            break;
+        }
+    }
+
     return solution;
 }
 
@@ -70,6 +92,7 @@ std::vector<std::string> create_white_centre(RubiksCube4x4& cube) {
     std::tie(white_centre_pieces_on_U, non_white_centre_pieces_on_U) = cube.find_spots_in_centre('U', 'W');
     
     // Now there is at least 1 white centre piece on U
+    int count = 0;
     while (white_centre_pieces_on_U.size() != 4) {
         while (std::find(non_white_centre_pieces_on_U.begin(), non_white_centre_pieces_on_U.end(), 6) == non_white_centre_pieces_on_U.end()) {
           solution.push_back("U");
@@ -91,6 +114,10 @@ std::vector<std::string> create_white_centre(RubiksCube4x4& cube) {
         cube.apply_moves(centre_insert_algo);
         
         std::tie(white_centre_pieces_on_U, non_white_centre_pieces_on_U) = cube.find_spots_in_centre('U', 'W');
+        count = count + 1;
+        if (count > 10) {
+          return {"ERR"};
+        }
     }
 
     return solution;
@@ -109,6 +136,7 @@ std::vector<std::string> create_any_centre(RubiksCube4x4& cube, char colour) {
       return solution;
     }
     
+    int count = 0;
     while (yellow_centre_pieces_on_U.size() != 4) {
         while (std::find(non_yellow_centre_pieces_on_U.begin(), non_yellow_centre_pieces_on_U.end(), 6) == non_yellow_centre_pieces_on_U.end()) {
           solution.push_back("U");
@@ -132,6 +160,10 @@ std::vector<std::string> create_any_centre(RubiksCube4x4& cube, char colour) {
         solution.insert(solution.end(), opposite_moves.begin(), opposite_moves.end());
         
         std::tie(yellow_centre_pieces_on_U, non_yellow_centre_pieces_on_U) = cube.find_spots_in_centre('U', colour);
+        count = count + 1;
+        if (count > 10) {
+          return {"ERR"};
+        }
     }
 
     return solution;
