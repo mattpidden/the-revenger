@@ -25,6 +25,7 @@ public:
     std::pair<std::vector<int>, std::vector<int>> find_spots_in_centre(char face, char colour);
     std::vector<std::string> rotate_cube_so_piece_on_face(int index, char face);
     std::vector<std::string> decide_edge_flip();
+    std::vector<int> find_white_edge_bar_for_colour(char colour);
 
     void apply_random_moves(bool pause);
     void apply_moves(const std::vector<std::string> moves);

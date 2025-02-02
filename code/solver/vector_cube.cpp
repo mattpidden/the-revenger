@@ -218,6 +218,29 @@ std::vector<std::string> RubiksCube4x4::decide_edge_flip() {
     }
 }
 
+std::vector<int> RubiksCube4x4::find_white_edge_bar_for_colour(char colour) {
+    std::vector<std::vector<std::vector<int>>> edge_bar_pairs = {{{1,2}, {33,34}}, {{4,8}, {65,66}}, {{7,11}, {81,82}}, {{13,14}, {49,50}}, {{52,56}, {71,75}}, {{55,59}, {84,88}}, {{61,62}, {17,18}}, {{36,40}, {87,91}}, {{39,43}, {68,72}}, {{20,24}, {77,78}}, {{23,27}, {93,94}}, {{29,30}, {45,46}}};
+
+    for (const auto& edge_bar : edge_bar_pairs) {
+        int a = edge_bar[0][0];
+        int b = edge_bar[0][1];
+        int c = edge_bar[1][0];
+        int d = edge_bar[1][1];
+
+        if (facelets[a] == 'W' && facelets[b] == 'W' && 
+            facelets[c] == colour && facelets[d] == colour) {
+            return {a, b};
+        }
+
+        if (facelets[c] == 'W' && facelets[d] == 'W' && 
+            facelets[a] == colour && facelets[b] == colour) {
+            return {c, d}; 
+        }
+    }
+
+    return {};
+}
+
 void RubiksCube4x4::apply_random_moves(bool pause) {
     std::vector<std::string> UD_moves = {"U", "U2", "U'", "Uw", "Uw2", "Uw'", "D", "D2", "D'", "Dw", "Dw2", "Dw'"};
     std::vector<std::string> FB_moves = {"F", "F2", "F'", "Fw", "Fw2", "Fw'", "B", "B2", "B'", "Bw", "Bw2", "Bw'"};

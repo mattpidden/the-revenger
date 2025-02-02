@@ -26,10 +26,6 @@ int main() {
     std::vector<std::string> move = cube.rotate_cube_so_piece_on_face(white_centre_pieces[0], 'D');
     solution.insert(solution.end(), move.begin(), move.end());
     cube.apply_moves(move);
-    std::vector<int> green_centre_pieces = cube.find_centre_pieces('G');
-    move = cube.rotate_cube_so_piece_on_face(green_centre_pieces[0], 'F');
-    solution.insert(solution.end(), move.begin(), move.end());
-    cube.apply_moves(move);
 
     // Create white cross on the bottom
     std::map<std::vector<int>, std::vector<std::string>> edge_bar_moves_to_front_cross = {
@@ -57,6 +53,24 @@ int main() {
         {{93,94}, {"R", "F"}}, 
         {{29,30}, {"B2", "U2", "F2"}},
         {{45,46}, {"B", "R2", "F", "R2"}}};
+
+    std::vector<char> colours = {'G', 'O', 'B', 'R'};
+
+    for (const auto& colour : colours) {
+        std::vector<int> colour_centre_pieces = cube.find_centre_pieces(colour);
+        move = cube.rotate_cube_so_piece_on_face(colour_centre_pieces[0], 'F');
+        solution.insert(solution.end(), move.begin(), move.end());
+        cube.apply_moves(move);
+
+        std::vector<int> white_edge_location = cube.find_white_edge_bar_for_colour(colour);
+        std::vector<std::string> moves_to_cross = edge_bar_moves_to_front_cross[white_edge_location];
+        solution.insert(solution.end(), moves_to_cross.begin(), moves_to_cross.end());
+        cube.apply_moves(moves_to_cross);
+
+    }
+
+
+    
     
 
     cube.display_cube();    
