@@ -185,21 +185,29 @@ std::pair<std::vector<int>, std::vector<int>> RubiksCube4x4::find_spots_in_centr
 
 std::vector<std::string> RubiksCube4x4::rotate_cube_so_piece_on_face(int index, char face) {
     char piece_face = get_index_face(index);
-    if (piece_face == face) {
-        return {};
-    } else if (face == 'U' && piece_face == 'F') {
-        return {"x"};
-    }  else if (face == 'U' && piece_face == 'B') {
-        return {"x'"};
-    } else if (face == 'U' && piece_face == 'D') {
-        return {"x2"};
-    } else if (face == 'U' && piece_face == 'R') {
-        return {"z'"};
-    } else if (face == 'U' && piece_face == 'L') {
-        return {"z"};
-    } else {
-        return {};
-    }
+
+    std::map<std::pair<char, char>, std::vector<std::string>> lookup = {
+        {{'U', 'F'}, {"x"}},
+        {{'U', 'B'}, {"x'"}},
+        {{'U', 'D'}, {"x2"}},
+        {{'U', 'R'}, {"z'"}},
+        {{'U', 'L'}, {"z"}},
+        {{'U', 'U'}, {}},
+        {{'D', 'F'}, {"x'"}},
+        {{'D', 'B'}, {"x"}},
+        {{'D', 'D'}, {}},
+        {{'D', 'R'}, {"z"}},
+        {{'D', 'L'}, {"z'"}},
+        {{'D', 'U'}, {"x2"}},
+        {{'F', 'F'}, {}},
+        {{'F', 'B'}, {"y2"}},
+        {{'F', 'D'}, {"x"}},
+        {{'F', 'R'}, {"y"}},
+        {{'F', 'L'}, {"y''"}},
+        {{'F', 'U'}, {"x'"}},
+    };
+
+    return lookup[{face, piece_face}];
 }
 
 std::vector<std::string> RubiksCube4x4::decide_edge_flip() {

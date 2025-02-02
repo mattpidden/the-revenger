@@ -102,7 +102,7 @@ std::vector<std::string> reduce_edges(RubiksCube4x4& cube) {
         cube.apply_moves(final_edge_algo);
     }
 
-    std::cout << "Total edge loops: " << count << "\n";
+    // std::cout << "Total edge loops: " << count << "\n";
 
     return solution;
 }
