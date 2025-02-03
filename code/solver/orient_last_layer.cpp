@@ -52,6 +52,7 @@ std::vector<std::string> orient_last_layer(RubiksCube4x4& cube) {
         for (const auto& [indexes, moves] : oll_look_one) {
             if (cube.check_indexes_match_colour(indexes, 'Y')) {  
                 cube.apply_moves(moves);
+                solution.insert(solution.end(), moves.begin(), moves.end());
                 move_applied = true;
                 break;
             }
@@ -59,6 +60,7 @@ std::vector<std::string> orient_last_layer(RubiksCube4x4& cube) {
 
         if (!move_applied) {
             cube.apply_move("U");
+            solution.push_back("U");
         } else {
             break;
         }
@@ -81,6 +83,7 @@ std::vector<std::string> orient_last_layer(RubiksCube4x4& cube) {
         for (const auto& [indexes, moves] : oll_look_two) {
             if (cube.check_indexes_match_colour(indexes, 'Y')) {  
                 cube.apply_moves(moves);
+                solution.insert(solution.end(), moves.begin(), moves.end());
                 move_applied = true;
                 break;
             }
@@ -88,6 +91,7 @@ std::vector<std::string> orient_last_layer(RubiksCube4x4& cube) {
 
         if (!move_applied) {
             cube.apply_move("U");
+            solution.push_back("U");
         } else {
             break;
         }

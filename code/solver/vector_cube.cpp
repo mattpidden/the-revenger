@@ -225,6 +225,65 @@ bool RubiksCube4x4::check_indexes_match_colour(std::vector<int> indexes, char co
     return true;
 }
 
+bool RubiksCube4x4::check_indexes_match_indexes(std::vector<std::vector<int>> indexes) {
+    for (const std::vector<int>& i : indexes) {
+        for (size_t j = 1; j < i.size(); ++j) { 
+            if (facelets[i[j]] != facelets[i[0]]) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+
+bool RubiksCube4x4::check_corners_aligned_pll() {
+    if (facelets[64] == facelets[68] && facelets[48] == facelets[52] && facelets[80] == facelets[84] && facelets[32] == facelets[36]) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+std::vector<std::vector<std::vector<int>>> RubiksCube4x4::check_edge_centre_alignment() {
+    std::vector<std::vector<int>> aligned_edges = {};
+    std::vector<std::vector<int>> unaligned_edges = {};
+
+    if (facelets[65] == facelets[66] && facelets[66] == facelets[69] &&
+        facelets[69] == facelets[70] && facelets[70] == facelets[73] &&
+        facelets[73] == facelets[74]) {
+        aligned_edges.push_back({65,66});
+    } else {
+        unaligned_edges.push_back({65,66});
+    }
+
+    if (facelets[49] == facelets[50] && facelets[50] == facelets[53] &&
+        facelets[53] == facelets[54] && facelets[54] == facelets[57] &&
+        facelets[57] == facelets[58]) {
+        aligned_edges.push_back({49,50});
+    } else {
+        unaligned_edges.push_back({49,50});
+    }
+
+    if (facelets[81] == facelets[82] && facelets[82] == facelets[85] &&
+        facelets[85] == facelets[86] && facelets[86] == facelets[89] &&
+        facelets[89] == facelets[90]) {
+        aligned_edges.push_back({81,82});
+    } else {
+        unaligned_edges.push_back({81,82});
+    }
+
+    if (facelets[33] == facelets[34] && facelets[34] == facelets[37] &&
+        facelets[37] == facelets[38] && facelets[38] == facelets[41] &&
+        facelets[41] == facelets[42]) {
+        aligned_edges.push_back({33,34});
+    } else {
+        unaligned_edges.push_back({33,34});
+    }
+
+    return {aligned_edges, unaligned_edges};
+}
+
 
 std::vector<std::string> RubiksCube4x4::decide_edge_flip() {
     if (facelets[52] != facelets[55] || facelets[56] != facelets[59]) {

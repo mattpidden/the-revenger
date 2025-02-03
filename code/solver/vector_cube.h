@@ -25,6 +25,9 @@ public:
     std::pair<std::vector<int>, std::vector<int>> find_spots_in_centre(char face, char colour);
     std::vector<std::string> rotate_cube_so_piece_on_face(int index, char face);
     bool check_indexes_match_colour(std::vector<int> indexes, char colour);
+    bool check_indexes_match_indexes(std::vector<std::vector<int>> indexes);
+    bool check_corners_aligned_pll();
+    std::vector<std::vector<std::vector<int>>>  check_edge_centre_alignment();
     std::vector<std::string> decide_edge_flip();
     std::vector<int> find_white_edge_bar_for_colour(char colour);
     std::vector<int> find_edge_by_colour(char colour1, char colour2);
