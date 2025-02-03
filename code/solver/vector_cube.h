@@ -26,6 +26,10 @@ public:
     std::vector<std::string> rotate_cube_so_piece_on_face(int index, char face);
     std::vector<std::string> decide_edge_flip();
     std::vector<int> find_white_edge_bar_for_colour(char colour);
+    std::vector<int> find_edge_by_colour(char colour1, char colour2);
+    int find_white_corner_face_from_colours(char colour1, char colour2);
+    bool check_corner_correct(char colour1, char colour2);
+
 
     void apply_random_moves(bool pause);
     void apply_moves(const std::vector<std::string> moves);

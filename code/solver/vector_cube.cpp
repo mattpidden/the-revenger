@@ -203,7 +203,7 @@ std::vector<std::string> RubiksCube4x4::rotate_cube_so_piece_on_face(int index, 
         {{'F', 'B'}, {"y2"}},
         {{'F', 'D'}, {"x"}},
         {{'F', 'R'}, {"y"}},
-        {{'F', 'L'}, {"y''"}},
+        {{'F', 'L'}, {"y'"}},
         {{'F', 'U'}, {"x'"}},
     };
 
@@ -239,6 +239,58 @@ std::vector<int> RubiksCube4x4::find_white_edge_bar_for_colour(char colour) {
     }
 
     return {};
+}
+
+std::vector<int> RubiksCube4x4::find_edge_by_colour(char colour1, char colour2) {
+    std::vector<std::vector<std::vector<int>>> edge_pieces = {{{1,2}, {33,34}}, {{4,8}, {65,66}}, {{7,11}, {81,82}}, {{13,14}, {49,50}}, {{55,59}, {84,88}}, {{52,56}, {71,75}}, {{36,40}, {87,91}}, {{39,43}, {68,72}}};
+    for (const auto& edge_pair : edge_pieces) {
+        int a = edge_pair[0][0];
+        int b = edge_pair[0][1];
+        int c = edge_pair[1][0];
+        int d = edge_pair[1][1];
+
+        if (facelets[a] == colour1 && facelets[b] == colour1 &&
+            facelets[c] == colour2 && facelets[d] == colour2) {
+            return {a, b};
+        }
+        if (facelets[c] == colour1 && facelets[d] == colour1 &&
+            facelets[a] == colour2 && facelets[b] == colour2) {
+            return {c, d};
+        }
+    }
+
+    return {};
+}
+
+int RubiksCube4x4::find_white_corner_face_from_colours(char colour1, char colour2) {
+    std::vector<std::vector<int>> corner_indexes = {{15,51,80}, {3,83,32}, {0,64,35}, {12,48,67}, {63,92,19}, {60,79,16}, {95,44,31}, {76,47,28}};
+    
+    for (const auto& corner : corner_indexes) {
+        int a = corner[0], b = corner[1], c = corner[2];
+
+        if ((facelets[a] == colour1 && facelets[b] == colour2 && facelets[c] == 'W') ||
+            (facelets[a] == colour2 && facelets[b] == colour1 && facelets[c] == 'W')) {
+            return c;
+        }
+        if ((facelets[b] == colour1 && facelets[c] == colour2 && facelets[a] == 'W') ||
+            (facelets[b] == colour2 && facelets[c] == colour1 && facelets[a] == 'W')) {
+            return a;
+        }
+        if ((facelets[c] == colour1 && facelets[a] == colour2 && facelets[b] == 'W') ||
+            (facelets[c] == colour2 && facelets[a] == colour1 && facelets[b] == 'W')) {
+            return b;
+        }
+    }
+    
+    return -1;
+}
+
+bool RubiksCube4x4::check_corner_correct(char colour1, char colour2) {
+    if (facelets[63] == colour1 && facelets[92] == colour2 && facelets[19] == 'W') {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 void RubiksCube4x4::apply_random_moves(bool pause) {
