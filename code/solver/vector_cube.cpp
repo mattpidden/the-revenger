@@ -205,10 +205,26 @@ std::vector<std::string> RubiksCube4x4::rotate_cube_so_piece_on_face(int index, 
         {{'F', 'R'}, {"y"}},
         {{'F', 'L'}, {"y'"}},
         {{'F', 'U'}, {"x'"}},
+        {{'B', 'F'}, {"y2"}},
+        {{'B', 'B'}, {}},
+        {{'B', 'D'}, {"x'"}},
+        {{'B', 'R'}, {"y'"}},
+        {{'B', 'L'}, {"y"}},
+        {{'B', 'U'}, {"x"}},
     };
 
     return lookup[{face, piece_face}];
 }
+
+bool RubiksCube4x4::check_indexes_match_colour(std::vector<int> indexes, char colour) {
+    for (int i : indexes) {
+        if (facelets[i] != colour) {
+            return false;
+        }
+    }
+    return true;
+}
+
 
 std::vector<std::string> RubiksCube4x4::decide_edge_flip() {
     if (facelets[52] != facelets[55] || facelets[56] != facelets[59]) {
@@ -260,6 +276,27 @@ std::vector<int> RubiksCube4x4::find_edge_by_colour(char colour1, char colour2) 
     }
 
     return {};
+}
+
+std::vector<std::vector<std::vector<std::vector<int>>>> RubiksCube4x4::yellow_edge_bars_on_top() {
+    std::vector<std::vector<std::vector<int>>> edge_pieces = {{{1,2}, {33,34}}, {{4,8}, {65,66}}, {{7,11}, {81,82}}, {{13,14}, {49,50}}};
+    std::vector<std::vector<std::vector<int>>> top_edges = {};
+    std::vector<std::vector<std::vector<int>>> non_top_edges = {};
+    for (const auto& edge_pair : edge_pieces) {
+        int a = edge_pair[0][0];
+        int b = edge_pair[0][1];
+        int c = edge_pair[1][0];
+        int d = edge_pair[1][1];
+        
+        if (facelets[a] == 'Y' && facelets[b] == 'Y' && facelets[c] == facelets[d]) {
+            top_edges.push_back(edge_pair);
+        }
+        if (facelets[c] == 'Y' && facelets[d] == 'Y' && facelets[a] == facelets[b]) {
+            non_top_edges.push_back(edge_pair);
+        }
+    }
+
+    return {top_edges, non_top_edges};
 }
 
 int RubiksCube4x4::find_white_corner_face_from_colours(char colour1, char colour2) {
