@@ -12,7 +12,7 @@ SRC = $(wildcard $(SRC_DIR)/*.cpp)
 OBJ = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRC))
 
 # Output executable
-EXEC = solver
+EXEC = cube
 
 # Ensure build directory exists (Prevent conflict with real directory)
 .PHONY: all clean profile

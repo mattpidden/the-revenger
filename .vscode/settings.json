@@ -48,6 +48,8 @@
     "sstream": "cpp",
     "unordered_set": "cpp",
     "set": "cpp",
-    "ctime": "cpp"
+    "ctime": "cpp",
+    "chrono": "cpp",
+    "ratio": "cpp"
   }
 }

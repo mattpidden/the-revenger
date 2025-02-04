@@ -1,0 +1,655 @@
+desc: (none)
+cmd: ./cube
+time_unit: i
+#-----------
+snapshot=0
+#-----------
+time=0
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=1
+#-----------
+time=302803597
+mem_heap_B=7550168
+mem_heap_extra_B=4232
+mem_stacks_B=0
+heap_tree=peak
+n3: 7550168 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 7394304 0x10BAD3: __gnu_cxx::new_allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >::allocate(unsigned long, void const*) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+  n1: 7394304 0x10B93E: std::allocator_traits<std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::allocate(std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >&, unsigned long) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+   n3: 7394304 0x10B777: std::_Vector_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_allocate(unsigned long) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+    n1: 4194304 0x10FBEE: void std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_realloc_insert<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&>(__gnu_cxx::__normal_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+     n1: 4194304 0x10ECEF: std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::push_back(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+      n1: 4194304 0x10C418: RubiksCube4x4::generate_random_moves[abi:cxx11](int) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+       n0: 4194304 0x10A932: main (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+    n1: 3200000 0x10B540: std::_Vector_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_create_storage(unsigned long) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+     n1: 3200000 0x10B21E: std::_Vector_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_Vector_base(unsigned long, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > const&) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+      n1: 3200000 0x10AE6A: std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::vector(std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > const&) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+       n0: 3200000 0x10A956: main (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+    n0: 0 in 1 place, below massif's threshold (1.00%)
+ n1: 81480 0x4BDEC12: monstartup (gmon.c:153)
+  n1: 81480 0x10A760: __gmon_start__ (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+   n1: 81480 0x4846015: ??? (in /usr/libexec/valgrind/vgpreload_massif-amd64-linux.so)
+    n1: 81480 0x4000D57: ??? (in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+     n1: 81480 0x4006439: call_init.part.0 (dl-init.c:56)
+      n1: 81480 0x40065F8: call_init (dl-init.c:33)
+       n1: 81480 0x40065F8: _dl_init (dl-init.c:84)
+        n0: 81480 0x40202C9: ??? (in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+ n0: 74384 in 5 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=2
+#-----------
+time=1344937586
+mem_heap_B=7549936
+mem_heap_extra_B=4216
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=3
+#-----------
+time=2120368466
+mem_heap_B=7550112
+mem_heap_extra_B=4240
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=4
+#-----------
+time=2992963008
+mem_heap_B=7550792
+mem_heap_extra_B=4360
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=5
+#-----------
+time=4302126939
+mem_heap_B=7551144
+mem_heap_extra_B=4416
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=6
+#-----------
+time=5316776516
+mem_heap_B=7550560
+mem_heap_extra_B=4344
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=7
+#-----------
+time=5950993997
+mem_heap_B=7551576
+mem_heap_extra_B=4632
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=8
+#-----------
+time=7219342721
+mem_heap_B=7550256
+mem_heap_extra_B=4192
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=9
+#-----------
+time=7963303622
+mem_heap_B=7550064
+mem_heap_extra_B=4216
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=10
+#-----------
+time=8863058094
+mem_heap_B=7551096
+mem_heap_extra_B=4392
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=11
+#-----------
+time=9970470776
+mem_heap_B=7550160
+mem_heap_extra_B=4144
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=12
+#-----------
+time=10870262838
+mem_heap_B=7550080
+mem_heap_extra_B=4224
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=13
+#-----------
+time=11758462050
+mem_heap_B=7551576
+mem_heap_extra_B=4632
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=14
+#-----------
+time=12392898940
+mem_heap_B=7551176
+mem_heap_extra_B=4432
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=15
+#-----------
+time=13407978853
+mem_heap_B=7551336
+mem_heap_extra_B=4512
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=16
+#-----------
+time=14169303096
+mem_heap_B=7550240
+mem_heap_extra_B=4304
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=17
+#-----------
+time=14803739982
+mem_heap_B=7550272
+mem_heap_extra_B=4320
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=18
+#-----------
+time=15818815103
+mem_heap_B=7550176
+mem_heap_extra_B=4272
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=19
+#-----------
+time=16706991876
+mem_heap_B=7549792
+mem_heap_extra_B=4144
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=20
+#-----------
+time=17975567009
+mem_heap_B=7550560
+mem_heap_extra_B=4344
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=21
+#-----------
+time=18736569273
+mem_heap_B=7551080
+mem_heap_extra_B=4384
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=22
+#-----------
+time=19878075143
+mem_heap_B=7550224
+mem_heap_extra_B=4296
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=23
+#-----------
+time=20448841924
+mem_heap_B=7551496
+mem_heap_extra_B=4592
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=24
+#-----------
+time=21400074457
+mem_heap_B=7551080
+mem_heap_extra_B=4384
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=25
+#-----------
+time=22541551553
+mem_heap_B=7551240
+mem_heap_extra_B=4464
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=26
+#-----------
+time=23492784824
+mem_heap_B=7549872
+mem_heap_extra_B=4184
+mem_stacks_B=0
+heap_tree=detailed
+n3: 7549872 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 7394304 0x10BAD3: __gnu_cxx::new_allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >::allocate(unsigned long, void const*) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+  n1: 7394304 0x10B93E: std::allocator_traits<std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::allocate(std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >&, unsigned long) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+   n3: 7394304 0x10B777: std::_Vector_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_allocate(unsigned long) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+    n1: 4194304 0x10FBEE: void std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_realloc_insert<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&>(__gnu_cxx::__normal_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+     n1: 4194304 0x10ECEF: std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::push_back(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+      n1: 4194304 0x10C418: RubiksCube4x4::generate_random_moves[abi:cxx11](int) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+       n0: 4194304 0x10A932: main (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+    n1: 3200000 0x10B540: std::_Vector_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_create_storage(unsigned long) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+     n1: 3200000 0x10B21E: std::_Vector_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_Vector_base(unsigned long, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > const&) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+      n1: 3200000 0x10AE6A: std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::vector(std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > const&) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+       n0: 3200000 0x10A956: main (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+    n0: 0 in 1 place, below massif's threshold (1.00%)
+ n1: 81480 0x4BDEC12: monstartup (gmon.c:153)
+  n1: 81480 0x10A760: __gmon_start__ (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+   n1: 81480 0x4846015: ??? (in /usr/libexec/valgrind/vgpreload_massif-amd64-linux.so)
+    n1: 81480 0x4000D57: ??? (in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+     n1: 81480 0x4006439: call_init.part.0 (dl-init.c:56)
+      n1: 81480 0x40065F8: call_init (dl-init.c:33)
+       n1: 81480 0x40065F8: _dl_init (dl-init.c:84)
+        n0: 81480 0x40202C9: ??? (in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+ n0: 74088 in 5 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=27
+#-----------
+time=24253776545
+mem_heap_B=7551224
+mem_heap_extra_B=4456
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=28
+#-----------
+time=25014787903
+mem_heap_B=7550288
+mem_heap_extra_B=4328
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=29
+#-----------
+time=25775771852
+mem_heap_B=7550128
+mem_heap_extra_B=4128
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=30
+#-----------
+time=26727038258
+mem_heap_B=7549624
+mem_heap_extra_B=4096
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=31
+#-----------
+time=27419202664
+mem_heap_B=7551160
+mem_heap_extra_B=4424
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=32
+#-----------
+time=28803507441
+mem_heap_B=7550560
+mem_heap_extra_B=4344
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=33
+#-----------
+time=29841762513
+mem_heap_B=7551336
+mem_heap_extra_B=4512
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=34
+#-----------
+time=30879989707
+mem_heap_B=7550176
+mem_heap_extra_B=4152
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=35
+#-----------
+time=31918216229
+mem_heap_B=7549824
+mem_heap_extra_B=4160
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=36
+#-----------
+time=33302517663
+mem_heap_B=7550560
+mem_heap_extra_B=4344
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=37
+#-----------
+time=33994698329
+mem_heap_B=7551576
+mem_heap_extra_B=4632
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=38
+#-----------
+time=34686851039
+mem_heap_B=7551512
+mem_heap_extra_B=4600
+mem_stacks_B=0
+heap_tree=detailed
+n3: 7551512 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 7394304 0x10BAD3: __gnu_cxx::new_allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >::allocate(unsigned long, void const*) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+  n1: 7394304 0x10B93E: std::allocator_traits<std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::allocate(std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >&, unsigned long) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+   n3: 7394304 0x10B777: std::_Vector_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_allocate(unsigned long) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+    n1: 4194304 0x10FBEE: void std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_realloc_insert<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&>(__gnu_cxx::__normal_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+     n1: 4194304 0x10ECEF: std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::push_back(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+      n1: 4194304 0x10C418: RubiksCube4x4::generate_random_moves[abi:cxx11](int) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+       n0: 4194304 0x10A932: main (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+    n1: 3200000 0x10B540: std::_Vector_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_create_storage(unsigned long) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+     n1: 3200000 0x10B21E: std::_Vector_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_Vector_base(unsigned long, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > const&) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+      n1: 3200000 0x10AE6A: std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::vector(std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > const&) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+       n0: 3200000 0x10A956: main (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+    n0: 0 in 1 place, below massif's threshold (1.00%)
+ n1: 81480 0x4BDEC12: monstartup (gmon.c:153)
+  n1: 81480 0x10A760: __gmon_start__ (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+   n1: 81480 0x4846015: ??? (in /usr/libexec/valgrind/vgpreload_massif-amd64-linux.so)
+    n1: 81480 0x4000D57: ??? (in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+     n1: 81480 0x4006439: call_init.part.0 (dl-init.c:56)
+      n1: 81480 0x40065F8: call_init (dl-init.c:33)
+       n1: 81480 0x40065F8: _dl_init (dl-init.c:84)
+        n0: 81480 0x40202C9: ??? (in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+ n0: 75728 in 5 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=39
+#-----------
+time=35725103831
+mem_heap_B=7550560
+mem_heap_extra_B=4344
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=40
+#-----------
+time=36417260163
+mem_heap_B=7550560
+mem_heap_extra_B=4344
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=41
+#-----------
+time=37109413843
+mem_heap_B=7550224
+mem_heap_extra_B=4296
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=42
+#-----------
+time=37801567475
+mem_heap_B=7550192
+mem_heap_extra_B=4280
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=43
+#-----------
+time=38493734487
+mem_heap_B=7551576
+mem_heap_extra_B=4632
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=44
+#-----------
+time=39531968377
+mem_heap_B=7551480
+mem_heap_extra_B=4584
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=45
+#-----------
+time=40570196878
+mem_heap_B=7549920
+mem_heap_extra_B=4208
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=46
+#-----------
+time=41608451452
+mem_heap_B=7550168
+mem_heap_extra_B=4232
+mem_stacks_B=0
+heap_tree=detailed
+n3: 7550168 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 7394304 0x10BAD3: __gnu_cxx::new_allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >::allocate(unsigned long, void const*) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+  n1: 7394304 0x10B93E: std::allocator_traits<std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::allocate(std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >&, unsigned long) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+   n3: 7394304 0x10B777: std::_Vector_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_allocate(unsigned long) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+    n1: 4194304 0x10FBEE: void std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_realloc_insert<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&>(__gnu_cxx::__normal_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+     n1: 4194304 0x10ECEF: std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::push_back(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+      n1: 4194304 0x10C418: RubiksCube4x4::generate_random_moves[abi:cxx11](int) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+       n0: 4194304 0x10A932: main (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+    n1: 3200000 0x10B540: std::_Vector_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_create_storage(unsigned long) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+     n1: 3200000 0x10B21E: std::_Vector_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_Vector_base(unsigned long, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > const&) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+      n1: 3200000 0x10AE6A: std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::vector(std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > const&) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+       n0: 3200000 0x10A956: main (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+    n0: 0 in 1 place, below massif's threshold (1.00%)
+ n1: 81480 0x4BDEC12: monstartup (gmon.c:153)
+  n1: 81480 0x10A760: __gmon_start__ (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+   n1: 81480 0x4846015: ??? (in /usr/libexec/valgrind/vgpreload_massif-amd64-linux.so)
+    n1: 81480 0x4000D57: ??? (in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+     n1: 81480 0x4006439: call_init.part.0 (dl-init.c:56)
+      n1: 81480 0x40065F8: call_init (dl-init.c:33)
+       n1: 81480 0x40065F8: _dl_init (dl-init.c:84)
+        n0: 81480 0x40202C9: ??? (in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+ n0: 74384 in 5 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=47
+#-----------
+time=42300602669
+mem_heap_B=7550592
+mem_heap_extra_B=4360
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=48
+#-----------
+time=43338834271
+mem_heap_B=7550560
+mem_heap_extra_B=4344
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=49
+#-----------
+time=44030986170
+mem_heap_B=7551368
+mem_heap_extra_B=4528
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=50
+#-----------
+time=44601771408
+mem_heap_B=7551576
+mem_heap_extra_B=4632
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=51
+#-----------
+time=45172539148
+mem_heap_B=7550240
+mem_heap_extra_B=4184
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=52
+#-----------
+time=45743307227
+mem_heap_B=7551144
+mem_heap_extra_B=4416
+mem_stacks_B=0
+heap_tree=detailed
+n3: 7551144 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 7394304 0x10BAD3: __gnu_cxx::new_allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >::allocate(unsigned long, void const*) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+  n1: 7394304 0x10B93E: std::allocator_traits<std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::allocate(std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >&, unsigned long) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+   n3: 7394304 0x10B777: std::_Vector_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_allocate(unsigned long) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+    n1: 4194304 0x10FBEE: void std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_realloc_insert<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&>(__gnu_cxx::__normal_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+     n1: 4194304 0x10ECEF: std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::push_back(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+      n1: 4194304 0x10C418: RubiksCube4x4::generate_random_moves[abi:cxx11](int) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+       n0: 4194304 0x10A932: main (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+    n1: 3200000 0x10B540: std::_Vector_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_create_storage(unsigned long) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+     n1: 3200000 0x10B21E: std::_Vector_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_Vector_base(unsigned long, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > const&) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+      n1: 3200000 0x10AE6A: std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::vector(std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > const&) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+       n0: 3200000 0x10A956: main (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+    n0: 0 in 1 place, below massif's threshold (1.00%)
+ n1: 81480 0x4BDEC12: monstartup (gmon.c:153)
+  n1: 81480 0x10A760: __gmon_start__ (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+   n1: 81480 0x4846015: ??? (in /usr/libexec/valgrind/vgpreload_massif-amd64-linux.so)
+    n1: 81480 0x4000D57: ??? (in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+     n1: 81480 0x4006439: call_init.part.0 (dl-init.c:56)
+      n1: 81480 0x40065F8: call_init (dl-init.c:33)
+       n1: 81480 0x40065F8: _dl_init (dl-init.c:84)
+        n0: 81480 0x40202C9: ??? (in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+ n0: 75360 in 5 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=53
+#-----------
+time=46314078496
+mem_heap_B=7550112
+mem_heap_extra_B=4240
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=54
+#-----------
+time=46884857196
+mem_heap_B=7550064
+mem_heap_extra_B=4216
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=55
+#-----------
+time=47455628474
+mem_heap_B=7549888
+mem_heap_extra_B=4192
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=56
+#-----------
+time=48026397234
+mem_heap_B=7550224
+mem_heap_extra_B=4296
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=57
+#-----------
+time=48597168633
+mem_heap_B=7549856
+mem_heap_extra_B=4176
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=58
+#-----------
+time=49167936796
+mem_heap_B=7550576
+mem_heap_extra_B=4352
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=59
+#-----------
+time=49738705482
+mem_heap_B=7550272
+mem_heap_extra_B=4320
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=60
+#-----------
+time=50309475613
+mem_heap_B=7550272
+mem_heap_extra_B=4320
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=61
+#-----------
+time=50880254962
+mem_heap_B=7551576
+mem_heap_extra_B=4632
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=62
+#-----------
+time=51451022362
+mem_heap_B=7549744
+mem_heap_extra_B=4120
+mem_stacks_B=0
+heap_tree=detailed
+n3: 7549744 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 7394304 0x10BAD3: __gnu_cxx::new_allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >::allocate(unsigned long, void const*) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+  n1: 7394304 0x10B93E: std::allocator_traits<std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::allocate(std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >&, unsigned long) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+   n3: 7394304 0x10B777: std::_Vector_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_allocate(unsigned long) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+    n1: 4194304 0x10FBEE: void std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_realloc_insert<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&>(__gnu_cxx::__normal_iterator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >*, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > >, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+     n1: 4194304 0x10ECEF: std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::push_back(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+      n1: 4194304 0x10C418: RubiksCube4x4::generate_random_moves[abi:cxx11](int) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+       n0: 4194304 0x10A932: main (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+    n1: 3200000 0x10B540: std::_Vector_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_M_create_storage(unsigned long) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+     n1: 3200000 0x10B21E: std::_Vector_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::_Vector_base(unsigned long, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > const&) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+      n1: 3200000 0x10AE6A: std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >::vector(std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > const&) (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+       n0: 3200000 0x10A956: main (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+    n0: 0 in 1 place, below massif's threshold (1.00%)
+ n1: 81480 0x4BDEC12: monstartup (gmon.c:153)
+  n1: 81480 0x10A760: __gmon_start__ (in /home/mattpidden/Documents/3Year/DIS/experiments/data structures/cube)
+   n1: 81480 0x4846015: ??? (in /usr/libexec/valgrind/vgpreload_massif-amd64-linux.so)
+    n1: 81480 0x4000D57: ??? (in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+     n1: 81480 0x4006439: call_init.part.0 (dl-init.c:56)
+      n1: 81480 0x40065F8: call_init (dl-init.c:33)
+       n1: 81480 0x40065F8: _dl_init (dl-init.c:84)
+        n0: 81480 0x40202C9: ??? (in /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
+ n0: 73960 in 5 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=63
+#-----------
+time=52021817132
+mem_heap_B=7551576
+mem_heap_extra_B=4632
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=64
+#-----------
+time=52592584531
+mem_heap_B=7550368
+mem_heap_extra_B=4248
+mem_stacks_B=0
+heap_tree=empty
