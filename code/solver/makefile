@@ -1,7 +1,7 @@
 # Compiler and flags
 CXX = g++
 CXXFLAGS = -Wall -Wextra -std=c++17
-PROF_FLAGS = -pg  # Profiling flag
+PROF_FLAGS = #-pg  # Profiling flag
 
 # Directories
 SRC_DIR = .

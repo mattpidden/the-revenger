@@ -117,18 +117,20 @@ void display()
               0.0, 1.0, 0.0);  // up direction
     glRotatef(angle, 0.0f, 1.0f, 0.0f);
 
-    // Assuming each face has 16 squares, in order U, L, F, R, B, D:
-    static const char faces[6] = {'U','L','F','R','B','D'};
-    int idx = 0;
+    // Correct index mapping to match the print() function layout
+    static const char faces[6] = {'U', 'L', 'F', 'R', 'B', 'D'};
+    static const int faceOffsets[6] = { 0, 16, 32, 48, 64, 80 }; // Corrected mapping
+
     for (int f = 0; f < 6; ++f) {
         char face = faces[f];
+        int baseIndex = faceOffsets[f];
+
         for (int row = 0; row < 4; ++row) {
             for (int col = 0; col < 4; ++col) {
-                char c = cubeString[idx++];
+                char c = cubeString[baseIndex + row * 4 + col]; // Corrected indexing
                 auto colorRGB = (colorMap.count(c) ? colorMap[c] : std::array<float,3>{0.5f,0.5f,0.5f});
                 auto center   = computeCenter(face, row, col);
                 glEnable(GL_POLYGON_OFFSET_FILL);
-                // Slight negative factor/runits pushes subsequent polygons “closer” to the camera
                 glPolygonOffset(-1.0f, -1.0f);
                 drawFaceCube(center[0], center[1], center[2], colorRGB, face);
                 glDisable(GL_POLYGON_OFFSET_FILL);
@@ -138,6 +140,7 @@ void display()
 
     glutSwapBuffers();
 }
+
 
 int main(int argc, char** argv)
 {
