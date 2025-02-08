@@ -7,22 +7,17 @@ PROF_FLAGS = -pg  # Profiling flag
 SRC_DIR = .
 OBJ_DIR = build
 
-# Find all .cpp files except vis.cpp
-SRC = $(filter-out $(SRC_DIR)/vis.cpp, $(wildcard $(SRC_DIR)/*.cpp))
+# Find all .cpp files and corresponding .o files
+SRC = $(wildcard $(SRC_DIR)/*.cpp)
 OBJ = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRC))
 
 # Output executable
 EXEC = solver
-VIS_EXEC = vis  # Output for vis.cpp
 
-# Ensure build directory exists
+# Ensure build directory exists (Prevent conflict with real directory)
 .PHONY: all clean profile
 
-all: $(EXEC) $(VIS_EXEC)
-
-# Compile vis.cpp separately
-$(VIS_EXEC): $(SRC_DIR)/vis.cpp
-	$(CXX) $(SRC_DIR)/vis.cpp -o $(VIS_EXEC) -lGL -lGLU -lglut
+all: $(EXEC)
 
 # Compile .cpp files into .o files inside build/
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
@@ -44,4 +39,4 @@ profile: $(EXEC)
 
 # Clean build artifacts
 clean:
-	rm -rf $(OBJ_DIR) $(EXEC) $(VIS_EXEC) gmon.out profile_report.txt
+	rm -rf $(OBJ_DIR) $(EXEC) gmon.out profile_report.txt
