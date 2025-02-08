@@ -47,6 +47,7 @@ std::string Cube4x4::exportState() const {
 
 // Prints visulisation of cube in command line
 void Cube4x4::print() const {
+    std::cout << "\n";
     std::string s = exportState(); 
     std::cout << "          Up (U)\n";
     for (int row = 0; row < 4; ++row) {
@@ -136,17 +137,34 @@ void Cube4x4::move(Move m) {
 
 // Applys some random moves
 std::vector<Move> Cube4x4::apply_random_moves(int n) {
+    std::vector<Move> all_moves = {
+        R, L, U, D, F, B, R_PRIME, L_PRIME, U_PRIME, D_PRIME, F_PRIME, B_PRIME,
+        r, l, u, d, f, b, r_PRIME, l_PRIME, u_PRIME, d_PRIME, f_PRIME, b_PRIME
+    };
     std::srand(std::time(nullptr));
-    int numMoves = 36;
     std::vector<Move> appliedMoves;
-
     for (int i = 0; i < n; i++) {
-        Move randomMove = static_cast<Move>(std::rand() % numMoves);
+        Move randomMove = all_moves[std::rand() % all_moves.size()];
         move(randomMove);
         appliedMoves.push_back(randomMove);
     }
 
     return appliedMoves;
+}
+
+
+// Checks if the cube is in the solved goal state
+bool Cube4x4::check_goal_state() {
+    for (int face = 0; face < 6; ++face) {
+        Colour center_color = facelets[face][5];
+        for (int i = 0; i < 16; ++i) {
+            if (facelets[face][i] != center_color) {
+                return false; 
+            }
+        }
+    }
+    
+    return true;
 }
 
 // Checks if all the edge pairs have even or odd parity
@@ -254,4 +272,23 @@ void Cube4x4::turn_inner_slice(int face_index, bool clockwise) {
     last_face[lastEdges[3]] = temp_edges[3];  
 
     // TODO Finish this function, including updating centres, edges, corners, paritys, orientation arrays
+}
+
+// Converts move enum to a string
+std::string move_to_string(Move move) {
+    switch (move) {
+        case R: return "R"; case R_PRIME: return "R'"; case R2: return "R2";
+        case L: return "L"; case L_PRIME: return "L'"; case L2: return "L2";
+        case U: return "U"; case U_PRIME: return "U'"; case U2: return "U2";
+        case D: return "D"; case D_PRIME: return "D'"; case D2: return "D2";
+        case F: return "F"; case F_PRIME: return "F'"; case F2: return "F2";
+        case B: return "B"; case B_PRIME: return "B'"; case B2: return "B2";
+        case r: return "r"; case r_PRIME: return "r'"; case r2: return "r2";
+        case l: return "l"; case l_PRIME: return "l'"; case l2: return "l2";
+        case u: return "u"; case u_PRIME: return "u'"; case u2: return "u2";
+        case d: return "d"; case d_PRIME: return "d'"; case d2: return "d2";
+        case f: return "f"; case f_PRIME: return "f'"; case f2: return "f2";
+        case b: return "b"; case b_PRIME: return "b'"; case b2: return "b2";
+        default: return "?";  
+    }
 }

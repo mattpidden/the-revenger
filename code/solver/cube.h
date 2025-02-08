@@ -34,7 +34,8 @@ public:
     void print() const;  
     void visualize() const; 
     void move(Move m); 
-    std::vector<Move> apply_random_moves(int n);  
+    std::vector<Move> apply_random_moves(int n);
+    bool check_goal_state();  
     bool check_edge_pair_parity();  
 
 private:
@@ -81,5 +82,7 @@ private:
     static char colour_to_char(Colour c);
     static std::string char_to_emoji(char c);
 };
+
+std::string move_to_string(Move move);
 
 #endif  // CUBE_H

@@ -1,31 +1,24 @@
+#include <algorithm>
+#include <optional>
+
 #include "tree.h"
 #include "cube.h"
 
-TreeNode::TreeNode(Cube4x4 cube_state, TreeNode* parent_cube) : cube(cube_state), parent(parent_cube) {}
+TreeNode::TreeNode(Cube4x4 cube_state, std::optional<Move> last_move, TreeNode* parent_cube) : cube(cube_state), move(last_move), parent(parent_cube) {}
 
-TreeNode* TreeNode::add_child(Cube4x4 child_cube) {
-    TreeNode* child = new TreeNode(child_cube, this);
+TreeNode* TreeNode::add_child(Cube4x4 child_cube, Move next_move) {
+    TreeNode* child = new TreeNode(child_cube, next_move, this);
     children.push_back(child);
     return child;
 }
 
-void TreeNode::dfs(int depth) {
-    for (TreeNode* child : children) {
-        child->dfs(depth + 1);  
+std::vector<Move> TreeNode::get_solution_path() const {
+    std::vector<Move> moves;
+    const TreeNode* current = this;
+    while (current->parent != nullptr && current->move.has_value()) {  // ✅ Ensure move is valid
+        moves.push_back(current->move.value());
+        current = current->parent;
     }
-}
-
-void TreeNode::bfs() {
-    std::queue<TreeNode*> q;
-    q.push(this);
-
-    while (!q.empty()) {
-        TreeNode* current = q.front();
-        q.pop();
-
-        for (TreeNode* child : current->children) {
-            q.push(child);
-        }
-    }
-    std::cout << "\n";
+    std::reverse(moves.begin(), moves.end());
+    return moves;
 }
