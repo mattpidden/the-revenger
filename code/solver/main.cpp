@@ -1,5 +1,7 @@
-#include "tree.h"
 #include <queue>
+#include <stack>
+
+#include "tree.h"
 
 std::vector<Move> solve_cube_bfs(Cube4x4 start_cube, int max_depth) {
     std::queue<TreeNode*> queue;
@@ -38,6 +40,43 @@ std::vector<Move> solve_cube_bfs(Cube4x4 start_cube, int max_depth) {
     return {};
 }
 
+std::vector<Move> solve_cube_dfs(Cube4x4 start_cube, int max_depth) {
+    std::stack<TreeNode*> stack;
+    TreeNode* root = new TreeNode(start_cube);
+    stack.push(root);
+
+    std::vector<Move> all_moves = {
+        R, L, U, D, F, B, R_PRIME, L_PRIME, U_PRIME, D_PRIME, F_PRIME, B_PRIME,
+        r, l, u, d, f, b, r_PRIME, l_PRIME, u_PRIME, d_PRIME, f_PRIME, b_PRIME
+    };
+
+    while (!stack.empty()) {
+        TreeNode* current = stack.top();
+        stack.pop();
+
+        if (current->get_cube().check_goal_state()) {
+            return current->get_solution_path();
+        }
+
+        int depth = 0;
+        TreeNode* temp = current;
+        while (temp->get_parent()) {
+            temp = temp->get_parent();
+            depth++;
+        }
+        if (depth >= max_depth) continue;
+
+        for (auto it = all_moves.rbegin(); it != all_moves.rend(); ++it) {
+            Cube4x4 new_cube = current->get_cube();
+            new_cube.move(*it);
+            TreeNode* child = current->add_child(new_cube, *it);
+            stack.push(child);
+        }
+    }
+
+    return {};  
+}
+
 int main() {
     Cube4x4 cube;
     std::vector<Move> scramble = cube.apply_random_moves(4);
@@ -49,12 +88,13 @@ int main() {
     cube.print();
 
     std::cout << "\nSolving Cube... \n";
-    std::vector<Move> solution = solve_cube_bfs(cube, 5);
+    std::vector<Move> solution = solve_cube_dfs(cube, 5);
 
     if (!solution.empty()) {
         std::cout << "Solution found in " << solution.size() << " moves: ";
         for (Move move : solution) {
             std::cout << move_to_string(move) << " ";
+            cube.move(move);
         }
         std::cout << "\n";
         cube.print();
