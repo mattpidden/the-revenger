@@ -30,12 +30,13 @@ public:
     Cube4x4();  
 
     void reset();  
-    std::string exportState() const;  
+    std::string export_state() const;  
     void print() const;  
     void visualize() const; 
     void move(Move m); 
     std::vector<Move> apply_random_moves(int n);
-    bool check_goal_state();  
+    bool check_goal_state() const;  
+    int misplaced_pieces_heuristic() const;
     bool check_edge_pair_parity();  
 
 private:

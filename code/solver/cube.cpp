@@ -28,7 +28,7 @@ void Cube4x4::reset() {
 }
 
 // Export the facelet data as a 96-char string in the order U, L, F, R, B, D
-std::string Cube4x4::exportState() const {
+std::string Cube4x4::export_state() const {
     std::string result;
     result.reserve(96);
     auto appendFace = [&](Face f) {
@@ -47,8 +47,8 @@ std::string Cube4x4::exportState() const {
 
 // Prints visulisation of cube in command line
 void Cube4x4::print() const {
-    std::cout << "\n";
-    std::string s = exportState(); 
+    std::cout << "\n\n";
+    std::string s = export_state(); 
     std::cout << "          Up (U)\n";
     for (int row = 0; row < 4; ++row) {
         std::cout << "          ";
@@ -86,7 +86,7 @@ void Cube4x4::print() const {
 
 // Visualize runs the ./vis executable
 void Cube4x4::visualize() const {
-    std::string s = exportState();
+    std::string s = export_state();
     std::string cmd = "./vis \"" + s + "\"";
     std::system(cmd.c_str());
 }
@@ -154,7 +154,7 @@ std::vector<Move> Cube4x4::apply_random_moves(int n) {
 
 
 // Checks if the cube is in the solved goal state
-bool Cube4x4::check_goal_state() {
+bool Cube4x4::check_goal_state() const {
     for (int face = 0; face < 6; ++face) {
         Colour center_color = facelets[face][5];
         for (int i = 0; i < 16; ++i) {
@@ -165,6 +165,24 @@ bool Cube4x4::check_goal_state() {
     }
     
     return true;
+}
+
+int Cube4x4::misplaced_pieces_heuristic() const {
+    // Create a goal cube in solved state
+    Cube4x4 goal_cube;
+
+    int mismatch_count = 0;
+
+    // Compare each facelet to the goal state
+    for (int face = 0; face < 6; ++face) {
+        for (int i = 0; i < 16; ++i) {
+            if (facelets[face][i] != goal_cube.facelets[face][i]) {
+                mismatch_count++;
+            }
+        }
+    }
+
+    return mismatch_count;
 }
 
 // Checks if all the edge pairs have even or odd parity

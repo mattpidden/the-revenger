@@ -4,73 +4,65 @@
 #include <string>
 #include <iostream>
 
-// Global to store the 96-character Rubik’s state.
 static std::string cubeString;
-static float angle = 0.0f; // global rotation angle
+static float angle = 0.0f; 
 
-// Maps single-letter color codes to an RGB triplet.
 static std::map<char, std::array<float,3>> colorMap {
-    {'W', {1.0f, 1.0f, 1.0f}}, // White
-    {'Y', {1.0f, 1.0f, 0.0f}}, // Yellow
-    {'G', {0.0f, 1.0f, 0.0f}}, // Green
-    {'B', {0.0f, 0.0f, 1.0f}}, // Blue
-    {'O', {1.0f, 0.5f, 0.0f}}, // Orange
-    {'R', {1.0f, 0.0f, 0.0f}}  // Red
+    {'W', {1.0f, 1.0f, 1.0f}}, 
+    {'Y', {1.0f, 1.0f, 0.0f}},
+    {'G', {0.0f, 1.0f, 0.0f}}, 
+    {'B', {0.0f, 0.0f, 1.0f}},
+    {'O', {1.0f, 0.5f, 0.0f}},
+    {'R', {1.0f, 0.0f, 0.0f}} 
 };
 
-// Draw a 1x1 cube, then color a single face. 
-// 'face' sets which face (U, D, F, B, L, R) gets the color.
-void drawFaceCube(float x, float y, float z,
-                  const std::array<float,3>& colorRGB,
-                  char face)
-{
+
+void drawFaceCube(float x, float y, float z, const std::array<float,3>& colorRGB, char face) {
     float baseHalf = 0.5f;
     glPushMatrix();
     glTranslatef(x, y, z);
 
-    // Draw the gray base cube
     glColor3f(0.3f, 0.3f, 0.3f);
     glutSolidCube(1.0);
 
-    // We'll draw a smaller colored quad on the chosen face
-    float off    = 0.0001f;  // tiny push outward
-    float shrink = 0.8f;     // make the square 80% of the face so you see gaps
+    float off    = 0.0001f;  
+    float shrink = 0.8f;  
     float h      = baseHalf * shrink;
 
     glColor3f(colorRGB[0], colorRGB[1], colorRGB[2]);
     glBegin(GL_QUADS);
 
-    if (face == 'U') { // Up (y+)
+    if (face == 'U') { 
         glVertex3f(-h,  baseHalf + off,  h);
         glVertex3f( h,  baseHalf + off,  h);
         glVertex3f( h,  baseHalf + off, -h);
         glVertex3f(-h,  baseHalf + off, -h);
     }
-    else if (face == 'D') { // Down (y-)
+    else if (face == 'D') {
         glVertex3f(-h, -baseHalf - off, -h);
         glVertex3f( h, -baseHalf - off, -h);
         glVertex3f( h, -baseHalf - off,  h);
         glVertex3f(-h, -baseHalf - off,  h);
     }
-    else if (face == 'F') { // Front (z+)
+    else if (face == 'F') { 
         glVertex3f(-h,  h,  baseHalf + off);
         glVertex3f(-h, -h,  baseHalf + off);
         glVertex3f( h, -h,  baseHalf + off);
         glVertex3f( h,  h,  baseHalf + off);
     }
-    else if (face == 'B') { // Back (z-)
+    else if (face == 'B') { 
         glVertex3f( h,  h, -baseHalf - off);
         glVertex3f( h, -h, -baseHalf - off);
         glVertex3f(-h, -h, -baseHalf - off);
         glVertex3f(-h,  h, -baseHalf - off);
     }
-    else if (face == 'L') { // Left (x-)
+    else if (face == 'L') { 
         glVertex3f(-baseHalf - off,  h, -h);
         glVertex3f(-baseHalf - off, -h, -h);
         glVertex3f(-baseHalf - off, -h,  h);
         glVertex3f(-baseHalf - off,  h,  h);
     }
-    else if (face == 'R') { // Right (x+)
+    else if (face == 'R') { 
         glVertex3f(baseHalf + off,  h,  h);
         glVertex3f(baseHalf + off, -h,  h);
         glVertex3f(baseHalf + off, -h, -h);
@@ -82,10 +74,9 @@ void drawFaceCube(float x, float y, float z,
 }
 
 
-// Roughly figure out where to place each 1x1 sub-square, depending on face/row/col.
 std::array<float,3> computeCenter(char face, int row, int col)
 {
-    float offset = 1.5f; // for a 4x4 face, centers range ~±1.5
+    float offset = 1.5f;
     switch(face) {
         case 'U': return {col - offset,  offset,      (3-row) - offset};
         case 'D': return {col - offset, -offset,      (3-row) - offset};
@@ -97,14 +88,13 @@ std::array<float,3> computeCenter(char face, int row, int col)
     return {0.0f,0.0f,0.0f};
 }
 
-// Add an idle callback:
 void idle()
 {
-    angle += 0.3f;         // rotate 0.3 degrees per idle cycle
+    angle += 0.3f;         
     if (angle > 360.0f) {
-        angle -= 360.0f;   // wrap around
+        angle -= 360.0f;   
     }
-    glutPostRedisplay();   // re-draw
+    glutPostRedisplay();   
 }
 
 void display()
@@ -112,14 +102,13 @@ void display()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(8.0, 6.0, 10.0,  // position
-              0.0, 0.0, 0.0,   // looking at origin
-              0.0, 1.0, 0.0);  // up direction
+    gluLookAt(8.0, 6.0, 10.0,  
+              0.0, 0.0, 0.0,   
+              0.0, 1.0, 0.0);  
     glRotatef(angle, 0.0f, 1.0f, 0.0f);
 
-    // Correct index mapping to match the print() function layout
     static const char faces[6] = {'U', 'L', 'F', 'R', 'B', 'D'};
-    static const int faceOffsets[6] = { 0, 16, 32, 48, 64, 80 }; // Corrected mapping
+    static const int faceOffsets[6] = { 0, 16, 32, 48, 64, 80 }; 
 
     for (int f = 0; f < 6; ++f) {
         char face = faces[f];
@@ -127,7 +116,7 @@ void display()
 
         for (int row = 0; row < 4; ++row) {
             for (int col = 0; col < 4; ++col) {
-                char c = cubeString[baseIndex + row * 4 + col]; // Corrected indexing
+                char c = cubeString[baseIndex + row * 4 + col]; 
                 auto colorRGB = (colorMap.count(c) ? colorMap[c] : std::array<float,3>{0.5f,0.5f,0.5f});
                 auto center   = computeCenter(face, row, col);
                 glEnable(GL_POLYGON_OFFSET_FILL);
@@ -154,7 +143,6 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    // Basic GLUT init
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
     glutInitWindowSize(800, 600);
@@ -162,17 +150,14 @@ int main(int argc, char** argv)
 
     glEnable(GL_DEPTH_TEST);
 
-    // A basic perspective
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective(45.0, 4.0/3.0, 1.0, 100.0);
 
-    // Register display callback
     glutDisplayFunc(display);
 
     glutIdleFunc(idle);
 
-    // Enter main loop
     glutMainLoop();
     return 0;
 }
