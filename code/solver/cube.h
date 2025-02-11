@@ -28,7 +28,7 @@ enum Move {
 class Cube4x4 {
 public:
     Cube4x4();  
-
+ 
     void reset();  
     std::string export_state() const;  
     void print() const;  
@@ -36,8 +36,10 @@ public:
     void move(Move m); 
     std::vector<Move> apply_random_moves(int n);
     bool check_goal_state() const;  
-    int misplaced_pieces_heuristic() const;
     bool check_edge_pair_parity();  
+    int misplaced_pieces_heuristic() const;
+    int phase_one_twist_distance() const;
+    
 
 private:
     std::array<std::array<Colour, 16>, 6> facelets;

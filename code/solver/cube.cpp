@@ -35,7 +35,7 @@ std::string Cube4x4::export_state() const {
         for(int i=0; i<16; i++){
             result.push_back( colour_to_char(facelets[f][i]) );
         }
-    };
+    }; 
     appendFace(U_FACE);
     appendFace(L_FACE);
     appendFace(F_FACE);
@@ -167,6 +167,16 @@ bool Cube4x4::check_goal_state() const {
     return true;
 }
 
+// Checks if all the edge pairs have even or odd parity
+bool Cube4x4::check_edge_pair_parity() {
+    for (int i = 0; i < 24; i += 2) {
+        if (edge_flips[i] != edge_flips[i + 1]) {
+            return false; 
+        }
+    }
+    return true; 
+}
+
 int Cube4x4::misplaced_pieces_heuristic() const {
     // Create a goal cube in solved state
     Cube4x4 goal_cube;
@@ -185,15 +195,22 @@ int Cube4x4::misplaced_pieces_heuristic() const {
     return mismatch_count;
 }
 
-// Checks if all the edge pairs have even or odd parity
-bool Cube4x4::check_edge_pair_parity() {
-    for (int i = 0; i < 24; i += 2) {
-        if (edge_flips[i] != edge_flips[i + 1]) {
-            return false; 
+int Cube4x4::phase_one_twist_distance() const {
+    const std::array<int, 4> center_positions = {5, 6, 9, 10};
+
+    int misplaced = 0;
+    for (int pos : center_positions) {
+        if (facelets[R_FACE][pos] != RED && facelets[R_FACE][pos] != ORANGE) {
+            misplaced++;
+        }
+        if (facelets[L_FACE][pos] != RED && facelets[L_FACE][pos] != ORANGE) {
+            misplaced++;
         }
     }
-    return true; 
+
+    return (misplaced) / 2;
 }
+
 
 // Converts a colour enum to a char
 char Cube4x4::colour_to_char(Colour c) {
