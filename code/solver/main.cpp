@@ -42,43 +42,6 @@ std::vector<Move> solve_cube_bfs(Cube4x4 start_cube, int max_depth) {
     return {};
 }
 
-std::vector<Move> solve_cube_dfs(Cube4x4 start_cube, int max_depth) {
-    std::stack<TreeNode*> stack;
-    TreeNode* root = new TreeNode(start_cube);
-    stack.push(root);
-
-    std::vector<Move> all_moves = {
-        R, L, U, D, F, B, R_PRIME, L_PRIME, U_PRIME, D_PRIME, F_PRIME, B_PRIME,
-        r, l, u, d, f, b, r_PRIME, l_PRIME, u_PRIME, d_PRIME, f_PRIME, b_PRIME
-    };
-
-    while (!stack.empty()) {
-        TreeNode* current = stack.top();
-        stack.pop();
-
-        if (current->get_cube().check_goal_state()) {
-            return current->get_solution_path();
-        }
-
-        int depth = 0;
-        TreeNode* temp = current;
-        while (temp->get_parent()) {
-            temp = temp->get_parent();
-            depth++;
-        }
-        if (depth >= max_depth) continue;
-
-        for (auto it = all_moves.rbegin(); it != all_moves.rend(); ++it) {
-            Cube4x4 new_cube = current->get_cube();
-            new_cube.move(*it);
-            TreeNode* child = current->add_child(new_cube, *it);
-            stack.push(child);
-        }
-    }
-
-    return {};  
-}
-
 struct CubeHash {
     size_t operator()(const Cube4x4 &c) const {
         return std::hash<std::string>()(c.export_state()); 
@@ -92,82 +55,111 @@ struct CubeEqual {
 };
 
 
-std::vector<Move> ida_star_search(Cube4x4 start_cube)
+std::vector<Move> depth_limited_dfs_no_duplicates(const Cube4x4 &start_cube, int depth_limit)
 {
+    std::stack<TreeNode*> stack;
+    TreeNode* root = new TreeNode(start_cube);
+    stack.push(root);
+
+    std::unordered_set<Cube4x4, CubeHash, CubeEqual> visited;
+    visited.insert(start_cube);
+
     std::vector<Move> all_moves = {
         R, L, U, D, F, B, R_PRIME, L_PRIME, U_PRIME, D_PRIME, F_PRIME, B_PRIME,
         r, l, u, d, f, b, r_PRIME, l_PRIME, u_PRIME, d_PRIME, f_PRIME, b_PRIME
     };
 
+    // Stats
+    int totalNodesVisited = 0;
+    long long sumOfDepths = 0;  // to calculate average depth
+    int maxDepthEncountered = 0;
+    int nodesRevisited = 0;
 
-    int threshold = start_cube.misplaced_pieces_heuristic();
+    while (!stack.empty()) {
+        TreeNode* current = stack.top();
+        stack.pop();
 
-    while (true) {
-        int next_threshold = INT_MAX;
+        // Count the node as "visited"
+        totalNodesVisited++;
 
-        std::unordered_set<Cube4x4, CubeHash, CubeEqual> visited;
-        
-        TreeNode* root = new TreeNode(start_cube);
-        std::stack<TreeNode*> st;
-        st.push(root);
+        // Check goal
+        if (current->get_cube().check_goal_state()) {
+            // Print stats before returning
+            std::cout << "[DFS Stats]\n";
+            std::cout << "  Total nodes visited: " << totalNodesVisited << "\n";
+            std::cout << "  Average depth: "
+                      << (double) sumOfDepths / std::max(1, totalNodesVisited)
+                      << "\n";
+            std::cout << "  Max depth reached: " << maxDepthEncountered << "\n";
+            // Return solution
+            return current->get_solution_path();
+        }
 
-        bool foundSolution = false;
-        TreeNode* goalNode = nullptr;
+        // Determine depth by following parents
+        int depth = 0;
+        for (TreeNode* tmp = current; tmp->get_parent(); tmp = tmp->get_parent()) {
+            depth++;
+        }
+        // Update stats
+        sumOfDepths += depth;
+        if (depth > maxDepthEncountered) {
+            maxDepthEncountered = depth;
+        }
 
-        while (!st.empty()) {
-            TreeNode* current = st.top();
-            st.pop();
+        // If we are at the limit, don't expand further
+        if (depth >= depth_limit) {
+            continue;
+        }
 
-            const Cube4x4 &curCube = current->get_cube();
-            visited.insert(curCube);
+        // Expand children (reverse iteration to preserve order on stack)
+        for (auto it = all_moves.rbegin(); it != all_moves.rend(); ++it) {
+            Cube4x4 new_cube = current->get_cube();
+            new_cube.move(*it);
 
-            if (curCube.check_goal_state()) {
-                foundSolution = true;
-                goalNode = current;
-                break;
-            }
-
-            int g = 0;
-            for (TreeNode* tmp = current; tmp->get_parent(); tmp = tmp->get_parent()) {
-                g++;
-            }
-
-            int h = curCube.misplaced_pieces_heuristic();
-            int f = g + h;
-
-            if (f > threshold) {
-                next_threshold = std::min(next_threshold, f);
+            // Skip if we’ve already seen this cube
+            if (visited.find(new_cube) != visited.end()) {
+                nodesRevisited++;
                 continue;
             }
+            visited.insert(new_cube);
 
-            for (Move mv : all_moves) {
-                Cube4x4 new_cube = curCube;
-                new_cube.move(mv);
-
-                if (visited.find(new_cube) != visited.end()) {
-                    continue;
-                }
-                TreeNode* child = current->add_child(new_cube, mv);
-                st.push(child);
-            }
+            TreeNode* child = current->add_child(new_cube, *it);
+            stack.push(child);
         }
-
-        if (foundSolution && goalNode) {
-            return goalNode->get_solution_path();
-        }
-        if (next_threshold == INT_MAX) {
-            return {};
-        }
-
-        threshold = next_threshold;
     }
+
+    // If we exhaust the stack without finding a solution, we still print stats
+    std::cout << "[DFS Stats]\n";
+    std::cout << "  Total nodes visited: " << totalNodesVisited << "\n";
+    std::cout << "  Nodes skipped: " << nodesRevisited << "\n";
+
+    std::cout << "  Average depth: " 
+              << (double) sumOfDepths / std::max(1, totalNodesVisited)
+              << "\n";
+    std::cout << "  Max depth reached: " << maxDepthEncountered << "\n";
+
+    // Return empty if no solution found
+    return {};
+}
+
+
+
+std::vector<Move> solve_cube_ids(const Cube4x4 &start_cube, int max_depth)
+{
+    for (int limit = 0; limit <= max_depth; limit++) {
+        std::vector<Move> result = depth_limited_dfs_no_duplicates(start_cube, limit);
+        if (!result.empty()) {
+            return result;
+        }
+    }
+    return {};
 }
 
 
 int main() {
     Cube4x4 cube;
   
-    std::vector<Move> scramble = cube.apply_random_moves(3);
+    std::vector<Move> scramble = cube.apply_random_moves(5);
     std::cout << "Scramble of size " << scramble.size() << " moves applied: ";
     for (Move move : scramble) {
         std::cout << move_to_string(move) << " ";
@@ -177,7 +169,7 @@ int main() {
 
     int max_depth = 5;
     std::cout << "\nSolving Cube... \n";
-    std::vector<Move> solution = solve_cube_dfs(cube, 5);
+    std::vector<Move> solution = depth_limited_dfs_no_duplicates(cube, 5);
 
     if (!solution.empty()) {
         std::cout << "Solution found in " << solution.size() << " moves: ";
