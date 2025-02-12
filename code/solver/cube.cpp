@@ -208,7 +208,7 @@ int Cube4x4::phase_one_twist_distance() const {
         }
     }
 
-    return (misplaced) / 2;
+    return (misplaced + 1) / 2;
 }
 
 
