@@ -139,7 +139,7 @@ void Cube4x4::move(Move m) {
 std::vector<Move> Cube4x4::apply_random_moves(int n) {
     std::vector<Move> all_moves = {
         R, L, U, D, F, B, R_PRIME, L_PRIME, U_PRIME, D_PRIME, F_PRIME, B_PRIME,
-        r, l, u, d, f, b, r_PRIME, l_PRIME, u_PRIME, d_PRIME, f_PRIME, b_PRIME
+        //r, l, u, d, f, b, r_PRIME, l_PRIME, u_PRIME, d_PRIME, f_PRIME, b_PRIME
     };
     std::srand(std::time(nullptr));
     std::vector<Move> appliedMoves;

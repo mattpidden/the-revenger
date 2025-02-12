@@ -142,36 +142,26 @@ std::vector<Move> solve_cube_ids(const Cube4x4 &start_cube, int max_depth)
 }
 
 
-/**
- * @brief IDA* for Phase 1, using phase_one_twist_distance() as the heuristic.
- *        We consider the puzzle “in goal” if phase_one_twist_distance() < 1.
- */
 std::vector<Move> solve_phase_one_ida(const Cube4x4 &start_cube, int maxDepth)
 {
-    // All moves allowed in Phase 1
     std::vector<Move> all_moves = {
         R, L, U, D, F, B, R_PRIME, L_PRIME, U_PRIME, D_PRIME, F_PRIME, B_PRIME,
         r, l, u, d, f, b, r_PRIME, l_PRIME, u_PRIME, d_PRIME, f_PRIME, b_PRIME
     };
 
-    // Initial threshold = heuristic of start state
     double threshold = start_cube.phase_one_twist_distance();
 
-    // --- Stats ---
-    long long totalVisited   = 0; // how many nodes we pop from the stack
-    long long duplicates     = 0; // how many duplicates we skip
-    long long prunedByF      = 0; // how many nodes pruned because f > threshold
-    long long prunedByDepth  = 0; // how many nodes pruned by our maxDepth limit
+    int totalVisited   = 0; 
+    int duplicates     = 0; 
+    int prunedByF      = 0; 
 
     while (true) {
         double next_threshold = LONG_MAX;
 
-        // We'll do a stack-based DFS for expansions
         std::stack<TreeNode*> st;
         TreeNode* root = new TreeNode(start_cube);
         st.push(root);
 
-        // Visited set to avoid re-expanding the same states in this iteration
         std::unordered_set<Cube4x4, CubeHash, CubeEqual> visited;
         visited.insert(start_cube);
 
@@ -186,7 +176,6 @@ std::vector<Move> solve_phase_one_ida(const Cube4x4 &start_cube, int maxDepth)
 
             const Cube4x4 &curCube = current->get_cube();
             
-            // Phase 1 goal check: if twist_distance == 0, done
             double h = curCube.phase_one_twist_distance();
             if (h == 0.0) {
                 foundSolution = true;
@@ -194,22 +183,17 @@ std::vector<Move> solve_phase_one_ida(const Cube4x4 &start_cube, int maxDepth)
                 break;
             }
 
-            // Depth so far
             int g = 0;
             for (TreeNode* tmp = current; tmp->get_parent(); tmp = tmp->get_parent()) {
                 g++;
             }
 
-            // If we've hit our global depth limit, skip expansion
             if (g >= maxDepth) {
-                prunedByDepth++;
                 continue;
             }
 
-            // f = g + h
             double f = g + h;
             if (f > threshold) {
-                // prune & record best candidate for next threshold
                 prunedByF++;
                 if (f < next_threshold) {
                     next_threshold = f;
@@ -217,12 +201,10 @@ std::vector<Move> solve_phase_one_ida(const Cube4x4 &start_cube, int maxDepth)
                 continue;
             }
 
-            // Expand children
             for (Move mv : all_moves) {
                 Cube4x4 new_cube = curCube;
                 new_cube.move(mv);
 
-                // Skip if visited
                 if (visited.find(new_cube) != visited.end()) {
                     duplicates++;
                     continue;
@@ -232,33 +214,27 @@ std::vector<Move> solve_phase_one_ida(const Cube4x4 &start_cube, int maxDepth)
                 TreeNode* child = current->add_child(new_cube, mv);
                 st.push(child);
             }
-        } // end while stack
+        } 
 
         if (foundSolution && goalNode) {
-            // Print or log stats
             std::cout << "[Phase 1 IDA* Stats]\n";
             std::cout << "  Max depth allowed : " << maxDepth << "\n";
             std::cout << "  Total visited     : " << totalVisited << "\n";
             std::cout << "  Duplicates skipped: " << duplicates << "\n";
             std::cout << "  Pruned by f       : " << prunedByF << "\n";
-            std::cout << "  Pruned by depth   : " << prunedByDepth << "\n";
             return goalNode->get_solution_path();
         }
 
-        // If we never improved next_threshold => no expansions => no solution
         if (next_threshold == LONG_MAX) {
-            // Print stats
             std::cout << "[Phase 1 IDA* Stats]\n";
             std::cout << "  Max depth allowed : " << maxDepth << "\n";
             std::cout << "  Total visited     : " << totalVisited << "\n";
             std::cout << "  Duplicates skipped: " << duplicates << "\n";
             std::cout << "  Pruned by f       : " << prunedByF << "\n";
-            std::cout << "  Pruned by depth   : " << prunedByDepth << "\n";
 
-            return {}; // No solution found
+            return {};
         }
 
-        // Raise threshold for next iteration
         threshold = next_threshold;
     }
 }
@@ -276,7 +252,7 @@ int main() {
 
     cube.print();
     
-    int max_depth = 6;
+    int max_depth = 5;
     std::cout << "\nSolving Cube... \n";
     
     std::vector<Move> solution = solve_phase_one_ida(cube, max_depth);
