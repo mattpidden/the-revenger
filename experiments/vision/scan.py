@@ -190,6 +190,7 @@ def capture_and_scan_frame(cap, face_faclects, show_colours = False):
         scan_results.append(face_colors)
 
     cv2.imshow('Webcam with Cube Grid', frame)
+    cv2.waitKey(1)
     return scan_results
 
 def finish_scan(cap):

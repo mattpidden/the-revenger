@@ -27,7 +27,7 @@ while True:
   for i, face in enumerate(scan_results):
     result = [face[i:i+4] for i in range(0, 16, 4)]
 
-    #rubiks_cube._update_face(faces[i], result)
+    rubiks_cube._update_face(faces[i], result)
 
 
 finish_scan(cap)
