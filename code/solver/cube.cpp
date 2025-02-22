@@ -7,6 +7,8 @@
 #include <map>
 #include <cstdlib>  
 #include <ctime>
+#include <unordered_set>
+
 #include "cube.h"
 
 
@@ -187,6 +189,20 @@ int Cube4x4::misplaced_pieces_heuristic() const {
     return mismatch_count;
 }
 
+int Cube4x4::twist_distance(int phase) const {
+    switch (phase) {
+        case 1:
+            return phase_one_twist_distance();
+        case 5:
+            return phase_five_twist_distance();
+        case 6:
+            return phase_six_twist_distance();
+        default:
+            return -1;
+    }
+}
+
+
 int Cube4x4::phase_one_twist_distance() const {
     const std::array<int, 4> center_positions = {5, 6, 9, 10};
 
@@ -204,25 +220,27 @@ int Cube4x4::phase_one_twist_distance() const {
 }
 
 int Cube4x4::phase_five_twist_distance() const {
-    // Count how many edges are BAD
-    // (assuming edges_pairs_parity[i] == true means "BAD/Flipped")
     int bad_count = 0;
     for(int i = 0; i < 12; i++){
         if(edges_pairs_parity[i]) {
             bad_count++;
         }
     }
-
-    // If none are flipped, distance is 0
-    if(bad_count == 0) {
+    if (bad_count == 0) {
         return 0;
     }
-
-    // Each quarter-turn of U or D can flip at most 8 edges.
-    // So we do the integer ceiling of bad_count / 8
     return (bad_count + 7) / 8;
 }
 
+int Cube4x4::phase_six_twist_distance() const {
+    if ((edges_pairs[8] == 8 || edges_pairs[8] == 9 || edges_pairs[8] == 10 || edges_pairs[8] == 11) &&
+        (edges_pairs[9] == 8 || edges_pairs[9] == 9 || edges_pairs[9] == 10 || edges_pairs[9] == 11) &&
+        (edges_pairs[10] == 8 || edges_pairs[10] == 9 || edges_pairs[10] == 10 || edges_pairs[10] == 11) &&
+        (edges_pairs[11] == 8 || edges_pairs[11] == 9 || edges_pairs[11] == 10 || edges_pairs[11] == 11)) {
+        return 0;
+    }
+    return 1;
+}
 
 // Converts a colour enum to a char
 char Cube4x4::colour_to_char(Colour c) {

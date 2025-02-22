@@ -142,11 +142,10 @@ std::vector<Move> solve_cube_ids(const Cube4x4 &start_cube, int max_depth)
 }
 
 
-std::vector<Move> solve_phase_one_ida(const Cube4x4 &start_cube, int maxDepth)
+std::vector<Move> solve_any_phase_ida(const Cube4x4 &start_cube, int phase, std::vector<Move> all_moves, int maxDepth)
 {
-    std::vector<Move> all_moves = { R, L, U, D, F, B };
 
-    double threshold = start_cube.phase_five_twist_distance();
+    double threshold = start_cube.twist_distance(phase);
 
     int totalVisited   = 0; 
     int duplicates     = 0; 
@@ -174,7 +173,7 @@ std::vector<Move> solve_phase_one_ida(const Cube4x4 &start_cube, int maxDepth)
 
             const Cube4x4 &curCube = current->get_cube();
             
-            double h = curCube.phase_five_twist_distance();
+            double h = curCube.twist_distance(phase);
             if (h == 0.0) {
                 foundSolution = true;
                 goalNode = current;
@@ -215,7 +214,7 @@ std::vector<Move> solve_phase_one_ida(const Cube4x4 &start_cube, int maxDepth)
         } 
 
         if (foundSolution && goalNode) {
-            std::cout << "[Phase 1 IDA* Stats]\n";
+            std::cout << "[IDA* Stats]\n";
             std::cout << "  Max depth allowed : " << maxDepth << "\n";
             std::cout << "  Total visited     : " << totalVisited << "\n";
             std::cout << "  Duplicates skipped: " << duplicates << "\n";
@@ -224,7 +223,7 @@ std::vector<Move> solve_phase_one_ida(const Cube4x4 &start_cube, int maxDepth)
         }
 
         if (next_threshold == LONG_MAX) {
-            std::cout << "[Phase 1 IDA* Stats]\n";
+            std::cout << "[IDA* Stats]\n";
             std::cout << "  Max depth allowed : " << maxDepth << "\n";
             std::cout << "  Total visited     : " << totalVisited << "\n";
             std::cout << "  Duplicates skipped: " << duplicates << "\n";
@@ -237,37 +236,40 @@ std::vector<Move> solve_phase_one_ida(const Cube4x4 &start_cube, int maxDepth)
     }
 }
 
-
-int main() {
-    Cube4x4 cube;
-    int score = cube.phase_five_twist_distance();
-    std::cout << "Twist score to phase 5 good edges: " << score << "\n";
-
-    std::vector<Move> scramble = cube.apply_random_moves(35);
-    std::cout << "Scramble of size " << scramble.size() << " moves applied: ";
-    for (Move move : scramble) {
-        std::cout << move_to_string(move) << " ";
-    }
-
-    cube.print();
-    
-    int max_depth = 7;
-    std::cout << "\nSolving Cube... \n";
-    
-    std::vector<Move> solution = solve_phase_one_ida(cube, max_depth);
-
+void print_apply_solution(Cube4x4 &cube, std::vector<Move> solution) {
     if (!solution.empty()) {
         std::cout << "Solution found in " << solution.size() << " moves: ";
         for (Move move : solution) {
             std::cout << move_to_string(move) << " ";
             cube.move(move);
         }
-        cube.print();
     } else {
         std::cout << "No solution found. \n";
     }
+}
+
+int main() {
+    Cube4x4 cube;
+    std::vector<Move> scramble = cube.apply_random_moves(35);
+    std::cout << "Scramble of size " << scramble.size() << " moves applied: ";
+    for (Move move : scramble) {
+        std::cout << move_to_string(move) << " ";
+    }
+    cube.print();
     
-    
+    std::cout << "\nSolving Cube...";
+
+    int max_depth = 7;
+    std::cout << "\n\nSolving phase 5... \n";
+    std::vector<Move> solution5 = solve_any_phase_ida(cube, 5, { R, L, U, D, F, B }, max_depth);
+    print_apply_solution(cube, solution5);
+
+    max_depth = 10;
+    std::cout << "\n\nSolving phase 6... \n";
+    std::vector<Move> solution6 = solve_any_phase_ida(cube, 6, { R, L, U2, D2, F, B }, max_depth);
+    print_apply_solution(cube, solution6);
+
+    cube.print();
 
     return 0;
 }
