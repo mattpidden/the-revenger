@@ -23,7 +23,8 @@ void Cube4x4::reset() {
     facelets[B_FACE].fill(BLUE);
     facelets[D_FACE].fill(YELLOW);
 
-    edge_flips.fill(0);
+    edges_pairs = {0,1,2,3,4,5,6,7,8,9,10,11};
+    edges_pairs_parity.fill(true);
     // TODO Update the centres, edges, corners, parity, oreitnations arrays here too.
 }
 
@@ -167,15 +168,6 @@ bool Cube4x4::check_goal_state() const {
     return true;
 }
 
-// Checks if all the edge pairs have even or odd parity
-bool Cube4x4::check_edge_pair_parity() {
-    for (int i = 0; i < 24; i += 2) {
-        if (edge_flips[i] != edge_flips[i + 1]) {
-            return false; 
-        }
-    }
-    return true; 
-}
 
 int Cube4x4::misplaced_pieces_heuristic() const {
     // Create a goal cube in solved state
@@ -209,6 +201,26 @@ int Cube4x4::phase_one_twist_distance() const {
     }
 
     return (misplaced + 1) / 2;
+}
+
+int Cube4x4::phase_five_twist_distance() const {
+    // Count how many edges are BAD
+    // (assuming edges_pairs_parity[i] == true means "BAD/Flipped")
+    int bad_count = 0;
+    for(int i = 0; i < 12; i++){
+        if(edges_pairs_parity[i]) {
+            bad_count++;
+        }
+    }
+
+    // If none are flipped, distance is 0
+    if(bad_count == 0) {
+        return 0;
+    }
+
+    // Each quarter-turn of U or D can flip at most 8 edges.
+    // So we do the integer ceiling of bad_count / 8
+    return (bad_count + 7) / 8;
 }
 
 
@@ -278,6 +290,35 @@ void Cube4x4::turn_outer_face(int face_index, bool clockwise) {
     last_face[lastEdges[3]] = temp_edges[3];  
 
     // TODO Finish this function, including updating centres, edges, corners, paritys, orientation arrays
+    static const int faceEdgeCycles[6][4] = {
+        {0, 1, 2, 3},     // U_FACE  
+        {4, 5, 6, 7},     // D_FACE  
+        {3, 11, 7, 10},   // L_FACE (example)
+        {1, 9, 5, 8},     // R_FACE (example)
+        {2, 8, 4, 11},    // F_FACE (example)
+        {0, 10, 6, 9}     // B_FACE (example)
+    };
+    const int* cycle = faceEdgeCycles[face_index];
+    if (face_index == U_FACE || face_index == D_FACE) {
+        edges_pairs_parity[cycle[0]] = !edges_pairs_parity[cycle[0]];
+        edges_pairs_parity[cycle[1]] = !edges_pairs_parity[cycle[1]];
+        edges_pairs_parity[cycle[2]] = !edges_pairs_parity[cycle[2]];
+        edges_pairs_parity[cycle[3]] = !edges_pairs_parity[cycle[3]];
+    }
+    
+    if (clockwise) {
+        auto tmp = edges_pairs[cycle[0]];
+        edges_pairs[cycle[0]] = edges_pairs[cycle[3]];
+        edges_pairs[cycle[3]] = edges_pairs[cycle[2]];
+        edges_pairs[cycle[2]] = edges_pairs[cycle[1]];
+        edges_pairs[cycle[1]] = tmp;
+    } else {
+        auto tmp = edges_pairs[cycle[0]];
+        edges_pairs[cycle[0]] = edges_pairs[cycle[1]];
+        edges_pairs[cycle[1]] = edges_pairs[cycle[2]];
+        edges_pairs[cycle[2]] = edges_pairs[cycle[3]];
+        edges_pairs[cycle[3]] = tmp;
+    }
 }
 
 // Turns an inner slice of the cube

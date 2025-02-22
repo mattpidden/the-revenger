@@ -144,12 +144,9 @@ std::vector<Move> solve_cube_ids(const Cube4x4 &start_cube, int max_depth)
 
 std::vector<Move> solve_phase_one_ida(const Cube4x4 &start_cube, int maxDepth)
 {
-    std::vector<Move> all_moves = {
-        R, L, U, D, F, B, R_PRIME, L_PRIME, U_PRIME, D_PRIME, F_PRIME, B_PRIME,
-        r, l, u, d, f, b, r_PRIME, l_PRIME, u_PRIME, d_PRIME, f_PRIME, b_PRIME
-    };
+    std::vector<Move> all_moves = { R, L, U, D, F, B,  };
 
-    double threshold = start_cube.phase_one_twist_distance();
+    double threshold = start_cube.phase_five_twist_distance();
 
     int totalVisited   = 0; 
     int duplicates     = 0; 
@@ -162,8 +159,8 @@ std::vector<Move> solve_phase_one_ida(const Cube4x4 &start_cube, int maxDepth)
         TreeNode* root = new TreeNode(start_cube);
         st.push(root);
 
-        std::unordered_set<Cube4x4, CubeHash, CubeEqual> visited;
-        visited.insert(start_cube);
+        //std::unordered_set<Cube4x4, CubeHash, CubeEqual> visited;
+        //visited.insert(start_cube);
 
         bool foundSolution = false;
         TreeNode* goalNode = nullptr;
@@ -176,7 +173,7 @@ std::vector<Move> solve_phase_one_ida(const Cube4x4 &start_cube, int maxDepth)
 
             const Cube4x4 &curCube = current->get_cube();
             
-            double h = curCube.phase_one_twist_distance();
+            double h = curCube.phase_five_twist_distance();
             if (h == 0.0) {
                 foundSolution = true;
                 goalNode = current;
@@ -205,11 +202,11 @@ std::vector<Move> solve_phase_one_ida(const Cube4x4 &start_cube, int maxDepth)
                 Cube4x4 new_cube = curCube;
                 new_cube.move(mv);
 
-                if (visited.find(new_cube) != visited.end()) {
-                    duplicates++;
-                    continue;
-                }
-                visited.insert(new_cube);
+                //if (visited.find(new_cube) != visited.end()) {
+                //    duplicates++;
+                //    continue;
+                //}
+                //visited.insert(new_cube);
 
                 TreeNode* child = current->add_child(new_cube, mv);
                 st.push(child);
@@ -252,7 +249,7 @@ int main() {
 
     cube.print();
     
-    int max_depth = 5;
+    int max_depth = 2;
     std::cout << "\nSolving Cube... \n";
     
     std::vector<Move> solution = solve_phase_one_ida(cube, max_depth);

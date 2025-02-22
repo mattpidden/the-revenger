@@ -36,10 +36,10 @@ public:
     void move(Move m); 
     std::vector<Move> apply_random_moves(int n);
     bool check_goal_state() const;  
-    bool check_edge_pair_parity();  
     int misplaced_pieces_heuristic() const;
     int phase_one_twist_distance() const;
-    
+    int phase_five_twist_distance() const;
+
 
 private:
     std::array<std::array<Colour, 16>, 6> facelets;
@@ -48,7 +48,7 @@ private:
     std::array<int,24> edges;   
     std::array<int, 24> edge_flips;
     std::array<int,12> edges_pairs;   
-    std::array<int,12> edges_pairs_parity;   
+    std::array<bool,12> edges_pairs_parity;   
     std::array<int,8> corners;
     std::array<int,8> corners_orientation;
 
