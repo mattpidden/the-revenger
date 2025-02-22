@@ -144,7 +144,7 @@ std::vector<Move> solve_cube_ids(const Cube4x4 &start_cube, int max_depth)
 
 std::vector<Move> solve_phase_one_ida(const Cube4x4 &start_cube, int maxDepth)
 {
-    std::vector<Move> all_moves = { R, L, U, D, F, B,  };
+    std::vector<Move> all_moves = { R, L, U, D, F, B };
 
     double threshold = start_cube.phase_five_twist_distance();
 
@@ -159,11 +159,12 @@ std::vector<Move> solve_phase_one_ida(const Cube4x4 &start_cube, int maxDepth)
         TreeNode* root = new TreeNode(start_cube);
         st.push(root);
 
-        //std::unordered_set<Cube4x4, CubeHash, CubeEqual> visited;
-        //visited.insert(start_cube);
+        std::unordered_set<Cube4x4, CubeHash, CubeEqual> visited;
+        visited.insert(start_cube);
 
         bool foundSolution = false;
         TreeNode* goalNode = nullptr;
+
 
         while (!st.empty()) {
             TreeNode* current = st.top();
@@ -202,11 +203,11 @@ std::vector<Move> solve_phase_one_ida(const Cube4x4 &start_cube, int maxDepth)
                 Cube4x4 new_cube = curCube;
                 new_cube.move(mv);
 
-                //if (visited.find(new_cube) != visited.end()) {
-                //    duplicates++;
-                //    continue;
-                //}
-                //visited.insert(new_cube);
+                if (visited.find(new_cube) != visited.end()) {
+                    duplicates++;
+                    continue;
+                }
+                visited.insert(new_cube);
 
                 TreeNode* child = current->add_child(new_cube, mv);
                 st.push(child);
@@ -239,7 +240,8 @@ std::vector<Move> solve_phase_one_ida(const Cube4x4 &start_cube, int maxDepth)
 
 int main() {
     Cube4x4 cube;
-    
+    int score = cube.phase_five_twist_distance();
+    std::cout << "Twist score to phase 5 good edges: " << score << "\n";
 
     std::vector<Move> scramble = cube.apply_random_moves(35);
     std::cout << "Scramble of size " << scramble.size() << " moves applied: ";
@@ -249,7 +251,7 @@ int main() {
 
     cube.print();
     
-    int max_depth = 2;
+    int max_depth = 7;
     std::cout << "\nSolving Cube... \n";
     
     std::vector<Move> solution = solve_phase_one_ida(cube, max_depth);

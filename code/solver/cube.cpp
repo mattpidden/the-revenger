@@ -24,7 +24,7 @@ void Cube4x4::reset() {
     facelets[D_FACE].fill(YELLOW);
 
     edges_pairs = {0,1,2,3,4,5,6,7,8,9,10,11};
-    edges_pairs_parity.fill(true);
+    edges_pairs_parity.fill(false);
     // TODO Update the centres, edges, corners, parity, oreitnations arrays here too.
 }
 
