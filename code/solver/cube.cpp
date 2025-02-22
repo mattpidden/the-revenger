@@ -299,11 +299,12 @@ void Cube4x4::turn_outer_face(int face_index, bool clockwise) {
         {0, 10, 6, 9}     // B_FACE (example)
     };
     const int* cycle = faceEdgeCycles[face_index];
+    
     if (face_index == U_FACE || face_index == D_FACE) {
-        edges_pairs_parity[cycle[0]] = !edges_pairs_parity[cycle[0]];
-        edges_pairs_parity[cycle[1]] = !edges_pairs_parity[cycle[1]];
-        edges_pairs_parity[cycle[2]] = !edges_pairs_parity[cycle[2]];
-        edges_pairs_parity[cycle[3]] = !edges_pairs_parity[cycle[3]];
+        edges_pairs_parity[edges_pairs[cycle[0]]] = !edges_pairs_parity[edges_pairs[cycle[0]]];
+        edges_pairs_parity[edges_pairs[cycle[1]]] = !edges_pairs_parity[edges_pairs[cycle[1]]];
+        edges_pairs_parity[edges_pairs[cycle[2]]] = !edges_pairs_parity[edges_pairs[cycle[2]]];
+        edges_pairs_parity[edges_pairs[cycle[3]]] = !edges_pairs_parity[edges_pairs[cycle[3]]];
     }
     
     if (clockwise) {
