@@ -310,16 +310,16 @@ void Cube4x4::turn_outer_face(int face_index, bool clockwise) {
     // TODO Finish this function, including updating centres, edges, corners, paritys, orientation arrays
     static const int faceEdgeCycles[6][4] = {
         {0, 1, 2, 3},     // U_FACE  
-        {4, 5, 6, 7},     // D_FACE  
         {3, 11, 7, 10},   // L_FACE (example)
-        {1, 9, 5, 8},     // R_FACE (example)
         {2, 8, 4, 11},    // F_FACE (example)
-        {0, 10, 6, 9}     // B_FACE (example)
+        {1, 9, 5, 8},     // R_FACE (example)
+        {0, 10, 6, 9},    // B_FACE (example)
+        {4, 5, 6, 7},     // D_FACE  
     };
     const int* cycle = faceEdgeCycles[face_index];
     
     if (face_index == U_FACE || face_index == D_FACE) {
-        edges_pairs_parity[edges_pairs[cycle[0]]] = !edges_pairs_parity[edges_pairs[cycle[0]]];
+                edges_pairs_parity[edges_pairs[cycle[0]]] = !edges_pairs_parity[edges_pairs[cycle[0]]];
         edges_pairs_parity[edges_pairs[cycle[1]]] = !edges_pairs_parity[edges_pairs[cycle[1]]];
         edges_pairs_parity[edges_pairs[cycle[2]]] = !edges_pairs_parity[edges_pairs[cycle[2]]];
         edges_pairs_parity[edges_pairs[cycle[3]]] = !edges_pairs_parity[edges_pairs[cycle[3]]];
