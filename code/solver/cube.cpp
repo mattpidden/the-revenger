@@ -249,28 +249,28 @@ int Cube4x4::phase_six_twist_distance() const {
         bad_count++;
     } 
 
-    if (!(facelets[F_FACE][0] == BLUE || facelets[F_FACE][0] == GREEN)) {
+    if (!(facelets[U_FACE][0] == WHITE || facelets[U_FACE][0] == YELLOW)) {
         bad_count++;
     } 
-    if (!(facelets[F_FACE][3] == BLUE || facelets[F_FACE][3] == GREEN)) {
+    if (!(facelets[U_FACE][3] == WHITE || facelets[U_FACE][3] == YELLOW)) {
         bad_count++;
     } 
-    if (!(facelets[F_FACE][12] == BLUE || facelets[F_FACE][12] == GREEN)) {
+    if (!(facelets[U_FACE][12] == WHITE || facelets[U_FACE][12] == YELLOW)) {
         bad_count++;
     } 
-    if (!(facelets[F_FACE][15] == BLUE || facelets[F_FACE][15] == GREEN)) {
+    if (!(facelets[U_FACE][15] == WHITE || facelets[U_FACE][15] == YELLOW)) {
         bad_count++;
     } 
-    if (!(facelets[B_FACE][0] == BLUE || facelets[B_FACE][0] == GREEN)) {
+    if (!(facelets[D_FACE][0] == WHITE || facelets[D_FACE][0] == YELLOW)) {
         bad_count++;
     } 
-    if (!(facelets[B_FACE][3] == BLUE || facelets[B_FACE][3] == GREEN)) {
+    if (!(facelets[D_FACE][3] == WHITE || facelets[D_FACE][3] == YELLOW)) {
         bad_count++;
     } 
-    if (!(facelets[B_FACE][12] == BLUE || facelets[B_FACE][12] == GREEN)) {
+    if (!(facelets[D_FACE][12] == WHITE || facelets[D_FACE][12] == YELLOW)) {
         bad_count++;
     } 
-    if (!(facelets[B_FACE][15] == BLUE || facelets[B_FACE][15] == GREEN)) {
+    if (!(facelets[D_FACE][15] == WHITE || facelets[D_FACE][15] == YELLOW)) {
         bad_count++;
     }
 
@@ -288,13 +288,13 @@ int Cube4x4::phase_seven_twist_distance() const {
         if (!(facelets[U_FACE][i] == WHITE || facelets[U_FACE][i] == YELLOW)) {
             bad_count++;
         }
-    }
+    }/*
     for(int i=0; i<16; i++){
         if (!(facelets[D_FACE][i] == WHITE || facelets[D_FACE][i] == YELLOW)) {
             bad_count++;
         }
     }
-
+    
     for(int i=0; i<16; i++){
         if (!(facelets[L_FACE][i] == ORANGE || facelets[L_FACE][i] == RED)) {
             bad_count++;
@@ -316,7 +316,7 @@ int Cube4x4::phase_seven_twist_distance() const {
             bad_count++;
         }
     }
-    
+    */
     if (bad_count == 0) {
         return 0;
     }
