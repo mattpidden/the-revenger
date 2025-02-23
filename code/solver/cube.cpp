@@ -27,6 +27,8 @@ void Cube4x4::reset() {
 
     edges_pairs = {0,1,2,3,4,5,6,7,8,9,10,11};
     edges_pairs_parity.fill(false);
+    corners = {0,1,2,3,4,5,6,7};
+    corners_orientation.fill(0);
     // TODO Update the centres, edges, corners, parity, oreitnations arrays here too.
 }
 
@@ -233,13 +235,92 @@ int Cube4x4::phase_five_twist_distance() const {
 }
 
 int Cube4x4::phase_six_twist_distance() const {
-    if ((edges_pairs[8] == 8 || edges_pairs[8] == 9 || edges_pairs[8] == 10 || edges_pairs[8] == 11) &&
-        (edges_pairs[9] == 8 || edges_pairs[9] == 9 || edges_pairs[9] == 10 || edges_pairs[9] == 11) &&
-        (edges_pairs[10] == 8 || edges_pairs[10] == 9 || edges_pairs[10] == 10 || edges_pairs[10] == 11) &&
-        (edges_pairs[11] == 8 || edges_pairs[11] == 9 || edges_pairs[11] == 10 || edges_pairs[11] == 11)) {
+    int bad_count = 0;
+    if (!(edges_pairs[8] == 8 || edges_pairs[8] == 9 || edges_pairs[8] == 10 || edges_pairs[8] == 11)) {
+        bad_count++;
+    }
+    if (!(edges_pairs[9] == 8 || edges_pairs[9] == 9 || edges_pairs[9] == 10 || edges_pairs[9] == 11)) {
+        bad_count++;        
+    }
+    if (!(edges_pairs[10] == 8 || edges_pairs[10] == 9 || edges_pairs[10] == 10 || edges_pairs[10] == 11)) {
+        bad_count++;        
+    }
+    if (!(edges_pairs[11] == 8 || edges_pairs[11] == 9 || edges_pairs[11] == 10 || edges_pairs[11] == 11)) {
+        bad_count++;
+    } 
+
+    if (!(facelets[F_FACE][0] == BLUE || facelets[F_FACE][0] == GREEN)) {
+        bad_count++;
+    } 
+    if (!(facelets[F_FACE][3] == BLUE || facelets[F_FACE][3] == GREEN)) {
+        bad_count++;
+    } 
+    if (!(facelets[F_FACE][12] == BLUE || facelets[F_FACE][12] == GREEN)) {
+        bad_count++;
+    } 
+    if (!(facelets[F_FACE][15] == BLUE || facelets[F_FACE][15] == GREEN)) {
+        bad_count++;
+    } 
+    if (!(facelets[B_FACE][0] == BLUE || facelets[B_FACE][0] == GREEN)) {
+        bad_count++;
+    } 
+    if (!(facelets[B_FACE][3] == BLUE || facelets[B_FACE][3] == GREEN)) {
+        bad_count++;
+    } 
+    if (!(facelets[B_FACE][12] == BLUE || facelets[B_FACE][12] == GREEN)) {
+        bad_count++;
+    } 
+    if (!(facelets[B_FACE][15] == BLUE || facelets[B_FACE][15] == GREEN)) {
+        bad_count++;
+    }
+
+
+    if (bad_count == 0) {
         return 0;
     }
-    return 1;
+    return (bad_count + 7) / 8;
+}
+
+int Cube4x4::phase_seven_twist_distance() const {
+    int bad_count = 0;
+
+    for(int i=0; i<16; i++){
+        if (!(facelets[U_FACE][i] == WHITE || facelets[U_FACE][i] == YELLOW)) {
+            bad_count++;
+        }
+    }
+    for(int i=0; i<16; i++){
+        if (!(facelets[D_FACE][i] == WHITE || facelets[D_FACE][i] == YELLOW)) {
+            bad_count++;
+        }
+    }
+
+    for(int i=0; i<16; i++){
+        if (!(facelets[L_FACE][i] == ORANGE || facelets[L_FACE][i] == RED)) {
+            bad_count++;
+        }
+    }
+    for(int i=0; i<16; i++){
+        if (!(facelets[R_FACE][i] == ORANGE || facelets[R_FACE][i] == RED)) {
+            bad_count++;
+        }
+    }
+    
+    for(int i=0; i<16; i++){
+        if (!(facelets[F_FACE][i] == GREEN || facelets[F_FACE][i] == BLUE)) {
+            bad_count++;
+        }
+    }
+    for(int i=0; i<16; i++){
+        if (!(facelets[B_FACE][i] == GREEN || facelets[R_FACE][i] == BLUE)) {
+            bad_count++;
+        }
+    }
+    
+    if (bad_count == 0) {
+        return 0;
+    }
+    return (bad_count + 7) / 8;
 }
 
 // Converts a colour enum to a char
@@ -308,35 +389,38 @@ void Cube4x4::turn_outer_face(int face_index, bool clockwise) {
     last_face[lastEdges[3]] = temp_edges[3];  
 
     // TODO Finish this function, including updating centres, edges, corners, paritys, orientation arrays
-    static const int faceEdgeCycles[6][4] = {
-        {0, 1, 2, 3},     // U_FACE  
-        {3, 11, 7, 10},   // L_FACE (example)
-        {2, 8, 4, 11},    // F_FACE (example)
-        {1, 9, 5, 8},     // R_FACE (example)
-        {0, 10, 6, 9},    // B_FACE (example)
-        {4, 5, 6, 7},     // D_FACE  
-    };
-    const int* cycle = faceEdgeCycles[face_index];
+    const int* edge_cycle = edge_pairs_swaps[face_index];
+    const int* corner_cycle = corner_swaps[face_index];
     
     if (face_index == U_FACE || face_index == D_FACE) {
-                edges_pairs_parity[edges_pairs[cycle[0]]] = !edges_pairs_parity[edges_pairs[cycle[0]]];
-        edges_pairs_parity[edges_pairs[cycle[1]]] = !edges_pairs_parity[edges_pairs[cycle[1]]];
-        edges_pairs_parity[edges_pairs[cycle[2]]] = !edges_pairs_parity[edges_pairs[cycle[2]]];
-        edges_pairs_parity[edges_pairs[cycle[3]]] = !edges_pairs_parity[edges_pairs[cycle[3]]];
+        edges_pairs_parity[edges_pairs[edge_cycle[0]]] = !edges_pairs_parity[edges_pairs[edge_cycle[0]]];
+        edges_pairs_parity[edges_pairs[edge_cycle[1]]] = !edges_pairs_parity[edges_pairs[edge_cycle[1]]];
+        edges_pairs_parity[edges_pairs[edge_cycle[2]]] = !edges_pairs_parity[edges_pairs[edge_cycle[2]]];
+        edges_pairs_parity[edges_pairs[edge_cycle[3]]] = !edges_pairs_parity[edges_pairs[edge_cycle[3]]];
     }
     
     if (clockwise) {
-        auto tmp = edges_pairs[cycle[0]];
-        edges_pairs[cycle[0]] = edges_pairs[cycle[3]];
-        edges_pairs[cycle[3]] = edges_pairs[cycle[2]];
-        edges_pairs[cycle[2]] = edges_pairs[cycle[1]];
-        edges_pairs[cycle[1]] = tmp;
+        auto tmp = edges_pairs[edge_cycle[0]];
+        edges_pairs[edge_cycle[0]] = edges_pairs[edge_cycle[3]];
+        edges_pairs[edge_cycle[3]] = edges_pairs[edge_cycle[2]];
+        edges_pairs[edge_cycle[2]] = edges_pairs[edge_cycle[1]];
+        edges_pairs[edge_cycle[1]] = tmp;
+        tmp = corners[corner_cycle[0]];
+        corners[corner_cycle[0]] = corners[corner_cycle[3]];
+        corners[corner_cycle[3]] = corners[corner_cycle[2]];
+        corners[corner_cycle[2]] = corners[corner_cycle[1]];
+        corners[corner_cycle[1]] = tmp;
     } else {
-        auto tmp = edges_pairs[cycle[0]];
-        edges_pairs[cycle[0]] = edges_pairs[cycle[1]];
-        edges_pairs[cycle[1]] = edges_pairs[cycle[2]];
-        edges_pairs[cycle[2]] = edges_pairs[cycle[3]];
-        edges_pairs[cycle[3]] = tmp;
+        auto tmp = edges_pairs[edge_cycle[0]];
+        edges_pairs[edge_cycle[0]] = edges_pairs[edge_cycle[1]];
+        edges_pairs[edge_cycle[1]] = edges_pairs[edge_cycle[2]];
+        edges_pairs[edge_cycle[2]] = edges_pairs[edge_cycle[3]];
+        edges_pairs[edge_cycle[3]] = tmp;
+        tmp = corners[corner_cycle[0]];
+        corners[corner_cycle[0]] = corners[corner_cycle[1]];
+        corners[corner_cycle[1]] = corners[corner_cycle[2]];
+        corners[corner_cycle[2]] = corners[corner_cycle[3]];
+        corners[corner_cycle[3]] = tmp;
     }
 }
 

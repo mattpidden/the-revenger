@@ -269,6 +269,11 @@ int main() {
     std::vector<Move> solution6 = solve_any_phase_ida(cube, 6, { R, L, U2, D2, F, B }, max_depth);
     print_apply_solution(cube, solution6);
 
+    max_depth = 13;
+    std::cout << "\n\nSolving phase 7... \n";
+    std::vector<Move> solution7 = solve_any_phase_ida(cube, 7, { R2, L2, U2, D2, F, B }, max_depth);
+    print_apply_solution(cube, solution7);
+
     cube.print();
 
     return 0;
