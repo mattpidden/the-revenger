@@ -145,21 +145,12 @@ int main() {
     
     std::cout << "\nSolving Cube...";
 
-    int max_depth = 7;
-    std::cout << "\n\nSolving phase 5... \n";
-    std::vector<Move> solution5 = solve_any_phase_ida(cube, 5, { R, L, U, D, F, B }, max_depth);
-    print_apply_solution(cube, solution5);
-
-    max_depth = 10;
-    std::cout << "\n\nSolving phase 6... \n";
-    std::vector<Move> solution6 = solve_any_phase_ida(cube, 6, { R, L, U2, D2, F, B }, max_depth);
-    print_apply_solution(cube, solution6);
+    int max_depth = 8;
+    std::cout << "\n\nSolving cross... \n";
+    std::vector<Move> cross_solution = solve_any_phase_ida(cube, 101, { R, L, U, D, F, B }, max_depth);
+    print_apply_solution(cube, cross_solution);
 
 
-    max_depth = 10;
-    std::cout << "\n\nSolving phase 7... \n";
-    std::vector<Move> solution7 = solve_any_phase_ida(cube, 7, { R2, L2, U2, D2, F, B }, max_depth);
-    print_apply_solution(cube, solution7);
 
     cube.print();
 
