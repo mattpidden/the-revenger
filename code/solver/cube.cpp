@@ -200,7 +200,11 @@ int Cube4x4::twist_distance(int phase) const {
         case 6:
             return phase_six_twist_distance();
         case 101:
-            return reduce_centre_twist_distance();
+            return white_centre_twist_distance();
+        case 102:
+            return yellow_centre_twist_distance();
+        case 103:
+            return white_and_yellow_twist_distance();
         case 201:
             return cross_twist_distance();
         default:
@@ -327,28 +331,55 @@ int Cube4x4::phase_seven_twist_distance() const {
     return (bad_count + 7) / 8;
 }
 
-int Cube4x4::reduce_centre_twist_distance() const {
+int Cube4x4::white_centre_twist_distance() const {
     int bad_count = 0;
-
     if (!(facelets[U_FACE][5] == WHITE)) {
         bad_count++;
     }
     if (!(facelets[U_FACE][6] == WHITE)) {
         bad_count++;
     }
-    if (!(facelets[U_FACE][9] == WHITE)) {
+    if (!(facelets[D_FACE][5] == YELLOW)) {
         bad_count++;
     }
-    if (!(facelets[U_FACE][10] == WHITE)) {
+    if (!(facelets[D_FACE][6] == YELLOW)) {
         bad_count++;
     }
 
+    
     if (bad_count == 0) {
         return 0;
     }
     return (bad_count + 3) / 4;
 }
 
+int Cube4x4::yellow_centre_twist_distance() const {
+    int bad_count = white_centre_twist_distance();
+    if (!(facelets[U_FACE][9] == WHITE)) {
+        bad_count++;
+    }
+    if (!(facelets[U_FACE][10] == WHITE)) {
+        bad_count++;
+    }
+    if (bad_count == 0) {
+        return 0;
+    }
+    return (bad_count + 3) / 4;
+}
+
+int Cube4x4::white_and_yellow_twist_distance() const {
+    int bad_count = yellow_centre_twist_distance();
+    if (!(facelets[D_FACE][9] == YELLOW)) {
+        bad_count++;
+    }
+    if (!(facelets[D_FACE][10] == YELLOW)) {
+        bad_count++;
+    }
+    if (bad_count == 0) {
+        return 0;
+    }
+    return (bad_count + 3) / 4;
+}   
 
 int Cube4x4::cross_twist_distance() const {
     int bad_count = 0;
