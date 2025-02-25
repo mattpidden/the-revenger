@@ -44,8 +44,11 @@ public:
     int phase_six_twist_distance() const;
     int phase_seven_twist_distance() const;
     int white_centre_twist_distance() const;
-    int yellow_centre_twist_distance() const;
-    int white_and_yellow_twist_distance() const;
+    int yellow_centre1_twist_distance() const;
+    int yellow_centre2_twist_distance() const;
+    int orange_centre_twist_distance() const;
+    int red_centre_twist_distance() const;
+    int blue_green_centre_twist_distance() const;
     int cross_twist_distance() const;
 
 private:
