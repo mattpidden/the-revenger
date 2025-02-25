@@ -249,11 +249,10 @@ int main() {
     
     std::cout << "\nSolving Cube...";
 
-    int max_depth = 8;
-    std::cout << "\n\nSolving cross... \n";
-    std::vector<Move> cross_solution = solve_any_phase_id(cube, 101, { R, L, U, D, F, B }, max_depth);
+    int max_depth = 10;
+    std::cout << "\n\nReducing first centre... \n";
+    std::vector<Move> cross_solution = solve_any_phase_ida(cube, 101, { r, l, u, d, f, b }, max_depth);
     print_apply_solution(cube, cross_solution);
-
 
 
     cube.print();

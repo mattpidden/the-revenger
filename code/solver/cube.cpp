@@ -144,7 +144,7 @@ void Cube4x4::move(Move m) {
 std::vector<Move> Cube4x4::apply_random_moves(int n) {
     std::vector<Move> all_moves = {
         R, L, U, D, F, B, R_PRIME, L_PRIME, U_PRIME, D_PRIME, F_PRIME, B_PRIME,
-        //r, l, u, d, f, b, r_PRIME, l_PRIME, u_PRIME, d_PRIME, f_PRIME, b_PRIME
+        r, l, u, d, f, b, r_PRIME, l_PRIME, u_PRIME, d_PRIME, f_PRIME, b_PRIME
     };
     std::srand(std::time(nullptr));
     std::vector<Move> appliedMoves;
@@ -200,6 +200,8 @@ int Cube4x4::twist_distance(int phase) const {
         case 6:
             return phase_six_twist_distance();
         case 101:
+            return reduce_centre_twist_distance();
+        case 201:
             return cross_twist_distance();
         default:
             return -1;
@@ -324,6 +326,29 @@ int Cube4x4::phase_seven_twist_distance() const {
     }
     return (bad_count + 7) / 8;
 }
+
+int Cube4x4::reduce_centre_twist_distance() const {
+    int bad_count = 0;
+
+    if (!(facelets[U_FACE][5] == WHITE)) {
+        bad_count++;
+    }
+    if (!(facelets[U_FACE][6] == WHITE)) {
+        bad_count++;
+    }
+    if (!(facelets[U_FACE][9] == WHITE)) {
+        bad_count++;
+    }
+    if (!(facelets[U_FACE][10] == WHITE)) {
+        bad_count++;
+    }
+
+    if (bad_count == 0) {
+        return 0;
+    }
+    return (bad_count + 3) / 4;
+}
+
 
 int Cube4x4::cross_twist_distance() const {
     int bad_count = 0;
