@@ -257,7 +257,7 @@ std::pair<double,double> compute_mean_std_dev(const std::vector<int> &values) {
 
 
 int main() {
-    const int numTrials = 100;
+    const int numTrials = 10;
     std::vector<int> total_lengths;
     total_lengths.reserve(numTrials);
 
@@ -319,19 +319,74 @@ int main() {
         auto solution105 = run_parallel_phase(cube, 105, move_sets_4, max_depth);
 
         std::vector<std::vector<Move>> move_sets_6 = {
-            {u, d, F, B, r, l},
-            {u, d, F, B, u_PRIME},
-            {u, d, F, B, d_PRIME},
-            {u, d, F, B, r_PRIME},
-            {u, d, F, B, l_PRIME},
-            {u, d, F, B, l_PRIME},
-            {u, d, F, B, r_PRIME},
+            {u2, d2, F, B},
+            {u2, d2, F, B},
+            {u2, d2, F, B},
+            {u2, d2, F, B},
+            {u2, d2, F, B},
+            {u2, d2, F, B},
+            {u2, d2, F, B},
         };
         auto solution106 = run_parallel_phase(cube, 106, move_sets_6, max_depth);
-        if (cube.blue_green_centre_twist_distance() == 0) {
-            int length = (int)solution101.size() + (int)solution102.size() +
-                        (int)solution103.size() + (int)solution104.size() +
-                        (int)solution105.size() + (int)solution106.size();
+        
+
+        std::vector<std::vector<Move>> move_sets_7 = {
+            {r, l, U, D, F, u},
+            {u2, d, U, D, F, r},
+            {u, d, U2, D, F, d2},
+            {u, d, U2, R, F2, r,},
+            {u, d2, U, D, F, r, l},
+            {f, b, U, D2, F, r},
+            {u, d, U, D, F, r, l},
+        };
+        auto solution201 = run_parallel_phase(cube, 201, move_sets_7, max_depth);
+        auto solution202 = run_parallel_phase(cube, 202, move_sets_7, max_depth);
+        auto solution203 = run_parallel_phase(cube, 203, move_sets_7, max_depth);
+        auto solution204 = run_parallel_phase(cube, 204, move_sets_7, max_depth);
+        auto solution205 = run_parallel_phase(cube, 205, move_sets_7, max_depth);
+        auto solution206 = run_parallel_phase(cube, 206, move_sets_7, max_depth);
+        auto solution207 = run_parallel_phase(cube, 207, move_sets_7, max_depth);
+        auto solution208 = run_parallel_phase(cube, 208, move_sets_7, max_depth);
+        auto solution209 = run_parallel_phase(cube, 209, move_sets_7, max_depth);
+        auto solution210 = run_parallel_phase(cube, 210, move_sets_7, max_depth);
+        // perform final edge pairing uses either 9 or 13 moves average of 11
+
+        //auto solution211 = run_parallel_phase(cube, 211, move_sets_7, max_depth);
+        //auto solution212 = run_parallel_phase(cube, 212, move_sets_7, max_depth);
+
+        std::vector<std::vector<Move>> move_sets_8 = {
+            {R, L, U, D, F, B},
+            {U, D, R, L, F, B},
+            {F, B, U, D, R, L},
+            {R, L, F, B, U, D},
+            {F, B, U, D, F2, R},
+            {R, L, F, B2, U, D},
+        };
+        auto cross_solution = run_parallel_phase(cube, 301, move_sets_8, max_depth);
+
+        std::vector<std::vector<Move>> move_sets_9 = {
+            {R, U, R_PRIME, U_PRIME},
+            {R, U, R_PRIME, U_PRIME, F, F_PRIME},
+            {L, U, L_PRIME, U_PRIME},
+            {L, U, L_PRIME, U_PRIME, F, F_PRIME},
+            {R, U, R_PRIME, U_PRIME},
+            {R, U, R_PRIME, U_PRIME, B, B_PRIME},
+            {L, U, L_PRIME, U_PRIME},
+            {L, U, L_PRIME, U_PRIME, B, B_PRIME},
+        };
+        auto f2l_solution1 = run_parallel_phase(cube, 302, move_sets_9, max_depth);
+        auto f2l_solution2 = run_parallel_phase(cube, 303, move_sets_9, max_depth);
+        auto f2l_solution3 = run_parallel_phase(cube, 304, move_sets_9, max_depth);
+        auto f2l_solution4 = run_parallel_phase(cube, 305, move_sets_9, max_depth);
+
+        if (cube.twist_distance(210) == 0) {
+            int length = (int)solution201.size() + (int)solution202.size() +
+                        (int)solution203.size() + (int)solution204.size() +
+                        (int)solution205.size() + (int)solution206.size() +
+                        (int)solution207.size() + (int)solution208.size() +
+                        (int)solution209.size() + (int)solution210.size() + 
+                        (int)f2l_solution1.size() + (int)f2l_solution2.size() +
+                        (int)f2l_solution3.size() + (int)f2l_solution4.size();
 
                         cube.print();
 
@@ -349,6 +404,8 @@ int main() {
     std::cout << "  Average total solution length: " << mean << "\n";
     std::cout << "  Std Dev: " << stdev << "\n";
     std::cout << "========================================\n";
+
+
 
     return 0;
 }

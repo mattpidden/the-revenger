@@ -144,7 +144,7 @@ void Cube4x4::move(Move m) {
 std::vector<Move> Cube4x4::apply_random_moves(int n) {
     std::vector<Move> all_moves = {
         R, L, U, D, F, B, R_PRIME, L_PRIME, U_PRIME, D_PRIME, F_PRIME, B_PRIME,
-        r, l, u, d, f, b, r_PRIME, l_PRIME, u_PRIME, d_PRIME, f_PRIME, b_PRIME
+        //r, l, u, d, f, b, r_PRIME, l_PRIME, u_PRIME, d_PRIME, f_PRIME, b_PRIME
     };
     std::srand(std::time(nullptr));
     std::vector<Move> appliedMoves;
@@ -212,7 +212,39 @@ int Cube4x4::twist_distance(int phase) const {
         case 106:
             return blue_green_centre_twist_distance();
         case 201:
+            return first_edge_twist_distance(1);
+        case 202:
+            return first_edge_twist_distance(2);
+        case 203:
+            return first_edge_twist_distance(3);
+        case 204:
+            return first_edge_twist_distance(4);
+        case 205:
+            return first_edge_twist_distance(5);
+        case 206:
+            return first_edge_twist_distance(6);
+        case 207:
+            return first_edge_twist_distance(7);
+        case 208:
+            return first_edge_twist_distance(8);
+        case 209:
+            return first_edge_twist_distance(9);
+        case 210:
+            return first_edge_twist_distance(10);
+        case 211:
+            return first_edge_twist_distance(11);
+        case 212:
+            return first_edge_twist_distance(12);
+        case 301:
             return cross_twist_distance();
+        case 302:
+            return f2l_twist_distance(1);
+        case 303:
+            return f2l_twist_distance(2);
+        case 304:
+            return f2l_twist_distance(3);
+        case 305:
+            return f2l_twist_distance(4);
         default:
             return -1;
     }
@@ -457,6 +489,56 @@ int Cube4x4::blue_green_centre_twist_distance() const {
     return (bad_count + 3) / 4;
 } 
 
+int Cube4x4::first_edge_twist_distance(int number_edges) const {
+    int og_bad_count = blue_green_centre_twist_distance();
+    int bad_count = 0;
+
+    if (!(facelets[U_FACE][1] == facelets[U_FACE][2] && facelets[B_FACE][1] == facelets[B_FACE][2])) {
+        bad_count = bad_count + 2;
+    }
+    if (!(facelets[U_FACE][7] == facelets[U_FACE][11] && facelets[R_FACE][1] == facelets[R_FACE][2])) {
+        bad_count = bad_count + 2;
+    }
+    if (!(facelets[U_FACE][13] == facelets[U_FACE][14] && facelets[F_FACE][1] == facelets[F_FACE][2])) {
+        bad_count = bad_count + 2;
+    }
+    if (!(facelets[U_FACE][4] == facelets[U_FACE][8] && facelets[L_FACE][1] == facelets[L_FACE][2])) {
+        bad_count = bad_count + 2;
+    }
+    if (!(facelets[D_FACE][1] == facelets[D_FACE][2] && facelets[F_FACE][13] == facelets[F_FACE][14])) {
+        bad_count = bad_count + 2;
+    }
+    if (!(facelets[D_FACE][7] == facelets[D_FACE][11] && facelets[R_FACE][13] == facelets[R_FACE][14])) {
+        bad_count = bad_count + 2;
+    }
+    if (!(facelets[D_FACE][13] == facelets[D_FACE][14] && facelets[B_FACE][13] == facelets[B_FACE][14])) {
+        bad_count = bad_count + 2;
+    }
+    if (!(facelets[D_FACE][4] == facelets[D_FACE][8] && facelets[L_FACE][13] == facelets[L_FACE][14])) {
+        bad_count = bad_count + 2;
+    }
+    if (!(facelets[F_FACE][7] == facelets[F_FACE][11] && facelets[R_FACE][4] == facelets[R_FACE][8])) {
+        bad_count = bad_count + 2;
+    }
+    if (!(facelets[R_FACE][7] == facelets[R_FACE][11] && facelets[B_FACE][4] == facelets[B_FACE][8])) {
+        bad_count = bad_count + 2;
+    }
+    if (!(facelets[B_FACE][7] == facelets[B_FACE][11] && facelets[L_FACE][4] == facelets[L_FACE][8])) {
+        bad_count = bad_count + 2;
+    }
+    if (!(facelets[F_FACE][7] == facelets[F_FACE][11] && facelets[F_FACE][4] == facelets[F_FACE][8])) {
+        bad_count = bad_count + 2;
+    }
+    
+    int final_bad_count = bad_count - (2*(12-number_edges)) + og_bad_count;
+
+    if (final_bad_count <= 0) {
+        return 0;
+    }
+    return (final_bad_count + 3) / 4;
+} 
+
+
 int Cube4x4::cross_twist_distance() const {
     int bad_count = 0;
 
@@ -472,6 +554,34 @@ int Cube4x4::cross_twist_distance() const {
         return 0;
     }
     return (bad_count + 7) / 8;
+}
+
+int Cube4x4::f2l_twist_distance(int number_pairs) const {
+    int og_bad_count = cross_twist_distance();
+    int bad_count = 0;
+
+    if (!(facelets[F_FACE][11] == GREEN && facelets[F_FACE][15] == GREEN && facelets[R_FACE][8] == RED && facelets[R_FACE][12] == RED && facelets[D_FACE][3] == YELLOW)) {
+        bad_count = bad_count + 2;
+    }
+    if (!(facelets[R_FACE][11] == RED && facelets[R_FACE][15] == RED && facelets[B_FACE][8] == BLUE && facelets[B_FACE][12] == BLUE && facelets[D_FACE][15] == YELLOW)) {
+        bad_count = bad_count + 2;
+    }
+    if (!(facelets[B_FACE][11] == BLUE && facelets[B_FACE][15] == BLUE && facelets[L_FACE][8] == ORANGE && facelets[L_FACE][12] == ORANGE && facelets[D_FACE][12] == YELLOW)) {
+        bad_count = bad_count + 2;
+    }
+    if (!(facelets[L_FACE][11] == ORANGE && facelets[L_FACE][15] == ORANGE && facelets[F_FACE][8] == GREEN && facelets[F_FACE][12] == GREEN && facelets[D_FACE][0] == YELLOW)) {
+        bad_count = bad_count + 2;
+    }
+    int final_bad_count = bad_count - (2*(4-number_pairs));
+    if (final_bad_count < 0) {
+        final_bad_count = 0;
+    }
+    final_bad_count = final_bad_count + og_bad_count;
+
+    if (final_bad_count <= 0) {
+        return 0;
+    }
+    return (final_bad_count + 3) / 4;
 }
 
 // Converts a colour enum to a char

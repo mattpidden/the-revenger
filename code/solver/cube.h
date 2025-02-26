@@ -49,7 +49,9 @@ public:
     int orange_centre_twist_distance() const;
     int red_centre_twist_distance() const;
     int blue_green_centre_twist_distance() const;
+    int first_edge_twist_distance(int number_edges) const;
     int cross_twist_distance() const;
+    int f2l_twist_distance(int number_pairs) const;
 
 private:
     std::array<std::array<Colour, 16>, 6> facelets;
