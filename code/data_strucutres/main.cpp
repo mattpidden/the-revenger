@@ -190,15 +190,19 @@ int main() {
     double inner_moves_per_sec = (n / inner_time_ms) * 1000.0 / 1e6;
 
     // Benchmark memory
-    size_t cube_size = sizeof(cube);
     struct mallinfo before = mallinfo();
+    Cube4x4 newcube;
+    struct mallinfo after = mallinfo(); 
+    size_t actual_memory_used_1 = after.uordblks - before.uordblks;
+
+    before = mallinfo();
     std::vector<Cube4x4*> cubes;
     cubes.reserve(n);
     for (int i = 0; i < n; i++) {
         cubes.push_back(new Cube4x4());
     }
-    struct mallinfo after = mallinfo(); 
-    size_t actual_memory_used = after.uordblks - before.uordblks;
+    after = mallinfo(); 
+    size_t actual_memory_used_n = after.uordblks - before.uordblks;
     for (auto cube : cubes) {
         delete cube;
     }
@@ -208,8 +212,8 @@ int main() {
     std::cout << "Outer Slice Moves (millions) per second: " << outter_moves_per_sec << ".\n";
     std::cout << "Time taken for " << n << " inner slice moves: " << inner_time_ms << " ms.\n";
     std::cout << "Inner Slice Moves (millions) per second: " << inner_moves_per_sec << ".\n";
-    std::cout << "Size of one Cube4x4 instance: " << cube_size << " bytes\n";
-    std::cout << "Heap memory used for " << n << " cubes: " << actual_memory_used / (1024.0 * 1024.0) << " MB\n";
+    std::cout << "Size of one Cube4x4 instance: " << actual_memory_used_1 << " bytes\n";
+    std::cout << "Heap memory used for " << n << " cubes: " << actual_memory_used_n / (1024.0 * 1024.0) << " MB\n";
 
     return 0;
 } 
