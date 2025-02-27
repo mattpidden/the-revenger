@@ -16,7 +16,6 @@
 #define displayDioPin 3
 
 TM1637 digitDisplay(displayClkPin, displayDioPin);
-int8_t displayValues[] = {0, 0, 0, 0};
 
 AccelStepper rotateStepper(motorInterfaceType, rotateStepPin, rotateDirPin);
 AccelStepper linearStepper(motorInterfaceType, linearStepPin, linearDirPin);
@@ -25,12 +24,6 @@ int stepsPerRevolution = 200;
 float pulleyCircumfrence = 39.0;
 float stepsPerMM = stepsPerRevolution / pulleyCircumfrence;
 float linearRailDistanceMM = 40; 
-
-bool commandRunning = false;
-bool lastCommandRunning = false;
-char command = 'N';
-unsigned long timeCommandStarted = micros();
-
 
 void setup() {
   Serial.begin(9600); 
@@ -59,30 +52,28 @@ void setup() {
 }
 
 void loop() {
-  if (commandRunning) {
-    updateDisplay();
-  } else if (commandRunning == false && lastCommandRunning == true) {
-    soundBuzzer();
-  } else if (Serial.available() > 0) {
-    command = Serial.read(); 
-  }
-  
-  lastCommandRunning = commandRunning;
-
-  if (command == 'C') {
-    calibrateLinearAcctuator(); 
-  }
-  else if (command == 'O') {
-    moveLinearHubOut(); 
-  }
-  else if (command == 'I') {
-    moveLinearHubIn(); 
-  }
-  else if (command == 'R') {
-    rotateClaw(); 
-  }
-  else if (command == 'F') {
-    fullAction(); 
+  if (Serial.available() > 0) {
+    char command = Serial.read(); 
+    if (command == 'C') {
+      Serial.println("'C' Calibrate linear acctuator");
+      calibrateLinearAcctuator(); 
+    }
+    else if (command == 'O') {
+      Serial.println("'O' Send linear acctuator out");
+      moveLinearHubOut(); 
+    }
+    else if (command == 'I') {
+      Serial.println("'I' Send linear acctuator in");
+      moveLinearHubIn(); 
+    }
+    else if (command == 'R') {
+      Serial.println("'R' Rotate claw");
+      rotateClaw(); 
+    }
+    else if (command == 'F') {
+      Serial.println("'F' Perform a full action");
+      fullAction(); 
+    }
   }
 }
 
@@ -92,16 +83,18 @@ void soundBuzzer() {
   digitalWrite(buzzerPin, LOW);
 }
 
-void updateDisplay() {
-  unsigned long nowTime = micros();
-  unsigned long durationMicroseconds = nowTime - timeCommandStarted;
-  float durationSeconds = durationMicroseconds / 1000000.0;
-  int sec = (int)durationSeconds;                      
-  int ms = (int)((durationSeconds - sec) * 100);   
-  int8_t displayValues[] = {static_cast<int8_t>(sec / 10), static_cast<int8_t>(sec % 10), static_cast<int8_t>(ms / 10), static_cast<int8_t>(ms % 10)};
-
-  digitDisplay.point(POINT_ON);
-  digitDisplay.display(displayValues);
+void updateDisplay(float seconds, bool resetDisplay = false) {
+  if (resetDisplay) {
+    digitDisplay.point(POINT_OFF);
+    digitDisplay.clearDisplay();
+  } else {
+    int sec = (int)seconds;                      
+    int ms = (int)((seconds - sec) * 100);   
+    int8_t displayValues[] = {static_cast<int8_t>(sec / 10), static_cast<int8_t>(sec % 10), static_cast<int8_t>(ms / 10), static_cast<int8_t>(ms % 10)};
+  
+    digitDisplay.point(POINT_ON);
+    digitDisplay.display(displayValues);
+  }
 }
 
 void calibrateLinearAcctuator() {
@@ -122,62 +115,30 @@ void calibrateLinearAcctuator() {
 }
 
 void moveLinearHubOut() {
-  if (!commandRunning) {
-    soundBuzzer();
-    commandRunning = true;
-    timeCommandStarted = micros();
-    digitalWrite(linearEnablePin, LOW);
-    int stepsToMove = linearRailDistanceMM * stepsPerMM;
-    linearStepper.move(stepsToMove);
-    linearStepper.run();
-  } 
-  if (linearStepper.distanceToGo() == 0) {
-    digitalWrite(linearEnablePin, HIGH);
-    commandRunning = false;
-    command = 'N';
-  } else {
-    linearStepper.run();
-  }
+  digitalWrite(linearEnablePin, LOW);
+  int stepsToMove = linearRailDistanceMM * stepsPerMM;
+  linearStepper.move(stepsToMove);
+  linearStepper.runToPosition();
+  digitalWrite(linearEnablePin, HIGH);
 }
 
 void moveLinearHubIn() {
-  if (!commandRunning) {
-    soundBuzzer();
-    commandRunning = true;
-    timeCommandStarted = micros();
-    digitalWrite(linearEnablePin, LOW);
-    int stepsToMove = linearRailDistanceMM * stepsPerMM;
-    linearStepper.move(-stepsToMove);
-    linearStepper.run();
-  } 
-  if (linearStepper.distanceToGo() == 0) {
-    digitalWrite(linearEnablePin, HIGH);
-    commandRunning = false;
-    command = 'N';
-  } else {
-    linearStepper.run();
-  }
+  digitalWrite(linearEnablePin, LOW);
+  int stepsToMove = linearRailDistanceMM * stepsPerMM;
+  linearStepper.move(-stepsToMove);
+  linearStepper.runToPosition();
+  digitalWrite(linearEnablePin, HIGH);
 }
 
 void rotateClaw() {
-  if (!commandRunning) {
-    soundBuzzer();
-    commandRunning = true;
-    timeCommandStarted = micros();
-    digitalWrite(rotateEnablePin, LOW);
-    rotateStepper.move(100);
-    rotateStepper.run();
-  } 
-  if (rotateStepper.distanceToGo() == 0) {
-    digitalWrite(rotateEnablePin, HIGH);
-    commandRunning = false;
-    command = 'N';
-  } else {
-    rotateStepper.run();
-  }
+  digitalWrite(rotateEnablePin, LOW);
+  rotateStepper.move(100);
+  rotateStepper.runToPosition();
+  digitalWrite(rotateEnablePin, HIGH);
 }
 
 void fullAction() {
+  updateDisplay(0.0, true);
   soundBuzzer();
   
   unsigned long startTime = micros(); 
@@ -192,6 +153,7 @@ void fullAction() {
   float durationSeconds = durationMicroseconds / 1000000.0;
 
   soundBuzzer();
+  updateDisplay(durationSeconds);
 
   Serial.print("Execution Time: ");
   Serial.print(durationMicroseconds);
