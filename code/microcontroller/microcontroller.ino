@@ -1,13 +1,13 @@
 #include <AccelStepper.h>
 
-#define rotateDirPin 13
-#define rotateStepPin 12
-#define rotateEnablePin 11
-#define linearDirPin 10
-#define linearStepPin 9
-#define linearEnablePin 8
+#define rotateDirPin 31
+#define rotateStepPin 22
+#define rotateEnablePin 53
+#define linearDirPin 29
+#define linearStepPin 24
+#define linearEnablePin 52
 #define motorInterfaceType 1
-#define limitPin 7
+#define limitPin 32
 
 AccelStepper rotateStepper(motorInterfaceType, rotateStepPin, rotateDirPin);
 AccelStepper linearStepper(motorInterfaceType, linearStepPin, linearDirPin);
