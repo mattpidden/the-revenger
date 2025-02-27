@@ -8,164 +8,196 @@
 #include <chrono>
 #include <malloc.h>
 
-class Cube4x4 {
-private:
-    std::vector<char> facelets;
-
-public:
-    Cube4x4() {
-        facelets = {
-            'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W', 'W',  // Up face  
-            'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y',  // Down face
-            'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B',  // Back face
-            'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G',  // Front face
-            'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O', 'O',  // Left face
-            'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R',    // Right face
-        };
-    }
-
-    // Method to display the cube's facelets
-    void displayCube() {
-        std::map<char, std::string> colours_to_emojis = {
-            {'W', "⬜"}, {'Y', "🟨"}, {'G', "🟩"}, 
-            {'B', "🟦"}, {'O', "🟧"}, {'R', "🟥"}
-        };
-
-        std::cout << "          Up (U)\n";
-        for (int i = 0; i < 4; ++i) {
-            std::cout << "          ";
-            for (int j = 0; j < 4; ++j) {
-                std::cout << colours_to_emojis[facelets[0 + i * 4 + j]];
-            }
-            std::cout << "\n";
-        }
-        std::cout << "\nLeft (L)  Front (F) Right (R) Back (B)\n";
-        for (int row = 0; row < 4; ++row) {
-            for (int col = 0; col < 4; ++col)
-                std::cout << colours_to_emojis[facelets[64 + row * 4 + col]];
-            std::cout << "  ";
-            for (int col = 0; col < 4; ++col)
-                std::cout << colours_to_emojis[facelets[48 + row * 4 + col]];
-            std::cout << "  ";
-            for (int col = 0; col < 4; ++col)
-                std::cout << colours_to_emojis[facelets[80 + row * 4 + col]];
-            std::cout << "  ";
-            for (int col = 0; col < 4; ++col)
-                std::cout << colours_to_emojis[facelets[32 + row * 4 + col]];
-            std::cout << "\n";
-        }
-        std::cout << "\n          Down (D)\n";
-        for (int i = 0; i < 4; ++i) {
-            std::cout << "          ";
-            for (int j = 0; j < 4; ++j) {
-                std::cout << colours_to_emojis[facelets[16 + i * 4 + j]];
-            }
-            std::cout << "\n";
-        }
-    }
-
-    void apply_move(const std::string& move) {
-        bool clockwise = (move.back() != '\''); 
-
-        std::string base_move = move;
-        if (!clockwise) base_move = move.substr(0, move.size() - 1); // Remove ' if present
-        int repeat = (base_move.back() == '2') ? 2 : 1;
-        if (repeat == 2) base_move = base_move.substr(0, base_move.size() - 1); // Remove '2' if present
-
-        for (int i = 0; i < repeat; i++) {
-            if (base_move == "R") move_R(clockwise);
-            else if (base_move == "r") move_r(clockwise);
-            else if (base_move == "Rw") move_Rw(clockwise);
-            else std::cout << "Invalid move: " << move << "\n";
-        }
-    }
-
-    void apply_index_swaps(const std::unordered_map<int, int>& index_move_map, bool clockwise) {
-        std::vector<char> facelets = facelets;
-        for (const auto& [a, b] : index_move_map) {
-            if (clockwise) {
-                facelets[a] = facelets[b];
-            } else {
-                facelets[b] = facelets[a];
-            }
-        }
-    }
-
-    void move_R(bool clockwise) {
-        auto temp3 = facelets[3];
-        auto temp7 = facelets[3];
-        auto temp11 = facelets[11];
-        auto temp15 = facelets[15];
-        facelets[3] = facelets[51];
-        facelets[7] = facelets[55];
-        facelets[11] = facelets[59];
-        facelets[15] = facelets[63];
-        facelets[51] = facelets[19];
-        facelets[55] = facelets[23];
-        facelets[59] = facelets[27];
-        facelets[63] = facelets[31];
-        facelets[19] = facelets[44];
-        facelets[23] = facelets[40];
-        facelets[27] = facelets[36];
-        facelets[31] = facelets[32];
-        facelets[44] = temp3;
-        facelets[40] = temp7;
-        facelets[36] = temp11;
-        facelets[32] = temp15;
-        auto temp80 = facelets[80];
-        auto temp81 = facelets[81];
-        auto temp82 = facelets[82];
-        auto temp83 = facelets[83];
-        auto temp85 = facelets[85];
-        auto temp87 = facelets[87];
-        auto temp91 = facelets[91];
-        facelets[80] = facelets[92];
-        facelets[81] = facelets[88];
-        facelets[82] = facelets[84];
-        facelets[83] = temp80;
-        facelets[84] = facelets[93];
-        facelets[85] = facelets[89];
-        facelets[86] = temp85;
-        facelets[87] = temp81;
-        facelets[88] = facelets[94];
-        facelets[89] = facelets[90];
-        facelets[90] = facelets[86];
-        facelets[91] = temp82;
-        facelets[92] = facelets[95];
-        facelets[93] = temp91;
-        facelets[94] = temp87;
-        facelets[95] = temp83;
-    }
-
-    void move_r(bool clockwise) {   
-        auto temp2 = facelets[2];
-        auto temp6 = facelets[6];
-        auto temp10 = facelets[10];
-        auto temp14 = facelets[14];
-        facelets[2] = facelets[50];
-        facelets[6] = facelets[54];
-        facelets[10] = facelets[58];
-        facelets[14] = facelets[62];
-        facelets[50] = facelets[18];
-        facelets[54] = facelets[22];
-        facelets[58] = facelets[26];
-        facelets[62] = facelets[30];
-        facelets[18] = facelets[45];
-        facelets[22] = facelets[41];
-        facelets[26] = facelets[37];
-        facelets[30] = facelets[33];
-        facelets[45] = temp2;
-        facelets[41] = temp6;
-        facelets[37] = temp10;
-        facelets[33] = temp14;
-    }
-
-    void move_Rw(bool clockwise){
-        move_r(clockwise);
-        move_R(clockwise);
-    }
-
+enum Colour : uint8_t{
+    WHITE = 0, YELLOW, GREEN, BLUE, ORANGE, RED, 
 };
+
+enum Face {
+    U_FACE = 0,
+    L_FACE,
+    F_FACE,
+    R_FACE,
+    B_FACE,
+    D_FACE
+};
+
+enum Move {
+    R, R_PRIME, R2,
+    L, L_PRIME, L2,
+    U, U_PRIME, U2,
+    D, D_PRIME, D2,
+    F, F_PRIME, F2,
+    B, B_PRIME, B2,
+    r, r_PRIME, r2,
+    l, l_PRIME, l2,
+    u, u_PRIME, u2,
+    d, d_PRIME, d2,
+    f, f_PRIME, f2,
+    b, b_PRIME, b2,
+};
+
+
+class Cube4x4 {
+public:
+    // Constructor: make a solved cube
+    Cube4x4() {
+        reset();
+    }
+
+    // Reset to goal state:
+    void reset() {
+        facelets[U_FACE].fill(WHITE);
+        facelets[L_FACE].fill(ORANGE);
+        facelets[F_FACE].fill(GREEN);
+        facelets[R_FACE].fill(RED);
+        facelets[B_FACE].fill(BLUE);
+        facelets[D_FACE].fill(YELLOW);
+    }
+
+    // Handles moves
+    void move(Move m) {
+        switch(m) {
+            case U:  turn_outer_face(U_FACE, true); break;
+            case U_PRIME: turn_outer_face(U_FACE, false); break;
+            case U2: turn_outer_face(U_FACE, true); turn_outer_face(U_FACE, true); break;
+            case L:  turn_outer_face(L_FACE, true); break;
+            case L_PRIME: turn_outer_face(L_FACE, false); break;
+            case L2: turn_outer_face(L_FACE, true); turn_outer_face(L_FACE, true); break;
+            case F:  turn_outer_face(F_FACE, true); break;
+            case F_PRIME: turn_outer_face(F_FACE, false); break;
+            case F2: turn_outer_face(F_FACE, true); turn_outer_face(F_FACE, true); break;
+            case R:  turn_outer_face(R_FACE, true); break;
+            case R_PRIME: turn_outer_face(R_FACE, false); break;
+            case R2: turn_outer_face(R_FACE, true); turn_outer_face(R_FACE, true); break;
+            case B:  turn_outer_face(B_FACE, true); break;
+            case B_PRIME: turn_outer_face(B_FACE, false); break;
+            case B2: turn_outer_face(B_FACE, true); turn_outer_face(B_FACE, true); break;
+            case D:  turn_outer_face(D_FACE, true); break;
+            case D_PRIME: turn_outer_face(D_FACE, false); break;
+            case D2: turn_outer_face(D_FACE, true); turn_outer_face(D_FACE, true); break;
+            case u:  turn_inner_slice(U_FACE, true); break;
+            case u_PRIME: turn_inner_slice(U_FACE, false); break;
+            case u2: turn_inner_slice(U_FACE, true); turn_inner_slice(U_FACE, true); break;
+            case l:  turn_inner_slice(L_FACE, true); break;
+            case l_PRIME: turn_inner_slice(L_FACE, false); break;
+            case l2: turn_inner_slice(L_FACE, true); turn_inner_slice(L_FACE, true); break;
+            case f:  turn_inner_slice(F_FACE, true); break;
+            case f_PRIME: turn_inner_slice(F_FACE, false); break;
+            case f2: turn_inner_slice(F_FACE, true); turn_inner_slice(F_FACE, true); break;
+            case r:  turn_inner_slice(R_FACE, true); break;
+            case r_PRIME: turn_inner_slice(R_FACE, false); break;
+            case r2: turn_inner_slice(R_FACE, true); turn_inner_slice(R_FACE, true); break;
+            case b:  turn_inner_slice(B_FACE, true); break;
+            case b_PRIME: turn_inner_slice(B_FACE, false); break;
+            case b2: turn_inner_slice(B_FACE, true); turn_inner_slice(B_FACE, true); break;
+            case d:  turn_inner_slice(D_FACE, true); break;
+            case d_PRIME: turn_inner_slice(D_FACE, false); break;
+            case d2: turn_inner_slice(D_FACE, true); turn_inner_slice(D_FACE, true); break;
+            default:
+                break;
+        }
+    }
+
+private:
+    // Facelets: 6 faces × 16 stickers
+    // facelets[U-FACE][0..15], facelets[R_FACE][0..15], ...
+    std::array<std::array<Colour, 16>, 6> facelets;
+
+    static constexpr int adjacent_faces[6][4] = {
+        {L_FACE, B_FACE, R_FACE, F_FACE},  // U (Up)
+        {U_FACE, F_FACE, D_FACE, B_FACE},  // L (Left)
+        {U_FACE, R_FACE, D_FACE, L_FACE},  // F (Front)
+        {U_FACE, B_FACE, D_FACE, F_FACE},  // R (Right)
+        {U_FACE, L_FACE, D_FACE, R_FACE},  // B (Back)
+        {L_FACE, F_FACE, R_FACE, B_FACE}   // D (Down)
+    };
+
+    static constexpr int adjacent_outer_edges[6][4][4] = {
+        {{0,1,2,3}, {0,1,2,3}, {0,1,2,3}, {0,1,2,3}},        // U (Up)
+        {{0,4,8,12}, {0,4,8,12}, {0,4,8,12}, {15,11,7,3}},  // L (Left)
+        {{12,13,14,15}, {0,4,8,12}, {3,2,1,0}, {15,11,7,3}},  // F (Front)
+        {{3,7,11,15}, {12,8,4,0}, {3,7,11,15}, {3,7,11,15}},  // R (Right)
+        {{0,1,2,3}, {12,8,4,0}, {15,14,13,12}, {3,7,11,15}},  // B (Back)
+        {{12,13,14,15}, {12,13,14,15}, {12,13,14,15}, {12,13,14,15}}   // D (Down)
+    };
+
+    static constexpr int adjacent_inner_edges[6][4][4] = {
+        {{4,5,6,7}, {4,5,6,7}, {4,5,6,7}, {4,5,6,7}},        // U (Up)
+        {{1,5,9,13}, {1,5,9,13}, {1,5,9,13}, {14,10,6,2}},  // L (Left)
+        {{8,9,10,11}, {1,5,9,13}, {7,6,5,4}, {14,10,6,2}},  // F (Front)
+        {{2,6,10,14}, {13,9,5,1}, {2,6,10,14}, {2,6,10,14}},  // R (Right)
+        {{4,5,6,7}, {13,9,5,1}, {11,10,9,8}, {2,6,10,14}},  // B (Back)
+        {{8,9,10,11}, {8,9,10,11}, {8,9,10,11}, {8,9,10,11}}   // D (Down)
+    };
+
+
+    void turn_outer_face(int face_index, bool clockwise) {
+        auto &face = facelets[face_index];
+
+        if (clockwise) {
+            auto tmp = face[0]; face[0] = face[12];  face[12] = face[15];  face[15] = face[3];  face[3] = tmp;
+            tmp = face[1]; face[1] = face[8];  face[8] = face[14];  face[14] = face[7];  face[7] = tmp;
+            tmp = face[2]; face[2] = face[4];  face[4] = face[13];  face[13] = face[11];  face[11] = tmp;
+            tmp = face[5]; face[5] = face[9];  face[9] = face[10];  face[10] = face[6];  face[6] = tmp;
+        } else {
+            auto tmp = face[0]; face[0] = face[3];  face[3] = face[15];  face[15] = face[12];  face[12] = tmp;
+            tmp = face[1]; face[1] = face[7];  face[7] = face[14];  face[14] = face[8];  face[8] = tmp;
+            tmp = face[2]; face[2] = face[11];  face[11] = face[13];  face[13] = face[4];  face[4] = tmp;
+            tmp = face[5]; face[5] = face[6];  face[6] = face[10];  face[10] = face[9];  face[9] = tmp;
+        }
+
+        auto &first_face = facelets[adjacent_faces[face_index][0]];
+        const auto &first_edges = adjacent_outer_edges[face_index][0];
+        std::array<Colour, 4> temp_edges = {first_face[first_edges[0]], first_face[first_edges[1]], first_face[first_edges[2]], first_face[first_edges[3]]};
+        int start_index = clockwise ? 3 : 1;
+        int step = clockwise ? -1 : 1;
+        for (int i = start_index; (clockwise ? i > 0 : i < 4); i += step) {
+            auto &current_face = facelets[adjacent_faces[face_index][i]];
+            const auto &current_edges = adjacent_outer_edges[face_index][i];
+            int next_index = clockwise ? (i + 1) % 4 : (i - 1 + 4) % 4;
+            auto &next_face = facelets[adjacent_faces[face_index][next_index]];
+            const auto &next_edges = adjacent_outer_edges[face_index][next_index];
+            next_face[next_edges[0]] = current_face[current_edges[0]];
+            next_face[next_edges[1]] = current_face[current_edges[1]];
+            next_face[next_edges[2]] = current_face[current_edges[2]];
+            next_face[next_edges[3]] = current_face[current_edges[3]];
+        }
+        int last_face_index = clockwise ? 1 : 3;
+        auto &last_face = facelets[adjacent_faces[face_index][last_face_index]];
+        const auto &lastEdges = adjacent_outer_edges[face_index][last_face_index];
+        last_face[lastEdges[0]] = temp_edges[0];  
+        last_face[lastEdges[1]] = temp_edges[1];  
+        last_face[lastEdges[2]] = temp_edges[2];  
+        last_face[lastEdges[3]] = temp_edges[3];  
+    }
+
+    void turn_inner_slice(int face_index, bool clockwise) {
+        auto &first_face = facelets[adjacent_faces[face_index][0]];
+        const auto &first_edges = adjacent_inner_edges[face_index][0];
+        std::array<Colour, 4> temp_edges = {first_face[first_edges[0]], first_face[first_edges[1]], first_face[first_edges[2]], first_face[first_edges[3]]};
+        int start_index = clockwise ? 3 : 1;
+        int step = clockwise ? -1 : 1;
+        for (int i = start_index; (clockwise ? i > 0 : i < 4); i += step) {
+            auto &current_face = facelets[adjacent_faces[face_index][i]];
+            const auto &current_edges = adjacent_inner_edges[face_index][i];
+            int next_index = clockwise ? (i + 1) % 4 : (i - 1 + 4) % 4;
+            auto &next_face = facelets[adjacent_faces[face_index][next_index]];
+            const auto &next_edges = adjacent_inner_edges[face_index][next_index];
+            next_face[next_edges[0]] = current_face[current_edges[0]];
+            next_face[next_edges[1]] = current_face[current_edges[1]];
+            next_face[next_edges[2]] = current_face[current_edges[2]];
+            next_face[next_edges[3]] = current_face[current_edges[3]];
+        }
+        int last_face_index = clockwise ? 1 : 3;
+        auto &last_face = facelets[adjacent_faces[face_index][last_face_index]];
+        const auto &lastEdges = adjacent_inner_edges[face_index][last_face_index];
+        last_face[lastEdges[0]] = temp_edges[0];  
+        last_face[lastEdges[1]] = temp_edges[1];  
+        last_face[lastEdges[2]] = temp_edges[2];  
+        last_face[lastEdges[3]] = temp_edges[3];  
+    }
+};
+
 
 int main() {
     Cube4x4 cube;
@@ -174,7 +206,7 @@ int main() {
     // Benchmark speed
     auto start = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < n; i++) {
-        cube.apply_move("R");
+        cube.move(R);
     }
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> duration = end - start;
@@ -182,7 +214,7 @@ int main() {
     double outter_moves_per_sec = (n / outter_time_ms) * 1000.0 / 1e6;
     start = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < n; i++) {
-        cube.apply_move("r");
+        cube.move(r);
     }
     end = std::chrono::high_resolution_clock::now();
     duration = end - start;
@@ -191,17 +223,12 @@ int main() {
 
     // Benchmark memory
     struct mallinfo before = mallinfo();
-    Cube4x4 newcube;
-    struct mallinfo after = mallinfo(); 
-    size_t actual_memory_used_1 = after.uordblks - before.uordblks;
-
-    before = mallinfo();
     std::vector<Cube4x4*> cubes;
     cubes.reserve(n);
     for (int i = 0; i < n; i++) {
         cubes.push_back(new Cube4x4());
     }
-    after = mallinfo(); 
+    struct mallinfo after = mallinfo(); 
     size_t actual_memory_used_n = after.uordblks - before.uordblks;
     for (auto cube : cubes) {
         delete cube;
@@ -212,7 +239,6 @@ int main() {
     std::cout << "Outer Slice Moves (millions) per second: " << outter_moves_per_sec << ".\n";
     std::cout << "Time taken for " << n << " inner slice moves: " << inner_time_ms << " ms.\n";
     std::cout << "Inner Slice Moves (millions) per second: " << inner_moves_per_sec << ".\n";
-    std::cout << "Size of one Cube4x4 instance: " << actual_memory_used_1 << " bytes\n";
     std::cout << "Heap memory used for " << n << " cubes: " << actual_memory_used_n / (1024.0 * 1024.0) << " MB\n";
 
     return 0;
