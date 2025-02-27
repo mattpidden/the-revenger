@@ -1,13 +1,21 @@
 #include <AccelStepper.h>
+#include "TM1637.h"
 
 #define rotateDirPin 31
 #define rotateStepPin 22
-#define rotateEnablePin 53
+#define rotateEnablePin 33
 #define linearDirPin 29
 #define linearStepPin 24
-#define linearEnablePin 52
+#define linearEnablePin 35
+
 #define motorInterfaceType 1
 #define limitPin 32
+
+#define buzzerPin 7
+#define displayClkPin 2
+#define displayDioPin 3
+
+TM1637 digitDisplay(displayClkPin, displayDioPin);
 
 AccelStepper rotateStepper(motorInterfaceType, rotateStepPin, rotateDirPin);
 AccelStepper linearStepper(motorInterfaceType, linearStepPin, linearDirPin);
@@ -20,10 +28,15 @@ float linearRailDistanceMM = 40;
 void setup() {
   Serial.begin(9600); 
   pinMode(rotateEnablePin, OUTPUT); 
-  digitalWrite(rotateEnablePin, HIGH);
   pinMode(linearEnablePin, OUTPUT); 
-  digitalWrite(linearEnablePin, HIGH);
   pinMode(limitPin, INPUT_PULLUP); 
+  pinMode(buzzerPin, OUTPUT);
+
+  digitDisplay.init();
+  digitDisplay.set(BRIGHT_TYPICAL);
+  
+  digitalWrite(rotateEnablePin, HIGH);
+  digitalWrite(linearEnablePin, HIGH);
   linearStepper.setMaxSpeed(25000.0);     
   linearStepper.setAcceleration(20000.0); 
   rotateStepper.setMaxSpeed(25000.0);     
@@ -61,6 +74,26 @@ void loop() {
       Serial.println("'F' Perform a full action");
       fullAction(); 
     }
+  }
+}
+
+void soundBuzzer() {
+  digitalWrite(buzzerPin, HIGH);
+  delay(100);
+  digitalWrite(buzzerPin, LOW);
+}
+
+void updateDisplay(float seconds, bool resetDisplay = false) {
+  if (resetDisplay) {
+    digitDisplay.point(POINT_OFF);
+    digitDisplay.clearDisplay();
+  } else {
+    int sec = (int)seconds;                      
+    int ms = (int)((seconds - sec) * 100);   
+    int8_t displayValues[] = {static_cast<int8_t>(sec / 10), static_cast<int8_t>(sec % 10), static_cast<int8_t>(ms / 10), static_cast<int8_t>(ms % 10)};
+  
+    digitDisplay.point(POINT_ON);
+    digitDisplay.display(displayValues);
   }
 }
 
@@ -105,6 +138,9 @@ void rotateClaw() {
 }
 
 void fullAction() {
+  updateDisplay(0.0, true);
+  soundBuzzer();
+  
   unsigned long startTime = micros(); 
 
   moveLinearHubOut();
@@ -115,6 +151,9 @@ void fullAction() {
   unsigned long durationMicroseconds = endTime - startTime;
   float durationMilliseconds = durationMicroseconds / 1000.0;
   float durationSeconds = durationMicroseconds / 1000000.0;
+
+  soundBuzzer();
+  updateDisplay(durationSeconds);
 
   Serial.print("Execution Time: ");
   Serial.print(durationMicroseconds);
