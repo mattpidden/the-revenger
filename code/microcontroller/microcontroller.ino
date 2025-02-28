@@ -37,9 +37,9 @@ void setup() {
   
   digitalWrite(rotateEnablePin, HIGH);
   digitalWrite(linearEnablePin, HIGH);
-  linearStepper.setMaxSpeed(25000.0);     
+  linearStepper.setMaxSpeed(2500.0);     
   linearStepper.setAcceleration(20000.0); 
-  rotateStepper.setMaxSpeed(25000.0);     
+  rotateStepper.setMaxSpeed(2500.0);     
   rotateStepper.setAcceleration(20000.0); 
 
   Serial.println("RUBIKS REVENGE ROBOT PROTOTYPE COMMANDS");
@@ -83,18 +83,22 @@ void soundBuzzer() {
   digitalWrite(buzzerPin, LOW);
 }
 
-void updateDisplay(float seconds, bool resetDisplay = false) {
-  if (resetDisplay) {
-    digitDisplay.point(POINT_OFF);
-    digitDisplay.clearDisplay();
-  } else {
-    int sec = (int)seconds;                      
-    int ms = (int)((seconds - sec) * 100);   
-    int8_t displayValues[] = {static_cast<int8_t>(sec / 10), static_cast<int8_t>(sec % 10), static_cast<int8_t>(ms / 10), static_cast<int8_t>(ms % 10)};
+void updateDisplay(unsigned long startTime, unsigned long endTime) {
+  unsigned long durationMicroseconds = endTime - startTime;
+  float durationMilliseconds = durationMicroseconds / 1000.0;
+  float durationSeconds = durationMicroseconds / 1000000.0;
+  int sec = (int)durationSeconds;                      
+  int ms = (int)((durationSeconds - sec) * 100);   
+  int8_t displayValues[] = {static_cast<int8_t>(sec / 10), static_cast<int8_t>(sec % 10), static_cast<int8_t>(ms / 10), static_cast<int8_t>(ms % 10)};
+
+  digitDisplay.point(POINT_ON);
+  digitDisplay.display(displayValues);
   
-    digitDisplay.point(POINT_ON);
-    digitDisplay.display(displayValues);
-  }
+}
+
+void resetDisplay() {
+  digitDisplay.clearDisplay();
+  digitDisplay.point(POINT_OFF);
 }
 
 void calibrateLinearAcctuator() {
@@ -138,28 +142,45 @@ void rotateClaw() {
 }
 
 void fullAction() {
-  updateDisplay(0.0, true);
   soundBuzzer();
   
   unsigned long startTime = micros(); 
-
-  moveLinearHubOut();
-  rotateClaw();
-  moveLinearHubIn();
-
   unsigned long endTime = micros();
-  unsigned long durationMicroseconds = endTime - startTime;
-  float durationMilliseconds = durationMicroseconds / 1000.0;
-  float durationSeconds = durationMicroseconds / 1000000.0;
+  updateDisplay(startTime, endTime);
+  
+  for (int i = 0; i < 1; i++) {
+    moveLinearHubOut();
+    endTime = micros();
+    updateDisplay(startTime, endTime);
+    
+    rotateClaw();
+    endTime = micros();
+    updateDisplay(startTime, endTime);
+    
+    moveLinearHubIn();
+    endTime = micros();
+    updateDisplay(startTime, endTime);
+  }
+  
+
+  
 
   soundBuzzer();
-  updateDisplay(durationSeconds);
 
-  Serial.print("Execution Time: ");
-  Serial.print(durationMicroseconds);
-  Serial.print(" µs | ");
-  Serial.print(durationMilliseconds);
-  Serial.print(" ms | ");
-  Serial.print(durationSeconds);
-  Serial.println(" s");
+  delay(500);
+  resetDisplay();
+  delay(500);
+  updateDisplay(startTime, endTime);
+  delay(500);
+  resetDisplay();
+  delay(500);
+  updateDisplay(startTime, endTime);
+  delay(500);
+  resetDisplay();
+  delay(500);
+  updateDisplay(startTime, endTime);
+  delay(500);
+  resetDisplay();
+  delay(500);
+  updateDisplay(startTime, endTime);
 }
