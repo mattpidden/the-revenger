@@ -2,14 +2,16 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <fstream>
 #include <cstdlib>
 #include <algorithm>
 #include <map>
 #include <chrono>
+#include <bitset>
 #include <malloc.h>
 
 enum Colour : uint8_t{
-    WHITE = 0, YELLOW, GREEN, BLUE, ORANGE, RED, 
+    WHITE = 0, ORANGE, GREEN, RED, BLUE, YELLOW, 
 };
 
 enum Face {
@@ -39,6 +41,12 @@ enum Move {
 
 class Cube4x4 {
 public:
+    static constexpr int FACELETS = 96;     
+    static constexpr int BITS_PER_FACELET = 3; 
+    static constexpr int TOTAL_BITS = FACELETS * BITS_PER_FACELET;
+
+    std::bitset<TOTAL_BITS> facelets;
+
     // Constructor: make a solved cube
     Cube4x4() {
         reset();
@@ -46,246 +54,141 @@ public:
 
     // Reset to goal state:
     void reset() {
-        facelets[U_FACE].fill(WHITE);
-        facelets[L_FACE].fill(ORANGE);
-        facelets[F_FACE].fill(GREEN);
-        facelets[R_FACE].fill(RED);
-        facelets[B_FACE].fill(BLUE);
-        facelets[D_FACE].fill(YELLOW);
-    }
-
-    // Handles moves
-    void move(Move m) {
-        switch(m) {
-            case U:  turn_outer_face(U_FACE, true); break;
-            case U_PRIME: turn_outer_face(U_FACE, false); break;
-            case U2: turn_outer_face(U_FACE, true); turn_outer_face(U_FACE, true); break;
-            case L:  turn_outer_face(L_FACE, true); break;
-            case L_PRIME: turn_outer_face(L_FACE, false); break;
-            case L2: turn_outer_face(L_FACE, true); turn_outer_face(L_FACE, true); break;
-            case F:  turn_outer_face(F_FACE, true); break;
-            case F_PRIME: turn_outer_face(F_FACE, false); break;
-            case F2: turn_outer_face(F_FACE, true); turn_outer_face(F_FACE, true); break;
-            case R:  turn_outer_face(R_FACE, true); break;
-            case R_PRIME: turn_outer_face(R_FACE, false); break;
-            case R2: turn_outer_face(R_FACE, true); turn_outer_face(R_FACE, true); break;
-            case B:  turn_outer_face(B_FACE, true); break;
-            case B_PRIME: turn_outer_face(B_FACE, false); break;
-            case B2: turn_outer_face(B_FACE, true); turn_outer_face(B_FACE, true); break;
-            case D:  turn_outer_face(D_FACE, true); break;
-            case D_PRIME: turn_outer_face(D_FACE, false); break;
-            case D2: turn_outer_face(D_FACE, true); turn_outer_face(D_FACE, true); break;
-            case u:  turn_inner_slice(U_FACE, true); break;
-            case u_PRIME: turn_inner_slice(U_FACE, false); break;
-            case u2: turn_inner_slice(U_FACE, true); turn_inner_slice(U_FACE, true); break;
-            case l:  turn_inner_slice(L_FACE, true); break;
-            case l_PRIME: turn_inner_slice(L_FACE, false); break;
-            case l2: turn_inner_slice(L_FACE, true); turn_inner_slice(L_FACE, true); break;
-            case f:  turn_inner_slice(F_FACE, true); break;
-            case f_PRIME: turn_inner_slice(F_FACE, false); break;
-            case f2: turn_inner_slice(F_FACE, true); turn_inner_slice(F_FACE, true); break;
-            case r:  turn_inner_slice(R_FACE, true); break;
-            case r_PRIME: turn_inner_slice(R_FACE, false); break;
-            case r2: turn_inner_slice(R_FACE, true); turn_inner_slice(R_FACE, true); break;
-            case b:  turn_inner_slice(B_FACE, true); break;
-            case b_PRIME: turn_inner_slice(B_FACE, false); break;
-            case b2: turn_inner_slice(B_FACE, true); turn_inner_slice(B_FACE, true); break;
-            case d:  turn_inner_slice(D_FACE, true); break;
-            case d_PRIME: turn_inner_slice(D_FACE, false); break;
-            case d2: turn_inner_slice(D_FACE, true); turn_inner_slice(D_FACE, true); break;
-            default:
-                break;
+        for (int i = 0; i < FACELETS; i++) {
+            setFacelet(i, static_cast<Colour>(i / 16));
         }
     }
 
-        void move_R(bool clockwise) {
-        auto &face = facelets[R_FACE];
-        auto tmp = face[0]; 
-        face[0] = face[12];  
-        face[12] = face[15];  
-        face[15] = face[3];  
-        face[3] = tmp;
-        tmp = face[1]; 
-        face[1] = face[8];  
-        face[8] = face[14];  
-        face[14] = face[7];  
-        face[7] = tmp;
-        tmp = face[2]; 
-        face[2] = face[4];  
-        face[4] = face[13];  
-        face[13] = face[11];  
-        face[11] = tmp;
-        tmp = face[5]; 
-        face[5] = face[9];  
-        face[9] = face[10];  
-        face[10] = face[6];  
-        face[6] = tmp;
+    void move_R(bool clockwise) {
+        Colour temp3 = getFacelet(3);
+        Colour temp7 = getFacelet(3);
+        Colour temp11 = getFacelet(11);
+        Colour temp15 = getFacelet(15);
+        setFacelet(3, getFacelet(51));
+        setFacelet(7, getFacelet(55));
+        setFacelet(11, getFacelet(59));
+        setFacelet(15, getFacelet(63));
+        setFacelet(51, getFacelet(19));
+        setFacelet(55, getFacelet(23));
+        setFacelet(59, getFacelet(27));
+        setFacelet(63, getFacelet(31));
+        setFacelet(19, getFacelet(44));
+        setFacelet(23, getFacelet(40));
+        setFacelet(27, getFacelet(36));
+        setFacelet(31, getFacelet(32));
+        setFacelet(44, temp3);
+        setFacelet(40, temp7);
+        setFacelet(36, temp11);
+        setFacelet(32, temp15);
+        Colour temp80 = getFacelet(80);
+        Colour temp81 = getFacelet(81);
+        Colour temp82 = getFacelet(82);
+        Colour temp83 = getFacelet(83);
+        Colour temp85 = getFacelet(85);
+        Colour temp87 = getFacelet(87);
+        Colour temp91 = getFacelet(91);
+        setFacelet(80, getFacelet(92));
+        setFacelet(81, getFacelet(88));
+        setFacelet(82, getFacelet(84));
+        setFacelet(83, temp80);
+        setFacelet(84, getFacelet(93));
+        setFacelet(85, getFacelet(89));
+        setFacelet(86, temp85);
+        setFacelet(87, temp81);
+        setFacelet(88, getFacelet(94));
+        setFacelet(89, getFacelet(90));
+        setFacelet(90, getFacelet(86));
+        setFacelet(91, temp82);
+        setFacelet(92, getFacelet(95));
+        setFacelet(93, temp91);
+        setFacelet(94, temp87);
+        setFacelet(95, temp83);
+    }
 
-        auto tmp1 = facelets[U_FACE][3];
-        auto tmp2 = facelets[U_FACE][7];
-        auto tmp3 = facelets[U_FACE][11];
-        auto tmp4 = facelets[U_FACE][15];
-        facelets[U_FACE][3] = facelets[F_FACE][3];
-        facelets[U_FACE][7] = facelets[F_FACE][7];
-        facelets[U_FACE][11] = facelets[F_FACE][11];
-        facelets[U_FACE][15] = facelets[F_FACE][15];
-        facelets[F_FACE][3] = facelets[D_FACE][3];
-        facelets[F_FACE][7] = facelets[D_FACE][7];
-        facelets[F_FACE][11] = facelets[D_FACE][11];
-        facelets[F_FACE][15] = facelets[D_FACE][15];
-        facelets[D_FACE][3] = facelets[B_FACE][12];
-        facelets[D_FACE][7] = facelets[B_FACE][8];
-        facelets[D_FACE][11] = facelets[B_FACE][4];
-        facelets[D_FACE][15] = facelets[B_FACE][0];
-        facelets[B_FACE][12] = tmp1;
-        facelets[B_FACE][8] = tmp2;
-        facelets[B_FACE][4] = tmp3;
-        facelets[B_FACE][0] = tmp4;
+    void move_r(bool clockwise) {
+        Colour temp2 = getFacelet(2);
+        Colour temp6 = getFacelet(6);
+        Colour temp10 = getFacelet(10);
+        Colour temp14 = getFacelet(14);
+        setFacelet(2, getFacelet(50));
+        setFacelet(6, getFacelet(54));
+        setFacelet(10, getFacelet(58));
+        setFacelet(14, getFacelet(62));
+        setFacelet(50, getFacelet(18));
+        setFacelet(54, getFacelet(22));
+        setFacelet(58, getFacelet(26));
+        setFacelet(62, getFacelet(30));
+        setFacelet(18, getFacelet(45));
+        setFacelet(22, getFacelet(41));
+        setFacelet(26, getFacelet(37));
+        setFacelet(30, getFacelet(33));
+        setFacelet(45, temp2);
+        setFacelet(41, temp6);
+        setFacelet(37, temp10);
+        setFacelet(33, temp14);
+    }
+
+    Colour getFacelet(int index) const {
+        int bitIndex = index * BITS_PER_FACELET;
+        int value = 0;
+        
+        for (int i = 0; i < BITS_PER_FACELET; i++) {
+            if (facelets.test(bitIndex + i)) { 
+                value |= (1 << i);  
+            }
+        }
+        return static_cast<Colour>(value); 
+    }
+
+    void setFacelet(int index, Colour color) {
+        int bitIndex = index * BITS_PER_FACELET;
+        for (int i = 0; i < BITS_PER_FACELET; i++) {
+            facelets.set(bitIndex + i, (color >> i) & 1);
+        }
     }
 
 private:
-    // Facelets: 6 faces × 16 stickers
-    // facelets[U-FACE][0..15], facelets[R_FACE][0..15], ...
-    std::array<std::array<Colour, 16>, 6> facelets;
-
-    static constexpr int adjacent_faces[6][4] = {
-        {L_FACE, B_FACE, R_FACE, F_FACE},  // U (Up)
-        {U_FACE, F_FACE, D_FACE, B_FACE},  // L (Left)
-        {U_FACE, R_FACE, D_FACE, L_FACE},  // F (Front)
-        {U_FACE, B_FACE, D_FACE, F_FACE},  // R (Right)
-        {U_FACE, L_FACE, D_FACE, R_FACE},  // B (Back)
-        {L_FACE, F_FACE, R_FACE, B_FACE}   // D (Down)
-    };
-
-    static constexpr int adjacent_outer_edges[6][4][4] = {
-        {{0,1,2,3}, {0,1,2,3}, {0,1,2,3}, {0,1,2,3}},        // U (Up)
-        {{0,4,8,12}, {0,4,8,12}, {0,4,8,12}, {15,11,7,3}},  // L (Left)
-        {{12,13,14,15}, {0,4,8,12}, {3,2,1,0}, {15,11,7,3}},  // F (Front)
-        {{3,7,11,15}, {12,8,4,0}, {3,7,11,15}, {3,7,11,15}},  // R (Right)
-        {{0,1,2,3}, {12,8,4,0}, {15,14,13,12}, {3,7,11,15}},  // B (Back)
-        {{12,13,14,15}, {12,13,14,15}, {12,13,14,15}, {12,13,14,15}}   // D (Down)
-    };
-
-    static constexpr int adjacent_inner_edges[6][4][4] = {
-        {{4,5,6,7}, {4,5,6,7}, {4,5,6,7}, {4,5,6,7}},        // U (Up)
-        {{1,5,9,13}, {1,5,9,13}, {1,5,9,13}, {14,10,6,2}},  // L (Left)
-        {{8,9,10,11}, {1,5,9,13}, {7,6,5,4}, {14,10,6,2}},  // F (Front)
-        {{2,6,10,14}, {13,9,5,1}, {2,6,10,14}, {2,6,10,14}},  // R (Right)
-        {{4,5,6,7}, {13,9,5,1}, {11,10,9,8}, {2,6,10,14}},  // B (Back)
-        {{8,9,10,11}, {8,9,10,11}, {8,9,10,11}, {8,9,10,11}}   // D (Down)
-    };
 
 
-
-    void turn_outer_face(int face_index, bool clockwise) {
-        auto &face = facelets[face_index];
-
-        if (clockwise) {
-            auto tmp = face[0]; face[0] = face[12];  face[12] = face[15];  face[15] = face[3];  face[3] = tmp;
-            tmp = face[1]; face[1] = face[8];  face[8] = face[14];  face[14] = face[7];  face[7] = tmp;
-            tmp = face[2]; face[2] = face[4];  face[4] = face[13];  face[13] = face[11];  face[11] = tmp;
-            tmp = face[5]; face[5] = face[9];  face[9] = face[10];  face[10] = face[6];  face[6] = tmp;
-        } else {
-            auto tmp = face[0]; face[0] = face[3];  face[3] = face[15];  face[15] = face[12];  face[12] = tmp;
-            tmp = face[1]; face[1] = face[7];  face[7] = face[14];  face[14] = face[8];  face[8] = tmp;
-            tmp = face[2]; face[2] = face[11];  face[11] = face[13];  face[13] = face[4];  face[4] = tmp;
-            tmp = face[5]; face[5] = face[6];  face[6] = face[10];  face[10] = face[9];  face[9] = tmp;
-        }
-
-        auto &first_face = facelets[adjacent_faces[face_index][0]];
-        const auto &first_edges = adjacent_outer_edges[face_index][0];
-        std::array<Colour, 4> temp_edges = {first_face[first_edges[0]], first_face[first_edges[1]], first_face[first_edges[2]], first_face[first_edges[3]]};
-        int start_index = clockwise ? 3 : 1;
-        int step = clockwise ? -1 : 1;
-        for (int i = start_index; (clockwise ? i > 0 : i < 4); i += step) {
-            auto &current_face = facelets[adjacent_faces[face_index][i]];
-            const auto &current_edges = adjacent_outer_edges[face_index][i];
-            int next_index = clockwise ? (i + 1) % 4 : (i - 1 + 4) % 4;
-            auto &next_face = facelets[adjacent_faces[face_index][next_index]];
-            const auto &next_edges = adjacent_outer_edges[face_index][next_index];
-            next_face[next_edges[0]] = current_face[current_edges[0]];
-            next_face[next_edges[1]] = current_face[current_edges[1]];
-            next_face[next_edges[2]] = current_face[current_edges[2]];
-            next_face[next_edges[3]] = current_face[current_edges[3]];
-        }
-        int last_face_index = clockwise ? 1 : 3;
-        auto &last_face = facelets[adjacent_faces[face_index][last_face_index]];
-        const auto &lastEdges = adjacent_outer_edges[face_index][last_face_index];
-        last_face[lastEdges[0]] = temp_edges[0];  
-        last_face[lastEdges[1]] = temp_edges[1];  
-        last_face[lastEdges[2]] = temp_edges[2];  
-        last_face[lastEdges[3]] = temp_edges[3];  
-    }
-
-    void turn_inner_slice(int face_index, bool clockwise) {
-        auto &first_face = facelets[adjacent_faces[face_index][0]];
-        const auto &first_edges = adjacent_inner_edges[face_index][0];
-        std::array<Colour, 4> temp_edges = {first_face[first_edges[0]], first_face[first_edges[1]], first_face[first_edges[2]], first_face[first_edges[3]]};
-        int start_index = clockwise ? 3 : 1;
-        int step = clockwise ? -1 : 1;
-        for (int i = start_index; (clockwise ? i > 0 : i < 4); i += step) {
-            auto &current_face = facelets[adjacent_faces[face_index][i]];
-            const auto &current_edges = adjacent_inner_edges[face_index][i];
-            int next_index = clockwise ? (i + 1) % 4 : (i - 1 + 4) % 4;
-            auto &next_face = facelets[adjacent_faces[face_index][next_index]];
-            const auto &next_edges = adjacent_inner_edges[face_index][next_index];
-            next_face[next_edges[0]] = current_face[current_edges[0]];
-            next_face[next_edges[1]] = current_face[current_edges[1]];
-            next_face[next_edges[2]] = current_face[current_edges[2]];
-            next_face[next_edges[3]] = current_face[current_edges[3]];
-        }
-        int last_face_index = clockwise ? 1 : 3;
-        auto &last_face = facelets[adjacent_faces[face_index][last_face_index]];
-        const auto &lastEdges = adjacent_inner_edges[face_index][last_face_index];
-        last_face[lastEdges[0]] = temp_edges[0];  
-        last_face[lastEdges[1]] = temp_edges[1];  
-        last_face[lastEdges[2]] = temp_edges[2];  
-        last_face[lastEdges[3]] = temp_edges[3];  
-    }
 };
-
 
 int main() {
     Cube4x4 cube;
     int n = 1000000;
+    const int num_trials = 10;
 
-    // Benchmark speed
-    auto start = std::chrono::high_resolution_clock::now();
-    for (int i = 0; i < n; i++) {
-        cube.move_R(false);
-    }
-    auto end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double, std::milli> duration = end - start;
-    double outter_time_ms = duration.count();
-    double outter_moves_per_sec = (n / outter_time_ms) * 1000.0 / 1e6;
-    start = std::chrono::high_resolution_clock::now();
-    for (int i = 0; i < n; i++) {
-        cube.move(r);
-    }
-    end = std::chrono::high_resolution_clock::now();
-    duration = end - start;
-    double inner_time_ms = duration.count();
-    double inner_moves_per_sec = (n / inner_time_ms) * 1000.0 / 1e6;
+    std::ofstream csvFile("benchmark_results.csv");
+    csvFile << "Outer Slice Turn, , ,Inner Slice Turn, \n";
+    csvFile << "Time (ms),Moves/sec (m),Time (ms),Moves/sec (m)\n";
 
-    // Benchmark memory
-    struct mallinfo before = mallinfo();
-    std::vector<Cube4x4*> cubes;
-    cubes.reserve(n);
-    for (int i = 0; i < n; i++) {
-        cubes.push_back(new Cube4x4());
-    }
-    struct mallinfo after = mallinfo(); 
-    size_t actual_memory_used_n = after.uordblks - before.uordblks;
-    for (auto cube : cubes) {
-        delete cube;
+    for (int trial = 0; trial < num_trials; trial++) {
+        auto start = std::chrono::high_resolution_clock::now();
+        for (int i = 0; i < n; i++) {
+            cube.move_R(false);
+        }
+        auto end = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double, std::milli> duration = end - start;
+        double outer_time_ms = duration.count();
+        double outer_moves_per_sec = (n / outer_time_ms) * 1000.0 / 1e6;
+
+        start = std::chrono::high_resolution_clock::now();
+        for (int i = 0; i < n; i++) {
+            cube.move_r(false);
+        }
+        end = std::chrono::high_resolution_clock::now();
+        duration = end - start;
+        double inner_time_ms = duration.count();
+        double inner_moves_per_sec = (n / inner_time_ms) * 1000.0 / 1e6;
+
+        std::cout << "Trial " << (trial + 1) << ":\n";
+        std::cout << "Outer Slice Turn: " << outer_time_ms << " ms, " << outer_moves_per_sec << " moves/sec\n";
+        std::cout << "Inner Slice Turn: " << inner_time_ms << " ms, " << inner_moves_per_sec << " moves/sec\n\n";
+
+        csvFile << outer_time_ms << "," << outer_moves_per_sec << "," << inner_time_ms << "," << inner_moves_per_sec << "\n";
     }
 
-    std::cout << "1D char vector [96]\n";
-    std::cout << "Time taken for " << n << " outer slice moves: " << outter_time_ms << " ms.\n";
-    std::cout << "Outer Slice Moves (millions) per second: " << outter_moves_per_sec << ".\n";
-    std::cout << "Time taken for " << n << " inner slice moves: " << inner_time_ms << " ms.\n";
-    std::cout << "Inner Slice Moves (millions) per second: " << inner_moves_per_sec << ".\n";
-    std::cout << "Heap memory used for " << n << " cubes: " << actual_memory_used_n / (1024.0 * 1024.0) << " MB\n";
+    csvFile.close();
+    std::cout << "Benchmark results saved to benchmark_results.csv\n";
 
     return 0;
-} 
+}
