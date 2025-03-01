@@ -42,10 +42,11 @@ enum Move {
 class Cube4x4 {
 public:
     static constexpr int FACELETS = 96;     
-    static constexpr int BITS_PER_FACELET = 3; 
-    static constexpr int TOTAL_BITS = FACELETS * BITS_PER_FACELET;
+    static constexpr int CUBLETS = 56;
 
-    std::bitset<TOTAL_BITS> facelets;
+    std::array<uint8_t, CUBLETS> cublets;
+    std::array<uint8_t, CUBLETS> orientations;
+
 
     // Constructor: make a solved cube
     Cube4x4() {
@@ -54,98 +55,89 @@ public:
 
     // Reset to goal state:
     void reset() {
-        for (int i = 0; i < FACELETS; i++) {
-            setFacelet(i, static_cast<Colour>(i / 16));
+        for (int i = 0; i < CUBLETS; i++) {
+            cublets[i] = i;
         }
+        orientations.fill(0);
     }
 
     void move_R(bool clockwise) {
-        Colour temp3 = getFacelet(3);
-        Colour temp7 = getFacelet(3);
-        Colour temp11 = getFacelet(11);
-        Colour temp15 = getFacelet(15);
-        setFacelet(3, getFacelet(51));
-        setFacelet(7, getFacelet(55));
-        setFacelet(11, getFacelet(59));
-        setFacelet(15, getFacelet(63));
-        setFacelet(51, getFacelet(19));
-        setFacelet(55, getFacelet(23));
-        setFacelet(59, getFacelet(27));
-        setFacelet(63, getFacelet(31));
-        setFacelet(19, getFacelet(44));
-        setFacelet(23, getFacelet(40));
-        setFacelet(27, getFacelet(36));
-        setFacelet(31, getFacelet(32));
-        setFacelet(44, temp3);
-        setFacelet(40, temp7);
-        setFacelet(36, temp11);
-        setFacelet(32, temp15);
-        Colour temp80 = getFacelet(80);
-        Colour temp81 = getFacelet(81);
-        Colour temp82 = getFacelet(82);
-        Colour temp83 = getFacelet(83);
-        Colour temp85 = getFacelet(85);
-        Colour temp87 = getFacelet(87);
-        Colour temp91 = getFacelet(91);
-        setFacelet(80, getFacelet(92));
-        setFacelet(81, getFacelet(88));
-        setFacelet(82, getFacelet(84));
-        setFacelet(83, temp80);
-        setFacelet(84, getFacelet(93));
-        setFacelet(85, getFacelet(89));
-        setFacelet(86, temp85);
-        setFacelet(87, temp81);
-        setFacelet(88, getFacelet(94));
-        setFacelet(89, getFacelet(90));
-        setFacelet(90, getFacelet(86));
-        setFacelet(91, temp82);
-        setFacelet(92, getFacelet(95));
-        setFacelet(93, temp91);
-        setFacelet(94, temp87);
-        setFacelet(95, temp83);
+        auto tempC = cublets[15];
+        auto tempCO = orientations[15];
+        cublets[15] = cublets[55];
+        orientations[15] = orientations[55] + 100;
+        cublets[55] = cublets[43];
+        orientations[55] = orientations[43] + 100;
+        cublets[43] = cublets[3];
+        orientations[43] = orientations[3] + 100;
+        cublets[3] = tempC;
+        orientations[3] = tempCO + 100;
+        auto tempE1 = cublets[7];
+        auto tempE1O = orientations[7];
+        cublets[7] = cublets[27];
+        orientations[7] = orientations[27] + 100;
+        cublets[27] = cublets[51];
+        orientations[27] = orientations[51] + 100;
+        cublets[51] = cublets[31];
+        orientations[51] = orientations[31] + 100;
+        cublets[31] = tempE1;
+        orientations[31] = tempE1O + 100;
+        auto tempE2 = cublets[11];
+        auto tempE2O = orientations[11];
+        cublets[11] = cublets[39];
+        orientations[11] = orientations[39] + 100;
+        cublets[39] = cublets[47];
+        orientations[39] = orientations[47] + 100;
+        cublets[47] = cublets[19];
+        orientations[47] = orientations[19] + 100;
+        cublets[19] = tempE2;
+        orientations[19] = tempE2O + 100;
+        auto temp = cublets[21];
+        auto tempO = orientations[21];
+        cublets[21] = cublets[23];
+        orientations[21] = orientations[23] + 100;
+        cublets[23] = cublets[35];
+        orientations[23] = orientations[35] + 100;
+        cublets[35] = cublets[33];
+        orientations[35] = orientations[33] + 100;
+        cublets[33] = temp;
+        orientations[33] = tempO + 100;
     }
 
     void move_r(bool clockwise) {
-        Colour temp2 = getFacelet(2);
-        Colour temp6 = getFacelet(6);
-        Colour temp10 = getFacelet(10);
-        Colour temp14 = getFacelet(14);
-        setFacelet(2, getFacelet(50));
-        setFacelet(6, getFacelet(54));
-        setFacelet(10, getFacelet(58));
-        setFacelet(14, getFacelet(62));
-        setFacelet(50, getFacelet(18));
-        setFacelet(54, getFacelet(22));
-        setFacelet(58, getFacelet(26));
-        setFacelet(62, getFacelet(30));
-        setFacelet(18, getFacelet(45));
-        setFacelet(22, getFacelet(41));
-        setFacelet(26, getFacelet(37));
-        setFacelet(30, getFacelet(33));
-        setFacelet(45, temp2);
-        setFacelet(41, temp6);
-        setFacelet(37, temp10);
-        setFacelet(33, temp14);
+        auto tempC = cublets[14];
+        auto tempCO = orientations[14];
+        cublets[14] = cublets[55];
+        orientations[14] = orientations[55] + 100;
+        cublets[55] = cublets[43];
+        orientations[55] = orientations[43] + 100;
+        cublets[43] = cublets[3];
+        orientations[43] = orientations[3] + 100;
+        cublets[3] = tempC;
+        orientations[3] = tempCO + 100;
+        auto tempE1 = cublets[7];
+        auto tempE1O = orientations[7];
+        cublets[7] = cublets[27];
+        orientations[7] = orientations[27] + 100;
+        cublets[27] = cublets[51];
+        orientations[27] = orientations[51] + 100;
+        cublets[51] = cublets[31];
+        orientations[51] = orientations[31] + 100;
+        cublets[31] = tempE1;
+        orientations[31] = tempE1O + 100;
+        auto tempE2 = cublets[11];
+        auto tempE2O = orientations[11];
+        cublets[11] = cublets[39];
+        orientations[11] = orientations[39] + 100;
+        cublets[39] = cublets[47];
+        orientations[39] = orientations[47] + 100;
+        cublets[47] = cublets[19];
+        orientations[47] = orientations[19] + 100;
+        cublets[19] = tempE2;
+        orientations[19] = tempE2O + 100;
     }
 
-    Colour getFacelet(int index) const {
-        int bitIndex = index * BITS_PER_FACELET;
-        int value = 0;
-        
-        for (int i = 0; i < BITS_PER_FACELET; i++) {
-            if (facelets.test(bitIndex + i)) { 
-                value |= (1 << i);  
-            }
-        }
-        return static_cast<Colour>(value); 
-    }
 
-    void setFacelet(int index, Colour color) {
-        int bitIndex = index * BITS_PER_FACELET;
-        for (int i = 0; i < BITS_PER_FACELET; i++) {
-            facelets.set(bitIndex + i, (color >> i) & 1);
-        }
-    }
 
 private:
 
@@ -180,9 +172,23 @@ int main() {
         double inner_time_ms = duration.count();
         double inner_moves_per_sec = (n / inner_time_ms) * 1000.0 / 1e6;
 
+        // Benchmark memory
+        struct mallinfo before = mallinfo();
+        std::vector<Cube4x4*> cubes;
+        cubes.reserve(n);
+        for (int i = 0; i < n; i++) {
+            cubes.push_back(new Cube4x4());
+        }
+        struct mallinfo after = mallinfo(); 
+        size_t actual_memory_used_n = after.uordblks - before.uordblks;
+        for (auto cube : cubes) {
+            delete cube;
+        }
+
         std::cout << "Trial " << (trial + 1) << ":\n";
         std::cout << "Outer Slice Turn: " << outer_time_ms << " ms, " << outer_moves_per_sec << " moves/sec\n";
-        std::cout << "Inner Slice Turn: " << inner_time_ms << " ms, " << inner_moves_per_sec << " moves/sec\n\n";
+        std::cout << "Inner Slice Turn: " << inner_time_ms << " ms, " << inner_moves_per_sec << " moves/sec\n";
+        std::cout << "Heap memory used for " << n << " cubes: " << actual_memory_used_n / (1024.0 * 1024.0) << " MB\n\n";
 
         csvFile << outer_time_ms << "," << outer_moves_per_sec << "," << inner_time_ms << "," << inner_moves_per_sec << "\n";
     }
