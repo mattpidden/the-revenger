@@ -65,9 +65,9 @@ int main() {
     Cube4x4 cube;
     std::vector<std::string> solved_states = {cube.export_state()};
 
-    auto table = generate_table(solved_states, 14, phase8_moves);
+    auto phase8table = generate_table(solved_states, 14, phase8_moves);
     
-    save_table_binary(table, "phase8table.bin");
+    save_table_binary(phase8table, "phase8table.bin");
 
     return 0;
 }

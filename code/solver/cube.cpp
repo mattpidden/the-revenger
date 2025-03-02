@@ -190,6 +190,13 @@ bool Cube4x4::check_goal_state() const {
     return true;
 }
 
+bool Cube4x4::check_solved() const {
+    if (export_state() == "WWWWWWWWWWWWWWWWOOOOOOOOOOOOOOOOGGGGGGGGGGGGGGGGRRRRRRRRRRRRRRRRBBBBBBBBBBBBBBBBYYYYYYYYYYYYYYYY") {
+        return true;
+    }
+    return false;
+}
+
 
 int Cube4x4::misplaced_pieces_heuristic() const {
     // Create a goal cube in solved state

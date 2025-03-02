@@ -37,6 +37,7 @@ public:
     void move(Move m); 
     std::vector<Move> apply_random_moves(int n,  std::vector<Move> all_moves);
     bool check_goal_state() const;  
+    bool check_solved() const;
     int misplaced_pieces_heuristic() const;
 
     int twist_distance(int phase) const;
