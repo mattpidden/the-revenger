@@ -1,4 +1,5 @@
 #include <AccelStepper.h>
+#include <array>
 #include "TM1637.h"
 
 #define x_axis_1_limit 32
@@ -26,11 +27,30 @@
 
 TM1637 digitDisplay(displayClkPin, displayDioPin);
 
+struct LinearMotor {
+    AccelStepper* stepper;
+    int limit_pin;
+    int enable_pin;
+};
+
+struct ClawMotor {
+    AccelStepper* stepper;
+    int enable_pin;
+};
+
 #define motorInterfaceType 1
-AccelStepper x_axis_1_la(motorInterfaceType, x_axis_2_la_step, x_axis_2_la_dir);
-AccelStepper x_axis_1_claw(motorInterfaceType, z_axis_1_la_step, z_axis_1_la_dir);
-AccelStepper x_axis_2_la(motorInterfaceType, z_axis_2_la_step, z_axis_2_la_dir);
-AccelStepper x_axis_2_claw(motorInterfaceType, y_axis_1_la_step, y_axis_1_la_dir);
+AccelStepper x_axis_1_la_stepper(motorInterfaceType, x_axis_2_la_step, x_axis_2_la_dir);
+AccelStepper x_axis_1_claw_stepper(motorInterfaceType, z_axis_1_la_step, z_axis_1_la_dir);
+AccelStepper x_axis_2_la_stepper(motorInterfaceType, z_axis_2_la_step, z_axis_2_la_dir);
+AccelStepper x_axis_2_claw_stepper(motorInterfaceType, y_axis_1_la_step, y_axis_1_la_dir);
+
+LinearMotor x_axis_1_la = {&x_axis_1_la_stepper, x_axis_1_limit, x_axis_2_la_enable};
+ClawMotor x_axis_1_claw = {&x_axis_1_claw_stepper, z_axis_1_la_enable};
+LinearMotor x_axis_2_la = {&x_axis_2_la_stepper, x_axis_2_limit, z_axis_2_la_enable};
+ClawMotor x_axis_2_claw = {&x_axis_2_claw_stepper, y_axis_1_la_enable};
+
+std::array<LinearMotor, 2> la_motors = {x_axis_1_la, x_axis_2_la};
+std::array<ClawMotor, 2> claw_motors = {x_axis_1_claw, x_axis_2_claw};
 
 int stepsPerRevolution = 200;
 float pulleyCircumfrence = 40.0;
@@ -67,14 +87,14 @@ void setup() {
   // digitalWrite(z_axis_2_enable, HIGH);
   // digitalWrite(y_axis_1_enable, HIGH);
 
-  x_axis_1_la.setMaxSpeed(linear_motor_max_speed);     
-  x_axis_1_la.setAcceleration(linear_motor_acceleration); 
-  x_axis_1_claw.setMaxSpeed(claw_motor_max_speed);     
-  x_axis_1_claw.setAcceleration(claw_motor_acceleration); 
-  x_axis_2_la.setMaxSpeed(linear_motor_max_speed);     
-  x_axis_2_la.setAcceleration(linear_motor_acceleration); 
-  x_axis_2_claw.setMaxSpeed(claw_motor_max_speed);     
-  x_axis_2_claw.setAcceleration(claw_motor_acceleration); 
+  x_axis_1_la_stepper.setMaxSpeed(linear_motor_max_speed);     
+  x_axis_1_la_stepper.setAcceleration(linear_motor_acceleration); 
+  x_axis_1_claw_stepper.setMaxSpeed(claw_motor_max_speed);     
+  x_axis_1_claw_stepper.setAcceleration(claw_motor_acceleration); 
+  x_axis_2_la_stepper.setMaxSpeed(linear_motor_max_speed);     
+  x_axis_2_la_stepper.setAcceleration(linear_motor_acceleration); 
+  x_axis_2_claw_stepper.setMaxSpeed(claw_motor_max_speed);     
+  x_axis_2_claw_stepper.setAcceleration(claw_motor_acceleration); 
 
   Serial.println("RUBIKS REVENGE ROBOT PROTOTYPE COMMANDS");
   Serial.println("'C' Calibrate linear acctuators");
@@ -128,68 +148,79 @@ void resetDisplay() {
 void calibrateLinearAcctuator() {
   int stepsToMove = linearRailOffsetMM * stepsPerMM;
 
-  // digitalWrite(linearEnablePin, LOW);
-  while (digitalRead(x_axis_2_limit) == HIGH) { 
-    x_axis_2_la.move(-1); 
-    x_axis_2_la.run();
+  for (LinearMotor &motor : la_motors) {
+     // digitalWrite(motor.enable_pin, LOW);
+    while (digitalRead(motor.limit_pin) == HIGH) { 
+      motor.stepper->move(-5); 
+      motor.stepper->run();
+    }
+    motor.stepper->stop();
+    motor.stepper->setCurrentPosition(0);
+    motor.stepper->move(stepsToMove);
+    motor.stepper->runToPosition();
+    // digitalWrite(motor.enable_pin, HIGH);
   }
-  x_axis_2_la.stop();
-  x_axis_2_la.setCurrentPosition(0);
-  x_axis_2_la.move(stepsToMove);
-  x_axis_2_la.runToPosition();
-  // digitalWrite(linearEnablePin, HIGH);
-  
-  // digitalWrite(linearEnablePin, LOW);
-  while (digitalRead(x_axis_1_limit) == HIGH) { 
-    x_axis_1_la.move(-1); 
-    x_axis_1_la.run();
-  }
-  x_axis_1_la.stop();
-  x_axis_1_la.setCurrentPosition(0);
-  x_axis_1_la.move(stepsToMove);
-  x_axis_1_la.runToPosition();
-  // digitalWrite(linearEnablePin, HIGH);
 }
 
-void moveLinearHubOut(AccelStepper motor, int steps) {
-  // digitalWrite(linearEnablePin, LOW);
-  motor.move(steps);
-  motor.runToPosition();
-  // digitalWrite(linearEnablePin, HIGH);
+void moveLinearHubOut(LinearMotor motor, int steps) {
+  // digitalWrite(motor.enable_pin, LOW);
+  motor.stepper->move(steps);
+  motor.stepper->runToPosition();
+  // digitalWrite(motor.enable_pin, HIGH);
 }
 
-void moveLinearHubIn(AccelStepper motor, int steps) {
-  // digitalWrite(linearEnablePin, LOW);
-  motor.move(-steps);
-  motor.runToPosition();
-  // digitalWrite(linearEnablePin, HIGH);
+void moveLinearHubIn(LinearMotor motor, int steps) {
+  // digitalWrite(motor.enable_pin, LOW);
+  motor.stepper->move(-steps);
+  motor.stepper->runToPosition();
+  // digitalWrite(motor.enable_pin, HIGH);
 }
 
-void move2LinearHubOut(AccelStepper motor1, AccelStepper motor2, int steps1, int steps2) {
-  motor1.move(steps1);
-  motor2.move(steps2);
+void move2LinearHubOut(LinearMotor motor1, LinearMotor motor2, int steps1, int steps2) {
+  motor1.stepper->move(steps1);
+  motor2.stepper->move(steps2);
  
-  while (motor1.distanceToGo() != 0 || motor2.distanceToGo() != 0) {
-    motor1.run();
-    motor2.run();
+  while (motor1.stepper->distanceToGo() != 0 || motor2.stepper->distanceToGo() != 0) {
+    motor1.stepper->run();
+    motor2.stepper->run();
   }
 }
 
-void move2LinearHubIn(AccelStepper motor1, AccelStepper motor2, int steps1, int steps2) {
-  motor1.move(-steps1);
-  motor2.move(-steps1);
+void move2LinearHubIn(LinearMotor motor1, LinearMotor motor2, int steps1, int steps2) {
+  motor1.stepper->move(-steps1);
+  motor2.stepper->move(-steps2);
  
-  while (motor1.distanceToGo() != 0 || motor2.distanceToGo() != 0) {
-    motor1.run();
-    motor2.run();
+  while (motor1.stepper->distanceToGo() != 0 || motor2.stepper->distanceToGo() != 0) {
+    motor1.stepper->run();
+    motor2.stepper->run();
   }
 }
 
-void rotateClaw(int turns) {
-  // digitalWrite(rotateEnablePin, LOW);
-  x_axis_2_claw.move(50 * turns);
-  x_axis_2_claw.runToPosition();
-  // digitalWrite(rotateEnablePin, HIGH);
+void rotateClaw(ClawMotor motor, int turns) {
+  // digitalWrite(motor.enable_pin, LOW);
+  motor.stepper->move(50 * turns);
+  motor.stepper->runToPosition();
+  // digitalWrite(motor.enable_pin, HIGH);
+}
+
+void rotateClaws(ClawMotor motor1, ClawMotor motor2, int turns) {
+  if (turns == 1) {
+    rotateClaw(motor1, 1);
+  } else if (turns <= 3) {
+    motor1.stepper->move(50);
+    motor2.stepper->move(-(turns - 1) * 50);
+    while (motor1.stepper->distanceToGo() != 0 || motor2.stepper->distanceToGo() != 0) {
+      motor1.stepper->run();
+      motor2.stepper->run();
+    }
+  } else if (turns == 4) {
+    motor1.stepper->move(100);
+    motor2.stepper->move(-100);
+    while (motor1.stepper->distanceToGo() != 0 || motor2.stepper->distanceToGo() != 0) {
+      motor1.stepper->run();
+      motor2.stepper->run();
+    }
+  }
 }
 
 void fullAction() {
@@ -200,28 +231,11 @@ void fullAction() {
   updateDisplay(startTime, endTime);
 
   move2LinearHubOut(x_axis_1_la, x_axis_2_la, stepsToDepth2, stepsToDepth2);
-  rotateClaw(1);
+  rotateClaws(x_axis_2_claw, FF, 2);
   move2LinearHubIn(x_axis_1_la, x_axis_2_la, stepsToDepth2, stepsToDepth2);
   
   
   endTime = micros();
   updateDisplay(startTime, endTime);
   soundBuzzer();
-
-  delay(500);
-  resetDisplay();
-  delay(500);
-  updateDisplay(startTime, endTime);
-  delay(500);
-  resetDisplay();
-  delay(500);
-  updateDisplay(startTime, endTime);
-  delay(500);
-  resetDisplay();
-  delay(500);
-  updateDisplay(startTime, endTime);
-  delay(500);
-  resetDisplay();
-  delay(500);
-  updateDisplay(startTime, endTime);
 }
