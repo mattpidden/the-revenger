@@ -1,47 +1,43 @@
 # Compiler and flags
 CXX = g++
 CXXFLAGS = -Wall -Wextra -std=c++17
-PROF_FLAGS = #-pg  # Profiling flag
 
-# Directories
-SRC_DIR = .
-OBJ_DIR = build
+# Source files
+CUBE_SRC = cube.cpp
+CUBE_OBJ = cube.o
 
-# Find all .cpp files except vis.cpp
-SRC = $(filter-out $(SRC_DIR)/vis.cpp, $(wildcard $(SRC_DIR)/*.cpp))
-OBJ = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRC))
+# Executables and their sources
+SOLVER_SRC = main.cpp
+SOLVER_OBJ = main.o
+SOLVER_EXEC = solver
 
-# Output executable
-EXEC = solver
-VIS_EXEC = vis  # Output for vis.cpp
+VIS_SRC = vis.cpp
+VIS_OBJ = vis.o
+VIS_EXEC = vis
 
-# Ensure build directory exists
-.PHONY: all clean profile
+GEN_SRC = generate_tables.cpp
+GEN_OBJ = generate_tables.o
+GEN_EXEC = generate_tables
 
-all: $(EXEC) $(VIS_EXEC)
+# Default target: build all executables
+all: $(SOLVER_EXEC) $(VIS_EXEC) $(GEN_EXEC)
 
-# Compile vis.cpp separately
-$(VIS_EXEC): $(SRC_DIR)/vis.cpp
-	$(CXX) $(SRC_DIR)/vis.cpp -o $(VIS_EXEC) -lGL -lGLU -lglut
+# Compile solver (main.cpp + cube.cpp)
+$(SOLVER_EXEC): $(SOLVER_OBJ) $(CUBE_OBJ)
+	$(CXX) $(CXXFLAGS) $^ -o $@
 
-# Compile .cpp files into .o files inside build/
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
-	$(CXX) $(CXXFLAGS) $(PROF_FLAGS) -c $< -o $@
+# Compile vis (vis.cpp + cube.cpp)
+$(VIS_EXEC): $(VIS_OBJ) $(CUBE_OBJ)
+	$(CXX) $(CXXFLAGS) $^ -o $@ -lGL -lGLU -lglut
 
-# Link all object files into the final executable
-$(EXEC): $(OBJ)
-	$(CXX) $(OBJ) $(PROF_FLAGS) -o $(EXEC)
+# Compile generate_tables (generate_tables.cpp + cube.cpp)
+$(GEN_EXEC): $(GEN_OBJ) $(CUBE_OBJ)
+	$(CXX) $(CXXFLAGS) $^ -o $@
 
-# Create the build directory if it doesn't exist
-$(OBJ_DIR):
-	mkdir -p $(OBJ_DIR)
+# Compile source files into object files
+%.o: %.cpp cube.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-# Run profiling
-profile: $(EXEC)
-	./$(EXEC)  # Run program to generate gmon.out
-	gprof $(EXEC) gmon.out > profile_report.txt
-	cat profile_report.txt  # Display results
-
-# Clean build artifacts
+# Clean build files
 clean:
-	rm -rf $(OBJ_DIR) $(EXEC) $(VIS_EXEC) gmon.out profile_report.txt
+	rm -f $(SOLVER_EXEC) $(VIS_EXEC) $(GEN_EXEC) *.o

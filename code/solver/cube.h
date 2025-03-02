@@ -31,10 +31,11 @@ public:
  
     void reset();  
     std::string export_state() const;  
+    void import_state(const std::string& state);
     void print() const;  
     void visualize() const; 
     void move(Move m); 
-    std::vector<Move> apply_random_moves(int n);
+    std::vector<Move> apply_random_moves(int n,  std::vector<Move> all_moves);
     bool check_goal_state() const;  
     int misplaced_pieces_heuristic() const;
 
@@ -113,6 +114,7 @@ private:
     void turn_inner_slice(int face_index, bool clockwise);
 
     static char colour_to_char(Colour c);
+    static Colour char_to_colour(char c);
     static std::string char_to_emoji(char c);
 };
 

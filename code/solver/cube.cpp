@@ -50,6 +50,22 @@ std::string Cube4x4::export_state() const {
     return result;
 }
 
+void Cube4x4::import_state(const std::string& state) {
+    Cube4x4 cube;
+    auto extractFace = [&](Face f, int startIndex) {
+        for (int i = 0; i < 16; i++) {
+            facelets[f][i] = char_to_colour(state[startIndex + i]);
+        }
+    };
+
+    extractFace(U_FACE, 0);
+    extractFace(L_FACE, 16);
+    extractFace(F_FACE, 32);
+    extractFace(R_FACE, 48);
+    extractFace(B_FACE, 64);
+    extractFace(D_FACE, 80);
+}
+
 // Prints visulisation of cube in command line
 void Cube4x4::print() const {
     std::cout << "\n\n";
@@ -141,11 +157,13 @@ void Cube4x4::move(Move m) {
 }
 
 // Applys some random moves
-std::vector<Move> Cube4x4::apply_random_moves(int n) {
-    std::vector<Move> all_moves = {
+std::vector<Move> Cube4x4::apply_random_moves(int n, std::vector<Move> all_moves) {
+    if (all_moves.empty()) {
+        all_moves.insert(all_moves.end(), {
         R, L, U, D, F, B, R_PRIME, L_PRIME, U_PRIME, D_PRIME, F_PRIME, B_PRIME,
-        //r, l, u, d, f, b, r_PRIME, l_PRIME, u_PRIME, d_PRIME, f_PRIME, b_PRIME
-    };
+        r, l, u, d, f, b, r_PRIME, l_PRIME, u_PRIME, d_PRIME, f_PRIME, b_PRIME
+        });
+    }
     std::srand(std::time(nullptr));
     std::vector<Move> appliedMoves;
     for (int i = 0; i < n; i++) {
@@ -594,6 +612,18 @@ char Cube4x4::colour_to_char(Colour c) {
         case GREEN:  return 'G';
         case YELLOW: return 'Y';
         default:     return '?';
+    }  
+}
+
+Colour Cube4x4::char_to_colour(char c) {
+    switch(c) {
+        case 'W':  return WHITE;
+        case 'R':    return RED;
+        case 'B':   return BLUE;
+        case 'O': return ORANGE;
+        case 'G':  return GREEN;
+        case 'Y': return YELLOW;
+        default:     return WHITE;
     }  
 }
 

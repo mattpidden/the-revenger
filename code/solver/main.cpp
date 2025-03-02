@@ -265,7 +265,7 @@ int main() {
         std::cout << "\n=== Trial " << trial << " of " << numTrials << " ===\n";
 
         Cube4x4 cube;
-        std::vector<Move> scramble = cube.apply_random_moves(35);
+        std::vector<Move> scramble = cube.apply_random_moves(35, {});
         std::cout << "Scramble of size " << scramble.size() << " moves applied.\n";
 
         int max_depth = 9;
