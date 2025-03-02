@@ -36,10 +36,13 @@ int stepsPerRevolution = 200;
 float pulleyCircumfrence = 40.0;
 float stepsPerMM = stepsPerRevolution / pulleyCircumfrence;
 float linearRailDistanceMM = 62.2;
-float linearRailOffsetMM = 2.2;
-float distanceToDepth3 = 57.0;
-float distanceToDepth2 = 44.0;
+float linearRailOffsetMM = 3;
 float distanceToDepth1 = 31.0; 
+float distanceToDepth2 = 44.0;
+float distanceToDepth3 = 57.0;
+int stepsToDepth1 = distanceToDepth1 * stepsPerMM;
+int stepsToDepth2 = distanceToDepth2 * stepsPerMM;
+int stepsToDepth3 = distanceToDepth3 * stepsPerMM;
 
 float linear_motor_max_speed = 25000.0;
 float claw_motor_max_speed = 25000.0;
@@ -74,11 +77,9 @@ void setup() {
   x_axis_2_claw.setAcceleration(claw_motor_acceleration); 
 
   Serial.println("RUBIKS REVENGE ROBOT PROTOTYPE COMMANDS");
-  Serial.println("'C' Calibrate linear acctuator");
-  Serial.println("'O' Send linear acctuator out");
-  Serial.println("'I' Send linear acctuator in");
-  Serial.println("'R' Rotate claw");
+  Serial.println("'C' Calibrate linear acctuators");
   Serial.println("'F' Perform a full action");
+  Serial.println("'B' Buzzer Sound");
   Serial.println("");
   soundBuzzer();
 }
@@ -90,24 +91,12 @@ void loop() {
       Serial.println("'C' Calibrate linear acctuator");
       calibrateLinearAcctuator(); 
     }
-    else if (command == 'O') {
-      Serial.println("'O' Send linear acctuator out");
-      moveLinearHubOut(x_axis_2_la, 2); 
-    }
-    else if (command == 'I') {
-      Serial.println("'I' Send linear acctuator in");
-      moveLinearHubIn(x_axis_2_la, 2); 
-    }
-    else if (command == 'R') {
-      Serial.println("'R' Rotate claw");
-      rotateClaw(4); 
-    }
     else if (command == 'F') {
       Serial.println("'F' Perform a full action");
       fullAction(); 
     }
     else if (command == 'B') {
-      Serial.println("'B' BUZZER");
+      Serial.println("'B' Buzzer Sound");
       soundBuzzer(); 
     }
   }
@@ -148,7 +137,6 @@ void calibrateLinearAcctuator() {
   x_axis_2_la.setCurrentPosition(0);
   x_axis_2_la.move(stepsToMove);
   x_axis_2_la.runToPosition();
-  x_axis_2_la.setMaxSpeed(linear_motor_max_speed);     
   // digitalWrite(linearEnablePin, HIGH);
   
   // digitalWrite(linearEnablePin, LOW);
@@ -160,36 +148,26 @@ void calibrateLinearAcctuator() {
   x_axis_1_la.setCurrentPosition(0);
   x_axis_1_la.move(stepsToMove);
   x_axis_1_la.runToPosition();
-  x_axis_1_la.setMaxSpeed(linear_motor_max_speed);     
   // digitalWrite(linearEnablePin, HIGH);
 }
 
-void moveLinearHubOut(AccelStepper motor, int depth) {
-  int stepsToMove = 0;
-  if (depth == 1) {
-    stepsToMove = distanceToDepth1 * stepsPerMM;
-  } else if (depth == 2) {
-    stepsToMove = distanceToDepth2 * stepsPerMM;
-  } else if (depth == 3) {
-    stepsToMove = distanceToDepth3 * stepsPerMM;
-  }
+void moveLinearHubOut(AccelStepper motor, int steps) {
   // digitalWrite(linearEnablePin, LOW);
-  motor.move(stepsToMove);
+  motor.move(steps);
   motor.runToPosition();
   // digitalWrite(linearEnablePin, HIGH);
 }
 
-void move2LinearHubOut(AccelStepper motor1, AccelStepper motor2, int depth) {
-  int stepsToMove = 0;
-  if (depth == 1) {
-    stepsToMove = distanceToDepth1 * stepsPerMM;
-  } else if (depth == 2) {
-    stepsToMove = distanceToDepth2 * stepsPerMM;
-  } else if (depth == 3) {
-    stepsToMove = distanceToDepth3 * stepsPerMM;
-  }
-  motor1.move(stepsToMove);
-  motor2.move(stepsToMove);
+void moveLinearHubIn(AccelStepper motor, int steps) {
+  // digitalWrite(linearEnablePin, LOW);
+  motor.move(-steps);
+  motor.runToPosition();
+  // digitalWrite(linearEnablePin, HIGH);
+}
+
+void move2LinearHubOut(AccelStepper motor1, AccelStepper motor2, int steps1, int steps2) {
+  motor1.move(steps1);
+  motor2.move(steps2);
  
   while (motor1.distanceToGo() != 0 || motor2.distanceToGo() != 0) {
     motor1.run();
@@ -197,19 +175,14 @@ void move2LinearHubOut(AccelStepper motor1, AccelStepper motor2, int depth) {
   }
 }
 
-void moveLinearHubIn(AccelStepper motor, int depth) {
-  int stepsToMove = 0;
-  if (depth == 1) {
-    stepsToMove = distanceToDepth1 * stepsPerMM;
-  } else if (depth == 2) {
-    stepsToMove = distanceToDepth2 * stepsPerMM;
-  } else if (depth == 3) {
-    stepsToMove = distanceToDepth3 * stepsPerMM;
+void move2LinearHubIn(AccelStepper motor1, AccelStepper motor2, int steps1, int steps2) {
+  motor1.move(-steps1);
+  motor2.move(-steps1);
+ 
+  while (motor1.distanceToGo() != 0 || motor2.distanceToGo() != 0) {
+    motor1.run();
+    motor2.run();
   }
-  // digitalWrite(linearEnablePin, LOW);
-  motor.move(-stepsToMove);
-  motor.runToPosition();
-  // digitalWrite(linearEnablePin, HIGH);
 }
 
 void rotateClaw(int turns) {
@@ -226,11 +199,10 @@ void fullAction() {
   unsigned long endTime = micros();
   updateDisplay(startTime, endTime);
 
-  moveLinearHubOut(x_axis_1_la, 2);
-  moveLinearHubOut(x_axis_2_la, 2);
+  move2LinearHubOut(x_axis_1_la, x_axis_2_la, stepsToDepth2, stepsToDepth2);
   rotateClaw(1);
-  moveLinearHubIn(x_axis_2_la, 2);
-  moveLinearHubIn(x_axis_1_la, 2);
+  move2LinearHubIn(x_axis_1_la, x_axis_2_la, stepsToDepth2, stepsToDepth2);
+  
   
   endTime = micros();
   updateDisplay(startTime, endTime);
