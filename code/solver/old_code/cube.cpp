@@ -25,11 +25,7 @@ void Cube4x4::reset() {
     facelets[B_FACE].fill(BLUE);
     facelets[D_FACE].fill(YELLOW);
 
-    for (int i = 0; i < 6; i++) {
-        for (int j = 0; j < 16; j++) {
-            indexed_facelets[i][j] = (i * 16) + j;
-        }
-    }
+    indexed_facelets = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95};
 
     edges_pairs = {0,1,2,3,4,5,6,7,8,9,10,11};
     edges_pairs_parity.fill(false);
@@ -181,11 +177,438 @@ std::vector<Move> Cube4x4::apply_random_moves(int n, std::vector<Move> all_moves
     return appliedMoves;
 }
 
+
+// Checks if the cube is in the solved goal state
+bool Cube4x4::check_goal_state() const {
+    for (int face = 0; face < 6; ++face) {
+        Colour center_color = facelets[face][5];
+        for (int i = 0; i < 16; ++i) {
+            if (facelets[face][i] != center_color) {
+                return false; 
+            }
+        }
+    }
+    
+    return true;
+}
+
 bool Cube4x4::check_solved() const {
     if (export_state() == "WWWWWWWWWWWWWWWWOOOOOOOOOOOOOOOOGGGGGGGGGGGGGGGGRRRRRRRRRRRRRRRRBBBBBBBBBBBBBBBBYYYYYYYYYYYYYYYY") {
         return true;
     }
     return false;
+}
+
+
+int Cube4x4::misplaced_pieces_heuristic() const {
+    // Create a goal cube in solved state
+    Cube4x4 goal_cube;
+
+    int mismatch_count = 0;
+
+    // Compare each facelet to the goal state
+    for (int face = 0; face < 6; ++face) {
+        for (int i = 0; i < 16; ++i) {
+            if (facelets[face][i] != goal_cube.facelets[face][i]) {
+                mismatch_count++;
+            }
+        }
+    }
+
+    return mismatch_count;
+}
+
+int Cube4x4::twist_distance(int phase) const {
+    switch (phase) {
+        case 1:
+            return phase_one_twist_distance();
+        case 5:
+            return phase_five_twist_distance();
+        case 6:
+            return phase_six_twist_distance();
+        case 101:
+            return white_centre_twist_distance();
+        case 102:
+            return yellow_centre1_twist_distance();
+        case 103:
+            return yellow_centre2_twist_distance();
+        case 104:    
+            return orange_centre_twist_distance();
+        case 105:
+            return red_centre_twist_distance();
+        case 106:
+            return blue_green_centre_twist_distance();
+        case 201:
+            return first_edge_twist_distance(1);
+        case 202:
+            return first_edge_twist_distance(2);
+        case 203:
+            return first_edge_twist_distance(3);
+        case 204:
+            return first_edge_twist_distance(4);
+        case 205:
+            return first_edge_twist_distance(5);
+        case 206:
+            return first_edge_twist_distance(6);
+        case 207:
+            return first_edge_twist_distance(7);
+        case 208:
+            return first_edge_twist_distance(8);
+        case 209:
+            return first_edge_twist_distance(9);
+        case 210:
+            return first_edge_twist_distance(10);
+        case 211:
+            return first_edge_twist_distance(11);
+        case 212:
+            return first_edge_twist_distance(12);
+        case 301:
+            return cross_twist_distance();
+        case 302:
+            return f2l_twist_distance(1);
+        case 303:
+            return f2l_twist_distance(2);
+        case 304:
+            return f2l_twist_distance(3);
+        case 305:
+            return f2l_twist_distance(4);
+        default:
+            return -1;
+    }
+}
+
+
+int Cube4x4::phase_one_twist_distance() const {
+    const std::array<int, 4> center_positions = {5, 6, 9, 10};
+
+    int misplaced = 0;
+    for (int pos : center_positions) {
+        if (facelets[R_FACE][pos] != RED && facelets[R_FACE][pos] != ORANGE) {
+            misplaced++;
+        }
+        if (facelets[L_FACE][pos] != RED && facelets[L_FACE][pos] != ORANGE) {
+            misplaced++;
+        }
+    }
+
+    return (misplaced + 1) / 2;
+}
+
+int Cube4x4::phase_five_twist_distance() const {
+    int bad_count = 0;
+    for(int i = 0; i < 12; i++){
+        if(edges_pairs_parity[i]) {
+            bad_count++;
+        }
+    }
+    if (bad_count == 0) {
+        return 0;
+    }
+    return (bad_count + 7) / 8;
+}
+
+int Cube4x4::phase_six_twist_distance() const {
+    int bad_count = 0;
+    if (!(edges_pairs[8] == 8 || edges_pairs[8] == 9 || edges_pairs[8] == 10 || edges_pairs[8] == 11)) {
+        bad_count++;
+    }
+    if (!(edges_pairs[9] == 8 || edges_pairs[9] == 9 || edges_pairs[9] == 10 || edges_pairs[9] == 11)) {
+        bad_count++;        
+    }
+    if (!(edges_pairs[10] == 8 || edges_pairs[10] == 9 || edges_pairs[10] == 10 || edges_pairs[10] == 11)) {
+        bad_count++;        
+    }
+    if (!(edges_pairs[11] == 8 || edges_pairs[11] == 9 || edges_pairs[11] == 10 || edges_pairs[11] == 11)) {
+        bad_count++;
+    } 
+
+    if (!(facelets[L_FACE][0] == RED || facelets[L_FACE][0] == ORANGE)) {
+        bad_count++;
+    } 
+    if (!(facelets[L_FACE][3] == RED || facelets[L_FACE][3] == ORANGE)) {
+        bad_count++;
+    } 
+    if (!(facelets[L_FACE][12] == RED || facelets[L_FACE][12] == ORANGE)) {
+        bad_count++;
+    } 
+    if (!(facelets[L_FACE][15] == RED || facelets[L_FACE][15] == ORANGE)) {
+        bad_count++;
+    } 
+    if (!(facelets[R_FACE][0] == RED || facelets[R_FACE][0] == ORANGE)) {
+        bad_count++;
+    } 
+    if (!(facelets[R_FACE][3] == RED || facelets[R_FACE][3] == ORANGE)) {
+        bad_count++;
+    } 
+    if (!(facelets[R_FACE][12] == RED || facelets[R_FACE][12] == ORANGE)) {
+        bad_count++;
+    } 
+    if (!(facelets[R_FACE][15] == RED || facelets[R_FACE][15] == ORANGE)) {
+        bad_count++;
+    }
+
+
+    if (bad_count == 0) {
+        return 0;
+    }
+    return (bad_count + 7) / 8;
+}
+
+int Cube4x4::phase_seven_twist_distance() const {
+    int bad_count = 0;
+
+    for(int i=0; i<16; i++){
+        if (!(facelets[U_FACE][i] == WHITE || facelets[U_FACE][i] == YELLOW)) {
+            bad_count++;
+        }
+    }
+    for(int i=0; i<16; i++){
+        if (!(facelets[D_FACE][i] == WHITE || facelets[D_FACE][i] == YELLOW)) {
+            bad_count++;
+        }
+    }
+    
+    for(int i=0; i<16; i++){
+        if (!(facelets[L_FACE][i] == ORANGE || facelets[L_FACE][i] == RED)) {
+            bad_count++;
+        }
+    }
+    for(int i=0; i<16; i++){
+        if (!(facelets[R_FACE][i] == ORANGE || facelets[R_FACE][i] == RED)) {
+            bad_count++;
+        }
+    }
+    
+    for(int i=0; i<16; i++){
+        if (!(facelets[F_FACE][i] == GREEN || facelets[F_FACE][i] == BLUE)) {
+            bad_count++;
+        }
+    }
+    for(int i=0; i<16; i++){
+        if (!(facelets[B_FACE][i] == GREEN || facelets[R_FACE][i] == BLUE)) {
+            bad_count++;
+        }
+    }
+    
+    if (bad_count == 0) {
+        return 0;
+    }
+    return (bad_count + 7) / 8;
+}
+
+int Cube4x4::white_centre_twist_distance() const {
+    int bad_count = 0;
+    if (!(facelets[U_FACE][5] == WHITE)) {
+        bad_count++;
+    }
+    if (!(facelets[U_FACE][6] == WHITE)) {
+        bad_count++;
+    }
+    if (!(facelets[U_FACE][9] == WHITE)) {
+        bad_count++;
+    }
+    if (!(facelets[U_FACE][10] == WHITE)) {
+        bad_count++;
+    }
+    if (!(facelets[D_FACE][5] == YELLOW)) {
+        bad_count++;
+    }
+    if (!(facelets[D_FACE][6] == YELLOW)) {
+        bad_count++;
+    }
+
+    
+    if (bad_count == 0) {
+        return 0;
+    }
+    return (bad_count + 3) / 4;
+}
+
+int Cube4x4::yellow_centre1_twist_distance() const {
+    int bad_count = white_centre_twist_distance();
+    
+    if (!(facelets[D_FACE][10] == YELLOW)) {
+        bad_count++;
+    }
+    if (bad_count == 0) {
+        return 0;
+    }
+    return (bad_count + 3) / 4;
+}
+
+int Cube4x4::yellow_centre2_twist_distance() const {
+    int bad_count = yellow_centre1_twist_distance();
+    
+    if (!(facelets[D_FACE][9] == YELLOW)) {
+        bad_count++;
+    }
+    if (bad_count == 0) {
+        return 0;
+    }
+    return (bad_count + 3) / 4;
+}
+
+
+int Cube4x4::orange_centre_twist_distance() const {
+    int bad_count = yellow_centre2_twist_distance();
+
+    if (!(facelets[L_FACE][5] == ORANGE)) {
+        bad_count++;
+    }
+    if (!(facelets[L_FACE][6] == ORANGE)) {
+        bad_count++;
+    }
+    if (!(facelets[L_FACE][9] == ORANGE)) {
+        bad_count++;
+    }
+    if (!(facelets[L_FACE][10] == ORANGE)) {
+        bad_count++;
+    }
+    if (!(facelets[R_FACE][5] == RED)) {
+        bad_count++;
+    }
+    if (!(facelets[R_FACE][6] == RED)) {
+        bad_count++;
+    }
+
+    if (bad_count == 0) {
+        return 0;
+    }
+    return (bad_count + 3) / 4;
+}   
+
+int Cube4x4::red_centre_twist_distance() const {
+    int bad_count = orange_centre_twist_distance();
+
+    if (!(facelets[R_FACE][9] == RED)) {
+        bad_count++;
+    }
+    if (!(facelets[R_FACE][10] == RED)) {
+        bad_count++;
+    }
+
+
+    if (bad_count == 0) {
+        return 0;
+    }
+    return (bad_count + 3) / 4;
+} 
+
+int Cube4x4::blue_green_centre_twist_distance() const {
+    int bad_count = red_centre_twist_distance();
+
+    if (!(facelets[F_FACE][5] == GREEN)) {
+        bad_count++;
+    }
+    if (!(facelets[F_FACE][6] == GREEN)) {
+        bad_count++;
+    }
+    if (!(facelets[F_FACE][9] == GREEN)) {
+        bad_count++;
+    }
+    if (!(facelets[F_FACE][10] == GREEN)) {
+        bad_count++;
+    }
+
+    if (bad_count == 0) {
+        return 0;
+    }
+    return (bad_count + 3) / 4;
+} 
+
+int Cube4x4::first_edge_twist_distance(int number_edges) const {
+    int og_bad_count = blue_green_centre_twist_distance();
+    int bad_count = 0;
+
+    if (!(facelets[U_FACE][1] == facelets[U_FACE][2] && facelets[B_FACE][1] == facelets[B_FACE][2])) {
+        bad_count = bad_count + 2;
+    }
+    if (!(facelets[U_FACE][7] == facelets[U_FACE][11] && facelets[R_FACE][1] == facelets[R_FACE][2])) {
+        bad_count = bad_count + 2;
+    }
+    if (!(facelets[U_FACE][13] == facelets[U_FACE][14] && facelets[F_FACE][1] == facelets[F_FACE][2])) {
+        bad_count = bad_count + 2;
+    }
+    if (!(facelets[U_FACE][4] == facelets[U_FACE][8] && facelets[L_FACE][1] == facelets[L_FACE][2])) {
+        bad_count = bad_count + 2;
+    }
+    if (!(facelets[D_FACE][1] == facelets[D_FACE][2] && facelets[F_FACE][13] == facelets[F_FACE][14])) {
+        bad_count = bad_count + 2;
+    }
+    if (!(facelets[D_FACE][7] == facelets[D_FACE][11] && facelets[R_FACE][13] == facelets[R_FACE][14])) {
+        bad_count = bad_count + 2;
+    }
+    if (!(facelets[D_FACE][13] == facelets[D_FACE][14] && facelets[B_FACE][13] == facelets[B_FACE][14])) {
+        bad_count = bad_count + 2;
+    }
+    if (!(facelets[D_FACE][4] == facelets[D_FACE][8] && facelets[L_FACE][13] == facelets[L_FACE][14])) {
+        bad_count = bad_count + 2;
+    }
+    if (!(facelets[F_FACE][7] == facelets[F_FACE][11] && facelets[R_FACE][4] == facelets[R_FACE][8])) {
+        bad_count = bad_count + 2;
+    }
+    if (!(facelets[R_FACE][7] == facelets[R_FACE][11] && facelets[B_FACE][4] == facelets[B_FACE][8])) {
+        bad_count = bad_count + 2;
+    }
+    if (!(facelets[B_FACE][7] == facelets[B_FACE][11] && facelets[L_FACE][4] == facelets[L_FACE][8])) {
+        bad_count = bad_count + 2;
+    }
+    if (!(facelets[F_FACE][7] == facelets[F_FACE][11] && facelets[F_FACE][4] == facelets[F_FACE][8])) {
+        bad_count = bad_count + 2;
+    }
+    
+    int final_bad_count = bad_count - (2*(12-number_edges)) + og_bad_count;
+
+    if (final_bad_count <= 0) {
+        return 0;
+    }
+    return (final_bad_count + 3) / 4;
+} 
+
+
+int Cube4x4::cross_twist_distance() const {
+    int bad_count = 0;
+
+    if (!(facelets[D_FACE][1] == YELLOW && facelets[D_FACE][4] == YELLOW && facelets[D_FACE][7] == YELLOW && facelets[D_FACE][13] == YELLOW)) {
+        bad_count++;
+    }
+    if (!(facelets[F_FACE][13] == GREEN && facelets[L_FACE][13] == ORANGE && facelets[R_FACE][13] == RED && facelets[B_FACE][13] == BLUE)) {
+        bad_count++;
+    }
+
+
+    if (bad_count == 0) {
+        return 0;
+    }
+    return (bad_count + 7) / 8;
+}
+
+int Cube4x4::f2l_twist_distance(int number_pairs) const {
+    int og_bad_count = cross_twist_distance();
+    int bad_count = 0;
+
+    if (!(facelets[F_FACE][11] == GREEN && facelets[F_FACE][15] == GREEN && facelets[R_FACE][8] == RED && facelets[R_FACE][12] == RED && facelets[D_FACE][3] == YELLOW)) {
+        bad_count = bad_count + 2;
+    }
+    if (!(facelets[R_FACE][11] == RED && facelets[R_FACE][15] == RED && facelets[B_FACE][8] == BLUE && facelets[B_FACE][12] == BLUE && facelets[D_FACE][15] == YELLOW)) {
+        bad_count = bad_count + 2;
+    }
+    if (!(facelets[B_FACE][11] == BLUE && facelets[B_FACE][15] == BLUE && facelets[L_FACE][8] == ORANGE && facelets[L_FACE][12] == ORANGE && facelets[D_FACE][12] == YELLOW)) {
+        bad_count = bad_count + 2;
+    }
+    if (!(facelets[L_FACE][11] == ORANGE && facelets[L_FACE][15] == ORANGE && facelets[F_FACE][8] == GREEN && facelets[F_FACE][12] == GREEN && facelets[D_FACE][0] == YELLOW)) {
+        bad_count = bad_count + 2;
+    }
+    int final_bad_count = bad_count - (2*(4-number_pairs));
+    if (final_bad_count < 0) {
+        final_bad_count = 0;
+    }
+    final_bad_count = final_bad_count + og_bad_count;
+
+    if (final_bad_count <= 0) {
+        return 0;
+    }
+    return (final_bad_count + 3) / 4;
 }
 
 // Converts a colour enum to a char
