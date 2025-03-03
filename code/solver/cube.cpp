@@ -199,6 +199,16 @@ void Cube4x4::apply_mask(const std::vector<int>& mask) {
     }
 }
 
+void Cube4x4::apply_colour_mask(int value, const std::vector<int>& mask) {
+    for (int i = 0; i < 6; i++) {
+        for (int j = 0; j < 16; j++) {
+            if (std::find(mask.begin(), mask.end(), facelets[i][j]) != mask.end()) {
+                facelets[i][j] = value;
+            }
+        }
+    }
+}
+
 void Cube4x4::apply_no_colour() {
     for (int i = 0; i < 6; i++) {
         for (int j = 0; j < 16; j++) {
@@ -214,7 +224,11 @@ char Cube4x4::id_to_char(int id) {
     if (id == -1) {  // Ensuring ID is within a valid range
         return 'X';
     } else if (id == -2) {
-        return '0';
+        return '2';
+    } else if (id == -3) {
+        return '3';
+    } else if (id == -4) {
+        return '4';
     }
     return "WOGRBY"[id / 16];
 }
@@ -229,8 +243,10 @@ int Cube4x4::char_to_id(char c) {
         case 'B': return 64;
         case 'Y': return 80;
         case 'X': return -1;
-        case '0': return -2;
-        default: return -3;
+        case '2': return -2;
+        case '3': return -3;
+        case '4': return -4;
+        default: return -5;
     }
 }
 
@@ -244,7 +260,9 @@ std::string Cube4x4::char_to_emoji(char c) {
         case 'G':  return "🟩";
         case 'Y':  return "🟨";
         case 'X':  return "⬛";
-        case '0':  return "⬜";
+        case '2':  return "⬜";
+        case '3':  return "🟪";
+        case '4':  return "🟫";
         default:   return "?";
     }
 }

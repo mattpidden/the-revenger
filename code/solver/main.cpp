@@ -91,9 +91,9 @@ std::unordered_map<std::string, int> load_table_binary(const std::string& filena
 }
 
 // Print and apply solution to the cube
-void print_apply_solution(Cube4x4 &cube, const std::vector<Move> &solution) {
+void print_apply_solution(Cube4x4 &cube, const std::vector<Move> &solution, std::string name) {
     if (!solution.empty()) {
-        std::cout << "Solution found in " << solution.size() << " moves: ";
+        std::cout << name << " solution found in " << solution.size() << " moves: ";
         for (Move move : solution) {
             std::cout << move_to_string(move) << " ";
             cube.move(move);
@@ -106,34 +106,35 @@ void print_apply_solution(Cube4x4 &cube, const std::vector<Move> &solution) {
 
 class Phase {
 public:
+    std::string name;
     std::vector<Move> moves;
     std::vector<int> mask;
-    bool apply_no_colour;
+    std::map<int, std::vector<int>> colour_mask;
     std::unordered_map<std::string, int> table;
-    int table_depth;
     int max_depth;
 
     // Constructor
-    Phase(const std::vector<Move>& moves, 
+    Phase(std::string name,
+          const std::vector<Move>& moves, 
           const std::vector<int>& mask, 
-          bool apply_no_colour, 
-          const std::string& table_filename, 
-          int table_depth, 
+          const std::map<int, std::vector<int>>& colour_mask, 
+          const std::string& table_filename,
           int max_depth)
-        : moves(moves), mask(mask), apply_no_colour(apply_no_colour), 
-          table(load_table_binary(table_filename)), 
-          table_depth(table_depth), max_depth(max_depth) {}
+        : name(name), moves(moves), mask(mask), colour_mask(colour_mask),
+          table(load_table_binary(table_filename)), max_depth(max_depth) {}
 };
 
 
 int main() {
     Cube4x4 cube;
 
-    Phase phase5({R, L, F, B, U, D}, {1,2,4,7,8,11,13,14,36,39,40,43,68,71,72,75,81,82,84,87,88,91,93,94}, true, "phase5table.bin", 10, 15);
-    
-    Phase phase8({R2, L2, F2, B2, U2, D2}, {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95}, false, "phase8table.bin", 14, 25);
+    Phase phase5("Phase 5", {R, L, F, B, U, D}, {1,2,4,7,8,11,13,14,36,39,40,43,68,71,72,75,81,82,84,87,88,91,93,94}, {{-2, {1,2,4,7,8,11,13,14,36,39,40,43,68,71,72,75,81,82,84,87,88,91,93,94}}}, "phase5table.bin", 8);
+    Phase phase6("Phase 6", {R, L, F2, B2, U, D}, {0,1,2,3,4,7,8,11,12,13,14,15,36,39,40,43,68,71,72,75,80,81,82,83,84,87,88,91,92,93,94,95}, {{-3, {0,1,2,3,4,7,8,11,12,13,14,15,80,81,82,83,84,87,88,91,92,93,94,95}}, {-4, {36,39,40,43,68,71,72,75}}}, "phase6table.bin", 13);
+    //Phase phase7("Phase 7", {R2, L2, F2, B2, U, D}, {0,1,2,3,4,7,8,11,12,13,14,15,36,39,40,43,68,71,72,75,80,81,82,83,84,87,88,91,92,93,94,95}, {{-3, {0,1,2,3,4,7,8,11,12,13,14,15,80,81,82,83,84,87,88,91,92,93,94,95}}, {-4, {36,39,40,43,68,71,72,75}}}, "phase6table.bin", 13);
 
-    std::array<Phase, 1> phases = {phase5};
+    Phase phase8("Phase 8", {R2, L2, F2, B2, U2, D2}, {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95}, {}, "phase8table.bin", 15);
+
+    std::array<Phase, 2> phases = {phase5, phase6};
  
     //cube.import_state("WYYWYWWWYWWWWYYWOOOOOOOROOORRRRRGGGGGGGBGGGBBBBBROORRRRORRROORROBBBBBBBGBBBGGGGGYWWYWYYYWYYYYWWY");
     std::vector<Move> scramble = cube.apply_random_moves(35, {R, L, U, D, F, B});
@@ -144,18 +145,20 @@ int main() {
     }
     cube.print();
 
+    
+
     std::vector<Move> solution = {};
     for (const Phase& phase : phases) {
         Cube4x4 phase_cube = cube;
         phase_cube.apply_mask(phase.mask);
-        if (phase.apply_no_colour) {
-            phase_cube.apply_no_colour();
+        for (const auto& [value, mask] : phase.colour_mask) {
+            phase_cube.apply_colour_mask(value, mask);
         }
-        std::vector<Move> phase_solution = solve_any_phase_ida(phase_cube, phase.moves, phase.table, phase.table_depth, phase.max_depth);
+        std::vector<Move> phase_solution = solve_any_phase_ida(phase_cube, phase.moves, phase.table, phase.max_depth, phase.max_depth);
         for (const Move& move : phase_solution) {
             solution.push_back(move);
         }
-        print_apply_solution(cube, phase_solution);
+        print_apply_solution(cube, phase_solution, phase.name);
     }
     
     cube.print();

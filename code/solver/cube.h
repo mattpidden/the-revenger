@@ -38,6 +38,7 @@ public:
     std::vector<Move> apply_random_moves(int n,  std::vector<Move> all_moves);
     bool check_solved() const;
     void apply_mask(const std::vector<int>& mask);
+    void apply_colour_mask(int value, const std::vector<int>& mask);
     void apply_no_colour();
     
 

@@ -16,7 +16,7 @@ std::string apply_move_to_state(const std::string& state, Move move) {
   return cube.export_state();
 }
 
-std::unordered_map<std::string, int> generate_table(const std::vector<std::string>& solved_states, int depth, const std::vector<Move>& moveset) {
+std::unordered_map<std::string, int> generate_table(const std::vector<std::string>& solved_states, const std::vector<Move>& moveset) {
     std::unordered_map<std::string, int> table;
     std::vector<std::string> previous_frontier(solved_states.begin(), solved_states.end());
 
@@ -24,19 +24,27 @@ std::unordered_map<std::string, int> generate_table(const std::vector<std::strin
         table[state] = 0;
     }
 
-    for (int i = 1; i <= depth; i++) {
+    int depth = 0;
+    while (!previous_frontier.empty()) {
         std::vector<std::string> frontier;
         for (const auto& state : previous_frontier) {
             for (const auto& move : moveset) {
                 std::string new_state = apply_move_to_state(state, move);
                 if (table.find(new_state) == table.end()) {  
-                    table[new_state] = i;
+                    table[new_state] = depth + 1;
                     frontier.push_back(new_state);
                 }
             }
         }
+        if (frontier.empty()) {
+            break;
+        }
         previous_frontier = std::move(frontier); 
+        depth++;
     }
+
+    std::cout << "Final depth reached: " << depth << "\n";
+    std::cout << "Total states found: " << table.size() << "\n";
 
     return table;
 }
@@ -60,22 +68,44 @@ void save_table_binary(const std::unordered_map<std::string, int>& table, const 
     std::cout << "Saved table to " << filename << " (binary format)\n";
 }
 
-int main() {
-    // Cube4x4 cube;
-    // std::vector<std::string> phase8_solved_states = {cube.export_state()};
-    // std::vector<Move> phase8_moves = {R2, L2, F2, B2, U2, D2};
-    // auto phase8_table = generate_table(phase8_solved_states, 14, phase8_moves);
-    // save_table_binary(phase8_table, "phase8table.bin");
+class Phase {
+public:
+    std::string name;
+    std::vector<Move> moves;
+    std::vector<int> mask;
+    std::map<int, std::vector<int>> colour_mask;
+    std::string table_filename;
 
-    Cube4x4 cube;
-    std::vector<int> phase5_mask = {1,2,4,7,8,11,13,14,36,39,40,43,68,71,72,75,81,82,84,87,88,91,93,94};
-    cube.apply_mask(phase5_mask);
-    cube.apply_no_colour();
-    std::vector<std::string> phase5_solved_states = {cube.export_state()};
-    std::vector<Move> phase5_moves = {R, L, F, B, U, D};
-    int phase5_table_depth = 10;
-    auto phase5_table = generate_table(phase5_solved_states, phase5_table_depth, phase5_moves);
-    save_table_binary(phase5_table, "phase5table.bin");
+    // Constructor
+    Phase(std::string name,
+          const std::vector<Move>& moves, 
+          const std::vector<int>& mask, 
+          const std::map<int, std::vector<int>>& colour_mask, 
+          const std::string& table_filename)
+        : name(name), moves(moves), mask(mask), colour_mask(colour_mask),
+          table_filename(table_filename) {}
+};
+
+int main() {
+
+    Phase phase5("Phase 5", {R, L, F, B, U, D}, {1,2,4,7,8,11,13,14,36,39,40,43,68,71,72,75,81,82,84,87,88,91,93,94}, {{-2, {1,2,4,7,8,11,13,14,36,39,40,43,68,71,72,75,81,82,84,87,88,91,93,94}}}, "phase5table.bin");
+    Phase phase6("Phase 6", {R, L, F2, B2, U, D}, {0,1,2,3,4,7,8,11,12,13,14,15,36,39,40,43,68,71,72,75,80,81,82,83,84,87,88,91,92,93,94,95}, {{-3, {0,1,2,3,4,7,8,11,12,13,14,15,80,81,82,83,84,87,88,91,92,93,94,95}}, {-4, {36,39,40,43,68,71,72,75}}}, "phase6table.bin");
+    Phase phase7_corners("Phase 7 (corners)", {R2, L2, F2, B2, U2, D2}, {0,3,12,15,16,19,28,31,32,35,44,47,48,51,60,63,64,67,76,79,80,83,92,95}, {}, "phase7cornertable.bin");
+
+    Phase phase8("Phase 8", {R2, L2, F2, B2, U2, D2}, {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95}, {}, "phase8table.bin");
+
+    std::array<Phase, 4> phases = {phase5, phase6, phase7_corners, phase8};
+
+    for (const Phase& phase : phases) {
+        Cube4x4 phase_cube;
+        phase_cube.apply_mask(phase.mask);
+        for (const auto& [value, mask] : phase.colour_mask) {
+            phase_cube.apply_colour_mask(value, mask);
+        }
+        std::vector<std::string> solved_states = {phase_cube.export_state()};
+        auto table = generate_table(solved_states, phase.moves);
+        save_table_binary(table, phase.table_filename);
+    }
 
     return 0;
 }
