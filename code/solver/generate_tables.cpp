@@ -90,12 +90,12 @@ int main() {
 
     Phase phase5("Phase 5", {R, L, F, B, U, D}, {1,2,4,7,8,11,13,14,36,39,40,43,68,71,72,75,81,82,84,87,88,91,93,94}, {{-2, {1,2,4,7,8,11,13,14,36,39,40,43,68,71,72,75,81,82,84,87,88,91,93,94}}}, "phase5table.bin");
     Phase phase6("Phase 6", {R, L, F2, B2, U, D}, {0,1,2,3,4,7,8,11,12,13,14,15,36,39,40,43,68,71,72,75,80,81,82,83,84,87,88,91,92,93,94,95}, {{-3, {0,1,2,3,4,7,8,11,12,13,14,15,80,81,82,83,84,87,88,91,92,93,94,95}}, {-4, {36,39,40,43,68,71,72,75}}}, "phase6table.bin");
-    Phase phase7_corners("Phase 7 (corners)", {R2, L2, F2, B2, U2, D2}, {0,3,12,15,16,19,28,31,32,35,44,47,48,51,60,63,64,67,76,79,80,83,92,95}, {}, "phase7cornertable.bin");
-    Phase phase7("Phase 7", {R2, L2, F2, B2, U, D}, {0,3,12,15,16,19,28,31,32,35,44,47,48,51,60,63,64,67,76,79,80,83,92,95}, {}, "phase7cornertable.bin");
+    Phase phase7_corners("Phase 7 (corners)", {R2, L2, F2, B2, U2, D2}, {0,3,12,15,16,17,18,19,20,23,24,27,28,29,30,31,32,33,34,35,36,39,40,43,44,45,46,47,48,49,50,51,52,55,56,59,60,61,62,63,64,65,66,67,68,71,72,75,76,77,78,79,80,83,92,95}, {{-1, {17,18,20,23,24,27,29,30,49,50,52,55,56,59,61,62}}, {-1, {33,34,36,39,40,43,45,46,65,66,68,71,72,75,77,78}}}, "phase7cornertable.bin");
+    Phase phase7("Phase 7", {R2, L2, F2, B2, U, D}, {0,3,12,15,16,17,18,19,20,23,24,27,28,29,30,31,32,33,34,35,36,39,40,43,44,45,46,47,48,49,50,51,52,55,56,59,60,61,62,63,64,65,66,67,68,71,72,75,76,77,78,79,80,83,92,95}, {{-3, {17,18,20,23,24,27,29,30,49,50,52,55,56,59,61,62}}, {-4, {33,34,36,39,40,43,45,46,65,66,68,71,72,75,77,78}}}, "phase7table.bin");
     
     Phase phase8("Phase 8", {R2, L2, F2, B2, U2, D2}, {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95}, {}, "phase8table.bin");
 
-    std::array<Phase, 4> phases = {phase5, phase6, phase7, phase8};
+    std::array<Phase, 1> phases = {phase7};
 
     for (const Phase& phase : phases) {
         Cube4x4 phase_cube;
@@ -107,7 +107,11 @@ int main() {
         if (phase.name == phase7.name) {
             Cube4x4 corner_cube;
             corner_cube.apply_mask(phase7_corners.mask);
-            auto table = generate_table({corner_cube.export_state()}, phase7_corners.moves);
+            for (const auto& [value, mask] : phase7_corners.colour_mask) {
+                corner_cube.apply_colour_mask(value, mask);
+            }
+            corner_cube.print();
+            auto table = generate_table({corner_cube.export_state()}, phase7_corners.moves); // (this is 96 length)
             for (const auto& [key, _] : table) {
                 solved_states.push_back(key);
             }
