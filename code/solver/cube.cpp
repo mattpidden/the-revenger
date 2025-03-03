@@ -18,12 +18,18 @@ Cube4x4::Cube4x4() {
 
 // Reset to goal state:
 void Cube4x4::reset() {
-    facelets[U_FACE].fill(WHITE);
-    facelets[L_FACE].fill(ORANGE);
-    facelets[F_FACE].fill(GREEN);
-    facelets[R_FACE].fill(RED);
-    facelets[B_FACE].fill(BLUE);
-    facelets[D_FACE].fill(YELLOW);
+    // facelets[U_FACE].fill(WHITE);
+    // facelets[L_FACE].fill(ORANGE);
+    // facelets[F_FACE].fill(GREEN);
+    // facelets[R_FACE].fill(RED);
+    // facelets[B_FACE].fill(BLUE);
+    // facelets[D_FACE].fill(YELLOW);
+
+    for (int i = 0; i < 6; i++) {
+        for (int j = 0; j < 16; j++) {
+            facelets[i][j] = (i * 16) + j;
+        }
+    }
 
     edges_pairs = {0,1,2,3,4,5,6,7,8,9,10,11};
     edges_pairs_parity.fill(false);
@@ -38,7 +44,7 @@ std::string Cube4x4::export_state() const {
     result.reserve(96);
     auto appendFace = [&](Face f) {
         for(int i=0; i<16; i++){
-            result.push_back( colour_to_char(facelets[f][i]) );
+            result.push_back(id_to_char(facelets[f][i]) );
         }
     }; 
     appendFace(U_FACE);
@@ -54,7 +60,7 @@ void Cube4x4::import_state(const std::string& state) {
     Cube4x4 cube;
     auto extractFace = [&](Face f, int startIndex) {
         for (int i = 0; i < 16; i++) {
-            facelets[f][i] = char_to_colour(state[startIndex + i]);
+            facelets[f][i] = char_to_id(state[startIndex + i]);
         }
     };
 
@@ -182,29 +188,47 @@ bool Cube4x4::check_solved() const {
     return false;
 }
 
-// Converts a colour enum to a char
-char Cube4x4::colour_to_char(Colour c) {
-    switch(c) {
-        case WHITE:  return 'W';
-        case RED:    return 'R';
-        case BLUE:   return 'B';
-        case ORANGE: return 'O';
-        case GREEN:  return 'G';
-        case YELLOW: return 'Y';
-        default:     return '?';
-    }  
+// Pass in the pieces you want to keep
+void Cube4x4::apply_mask(const std::vector<int>& mask) {
+    for (int i = 0; i < 6; i++) {
+        for (int j = 0; j < 16; j++) {
+            if (std::find(mask.begin(), mask.end(), facelets[i][j]) == mask.end()) {
+                facelets[i][j] = -1;
+            }
+        }
+    }
 }
 
-Colour Cube4x4::char_to_colour(char c) {
-    switch(c) {
-        case 'W':  return WHITE;
-        case 'R':    return RED;
-        case 'B':   return BLUE;
-        case 'O': return ORANGE;
-        case 'G':  return GREEN;
-        case 'Y': return YELLOW;
-        default:     return WHITE;
-    }  
+std::string Cube4x4::apply_mask_colours(const std::vector<int>& mask) {
+    apply_mask(mask);
+    std::string cube_state = export_state();
+    for (int i = 0; i < 96; i++) {
+        if (cube_state[i] != 'X') {
+            cube_state[i] = '0';
+        }
+    }
+    return cube_state;
+}
+
+// Converts a facelet id to a char
+char Cube4x4::id_to_char(int id) {
+    if (id < 0 || id >= 96) {  // Ensuring ID is within a valid range
+        return 'X';
+    }
+    return "WOGRBY"[id / 16];
+}
+
+// Converts a facelet id to a char
+int Cube4x4::char_to_id(char c) {
+    switch (c) {
+        case 'W': return 0;
+        case 'O': return 16;
+        case 'G': return 32;
+        case 'R': return 48;
+        case 'B': return 64;
+        case 'Y': return 80;
+        default: return -1;
+    }
 }
 
 // Converts a char to an emoji string
@@ -237,7 +261,7 @@ void Cube4x4::turn_outer_face(int face_index, bool clockwise) {
 
     auto &first_face = facelets[adjacent_faces[face_index][0]];
     const auto &first_edges = adjacent_outer_edges[face_index][0];
-    std::array<Colour, 4> temp_edges = {first_face[first_edges[0]], first_face[first_edges[1]], first_face[first_edges[2]], first_face[first_edges[3]]};
+    std::array<int, 4> temp_edges = {first_face[first_edges[0]], first_face[first_edges[1]], first_face[first_edges[2]], first_face[first_edges[3]]};
     int start_index = clockwise ? 3 : 1;
     int step = clockwise ? -1 : 1;
     for (int i = start_index; (clockwise ? i > 0 : i < 4); i += step) {
@@ -299,7 +323,7 @@ void Cube4x4::turn_outer_face(int face_index, bool clockwise) {
 void Cube4x4::turn_inner_slice(int face_index, bool clockwise) {
     auto &first_face = facelets[adjacent_faces[face_index][0]];
     const auto &first_edges = adjacent_inner_edges[face_index][0];
-    std::array<Colour, 4> temp_edges = {first_face[first_edges[0]], first_face[first_edges[1]], first_face[first_edges[2]], first_face[first_edges[3]]};
+    std::array<int, 4> temp_edges = {first_face[first_edges[0]], first_face[first_edges[1]], first_face[first_edges[2]], first_face[first_edges[3]]};
     int start_index = clockwise ? 3 : 1;
     int step = clockwise ? -1 : 1;
     for (int i = start_index; (clockwise ? i > 0 : i < 4); i += step) {

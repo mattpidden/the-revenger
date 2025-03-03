@@ -37,10 +37,12 @@ public:
     void move(Move m); 
     std::vector<Move> apply_random_moves(int n,  std::vector<Move> all_moves);
     bool check_solved() const;
+    void apply_mask(const std::vector<int>& mask);
+    std::string apply_mask_colours(const std::vector<int>& mask);
     
 
 private:
-    std::array<std::array<Colour, 16>, 6> facelets;
+    std::array<std::array<int, 16>, 6> facelets;
 
     std::array<int,24> centers;  
     std::array<int,24> edges;   
@@ -98,8 +100,8 @@ private:
     void turn_outer_face(int face_index, bool clockwise);
     void turn_inner_slice(int face_index, bool clockwise);
 
-    static char colour_to_char(Colour c);
-    static Colour char_to_colour(char c);
+    static char id_to_char(int id);
+    static int char_to_id(char c);
     static std::string char_to_emoji(char c);
 };
 

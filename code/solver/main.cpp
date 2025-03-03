@@ -108,7 +108,7 @@ void print_apply_solution(Cube4x4 &cube, const std::vector<Move> &solution) {
 int main() {
     Cube4x4 cube;
     std::vector<Move> phase8_moves = {R2, L2, F2, B2, U2, D2};
-    //cube.import_state("YWWWWWWWWWWWYWWWOOOOOOOOOOOOROORBGGBGGGGGGGGGGGGORRORRRRRRRRRRRRGBBGBBBBBBBBBBBBWYYYYYYYYYYYWYYYY");
+    //cube.import_state("WYYWYWWWYWWWWYYWOOOOOOOROOORRRRRGGGGGGGBGGGBBBBBROORRRRORRROORROBBBBBBBGBBBGGGGGYWWYWYYYWYYYYWWY");
     
     std::vector<Move> scramble = cube.apply_random_moves(35, phase8_moves);
     std::cout << "Scramble of size " << scramble.size() << " moves: ";
