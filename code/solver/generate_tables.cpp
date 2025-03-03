@@ -61,13 +61,16 @@ void save_table_binary(const std::unordered_map<std::string, int>& table, const 
 }
 
 int main() {
-    std::vector<Move> phase8_moves = {R2, L2, F2, B2, U2, D2};
-    Cube4x4 cube;
-    std::vector<std::string> solved_states = {cube.export_state()};
+    // Cube4x4 cube;
+    // std::vector<std::string> phase8_solved_states = {cube.export_state()};
+    // std::vector<Move> phase8_moves = {R2, L2, F2, B2, U2, D2};
+    // auto phase8table = generate_table(phase8_solved_states, 14, phase8_moves);
+    // save_table_binary(phase8table, "phase8table.bin");
 
-    auto phase8table = generate_table(solved_states, 14, phase8_moves);
-    
-    save_table_binary(phase8table, "phase8table.bin");
+    std::vector<std::string> phase5_solved_states = {"XOOXOXXOOXXOXOOXXXXXXXXXXXXXXXXXXXXXOXXOOXXOXXXXXXXXXXXXXXXXXXXXXXXXOXXOOXXOXXXXXOOXOXXOOXXOXOOX"};
+    std::vector<Move> phase5_moves = {R, L, F, B, U, D};
+    auto phase5table = generate_table(phase5_solved_states, 10, phase5_moves);
+    save_table_binary(phase5table, "phase5table.bin");
 
     return 0;
 }

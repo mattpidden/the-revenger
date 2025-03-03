@@ -41,7 +41,6 @@ public:
 
 private:
     std::array<std::array<Colour, 16>, 6> facelets;
-    std::array<std::array<int, 16>, 6> indexed_facelets;
 
     std::array<int,24> centers;  
     std::array<int,24> edges;   

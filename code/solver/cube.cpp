@@ -25,12 +25,6 @@ void Cube4x4::reset() {
     facelets[B_FACE].fill(BLUE);
     facelets[D_FACE].fill(YELLOW);
 
-    for (int i = 0; i < 6; i++) {
-        for (int j = 0; j < 16; j++) {
-            indexed_facelets[i][j] = (i * 16) + j;
-        }
-    }
-
     edges_pairs = {0,1,2,3,4,5,6,7,8,9,10,11};
     edges_pairs_parity.fill(false);
     corners = {0,1,2,3,4,5,6,7};
