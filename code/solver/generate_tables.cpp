@@ -64,15 +64,18 @@ int main() {
     // Cube4x4 cube;
     // std::vector<std::string> phase8_solved_states = {cube.export_state()};
     // std::vector<Move> phase8_moves = {R2, L2, F2, B2, U2, D2};
-    // auto phase8table = generate_table(phase8_solved_states, 14, phase8_moves);
-    // save_table_binary(phase8table, "phase8table.bin");
+    // auto phase8_table = generate_table(phase8_solved_states, 14, phase8_moves);
+    // save_table_binary(phase8_table, "phase8table.bin");
 
     Cube4x4 cube;
     std::vector<int> phase5_mask = {1,2,4,7,8,11,13,14,36,39,40,43,68,71,72,75,81,82,84,87,88,91,93,94};
-    std::vector<std::string> phase5_solved_states = {cube.apply_mask_colours(phase5_mask)};
+    cube.apply_mask(phase5_mask);
+    cube.apply_no_colour();
+    std::vector<std::string> phase5_solved_states = {cube.export_state()};
     std::vector<Move> phase5_moves = {R, L, F, B, U, D};
-    auto phase5table = generate_table(phase5_solved_states, 10, phase5_moves);
-    save_table_binary(phase5table, "phase5table.bin");
+    int phase5_table_depth = 10;
+    auto phase5_table = generate_table(phase5_solved_states, phase5_table_depth, phase5_moves);
+    save_table_binary(phase5_table, "phase5table.bin");
 
     return 0;
 }
