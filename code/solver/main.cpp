@@ -151,14 +151,19 @@ int main() {
     for (const Phase& phase : phases) {
         Cube4x4 phase_cube = cube;
         phase_cube.apply_mask(phase.mask);
+        phase_cube.print();
         for (const auto& [value, mask] : phase.colour_mask) {
             phase_cube.apply_colour_mask(value, mask);
         }
+        phase_cube.print();
         std::vector<Move> phase_solution = solve_any_phase_ida(phase_cube, phase.moves, phase.table, phase.max_depth, phase.max_depth);
         for (const Move& move : phase_solution) {
             solution.push_back(move);
         }
+        print_apply_solution(phase_cube, phase_solution, phase.name);
         print_apply_solution(cube, phase_solution, phase.name);
+        phase_cube.print();
+        cube.print();
     }
 
     print_apply_solution(scrambled_cube, solution, "Full");
