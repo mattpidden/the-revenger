@@ -128,17 +128,24 @@ public:
 int main() {
     Cube4x4 cube;
 
-    Phase phase1("Phase 1", {R, R_PRIME, R2, L, L_PRIME, L2, F, F_PRIME, F2, B, B_PRIME, B2, U, U_PRIME, U2, D, D_PRIME, D2, r, r_PRIME, r2, l, l_PRIME, l2, f, f_PRIME, f2, b, b_PRIME, b2, u, u_PRIME, u2, d, d_PRIME, d2}, {21,22,25,26,53,54,57,58}, {{-2, {21,22,25,26,53,54,57,58}}}, "phase1table.bin", 8);
-    Phase phase2("Phase 2", {R, R_PRIME, R2, L, L_PRIME, L2, F, F_PRIME, F2, B, B_PRIME, B2, U, U_PRIME, U2, D, D_PRIME, D2, r, r_PRIME, r2, l, l_PRIME, l2, f2, b2, u2, d2}, {5,6,9,10,21,22,25,26,37,38,41,42,53,54,57,58,69,70,73,74,85,86,89,90}, {{-3, {5,6,9,10,85,86,89,90}}, {-4, {37,38,41,42,69,70,73,74}}}, "phase2table.bin", 10);
+    // These phases use a reduction method
+    // Phase phase1("Phase 1", {R, R_PRIME, R2, L, L_PRIME, L2, F, F_PRIME, F2, B, B_PRIME, B2, U, U_PRIME, U2, D, D_PRIME, D2, r, r_PRIME, r2, l, l_PRIME, l2, f, f_PRIME, f2, b, b_PRIME, b2, u, u_PRIME, u2, d, d_PRIME, d2}, {5,6,9,10,85,86,89,90}, {{-2, {{5,6,9,10,85,86,89,90}}}}, "phase1table.bin", 8);
+    // Phase phase2("Phase 2", {R, R_PRIME, R2, L, L_PRIME, L2, F, F_PRIME, F2, B, B_PRIME, B2, U, U_PRIME, U2, D, D_PRIME, D2, f2, b2, r2, l2, u, u_PRIME, u2, d, d_PRIME, d2}, {5,6,9,10,85,86,89,90,21,22,25,26,53,54,57,58,37,38,41,42,69,70,73,74}, {{-3, {{21,22,25,26,53,54,57,58}}}, {-4, {37,38,41,42,69,70,73,74}}}, "phase2table.bin", 10);
+    // Phase phase3("Phase 3", {R, R_PRIME, R2, L, L_PRIME, L2, F, F_PRIME, F2, B, B_PRIME, B2, U, U_PRIME, U2, D, D_PRIME, D2, u2, d2}, {5,6,9,10,85,86,89,90,21,22,25,26,53,54,57,58,37,38,41,42,69,70,73,74}, {}, "phase3table.bin", 9);
 
+    // These phases use Tsai's 8 phase method
+    Phase phase1("Phase 1", {R, R_PRIME, R2, L, L_PRIME, L2, F, F_PRIME, F2, B, B_PRIME, B2, U, U_PRIME, U2, D, D_PRIME, D2, r, r_PRIME, r2, l, l_PRIME, l2, f, f_PRIME, f2, b, b_PRIME, b2, u, u_PRIME, u2, d, d_PRIME, d2}, {21,22,25,26,53,54,57,58}, {{-2, {21,22,25,26,53,54,57,58}}}, "phase1table.bin", 8);
+    Phase phase2("Phase 2", {R, R_PRIME, R2, L, L_PRIME, L2, F, F_PRIME, F2, B, B_PRIME, B2, U, U_PRIME, U2, D, D_PRIME, D2, r, r_PRIME, r2, l, l_PRIME, l2, f2, b2, u2, d2}, {5,6,9,10,85,86,89,90,37,38,41,42,69,70,73,74,1,2,4,7,8,11,13,14,36,39,40,43,68,71,72,75,81,82,84,87,88,91,93,94}, {{0, {5,6,9,10,85,86,89,90}}, {32, {37,38,41,42,69,70,73,74}}, {-3, {1,2,4,7,8,11,13,14,36,39,40,43,68,71,72,75,81,82,84,87,88,91,93,94}}}, "phase2table.bin", 10);
+    //Phase phase3("Phase 3", {R2, L2, F, F_PRIME, F2, B, B_PRIME, B2, U, U_PRIME, U2, D, D_PRIME, D2, r2, l2, f2, b2, u2, d2}, {21,22,25,26,53,54,57,58,37,38,41,42,69,70,73,74}, {{}, {}}, "phase3table.bin", 6);
+    
     Phase phase5("Phase 5", {R, R_PRIME, R2, L, L_PRIME, L2, F, F_PRIME, F2, B, B_PRIME, B2, U, U_PRIME, U2, D, D_PRIME, D2}, {1,2,4,7,8,11,13,14,36,39,40,43,68,71,72,75,81,82,84,87,88,91,93,94}, {{-2, {1,2,4,7,8,11,13,14,36,39,40,43,68,71,72,75,81,82,84,87,88,91,93,94}}}, "phase5table.bin", 7);
     Phase phase6("Phase 6", {R, R_PRIME, R2, L, L_PRIME, L2, F2, B2, U, U_PRIME, U2, D, D_PRIME, D2}, {0,1,2,3,4,7,8,11,12,13,14,15,36,39,40,43,68,71,72,75,80,81,82,83,84,87,88,91,92,93,94,95}, {{-3, {0,1,2,3,4,7,8,11,12,13,14,15,80,81,82,83,84,87,88,91,92,93,94,95}}, {-4, {36,39,40,43,68,71,72,75}}}, "phase6table.bin", 10);
     Phase phase7("Phase 7", {R2, L2, F2, B2, U, U_PRIME, U2, D, D_PRIME, D2}, {0,3,12,15,16,17,18,19,20,23,24,27,28,29,30,31,32,33,34,35,36,39,40,43,44,45,46,47,48,49,50,51,52,55,56,59,60,61,62,63,64,65,66,67,68,71,72,75,76,77,78,79,80,83,92,95}, {{-3, {17,18,20,23,24,27,29,30,49,50,52,55,56,59,61,62}}, {-4, {33,34,36,39,40,43,45,46,65,66,68,71,72,75,77,78}}}, "phase7table.bin", 13);
     Phase phase8("Phase 8", {R2, L2, F2, B2, U2, D2}, {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95}, {}, "phase8table.bin", 15);
-    std::array<Phase, 2> phases = {phase1, phase2};
+    std::array<Phase, 4> phases = {phase5, phase6, phase7, phase8};
  
     //cube.import_state("WYYWYWWWYWWWWYYWOOOOOOOROOORRRRRGGGGGGGBGGGBBBBBROORRRRORRROORROBBBBBBBGBBBGGGGGYWWYWYYYWYYYYWWY");
-    std::vector<Move> scramble = cube.apply_random_moves(35, {R, L, U, D, F, B, r, l, u, d, f, b});
+    std::vector<Move> scramble = cube.apply_random_moves(35, {R, L, U, D, F, B});
     std::cout << "Scramble of size " << scramble.size() << " moves: ";
     for (Move move : scramble) {
         std::cout << move_to_string(move) << " ";
