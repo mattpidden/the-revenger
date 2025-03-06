@@ -112,13 +112,13 @@ void print_apply_solution(Cube4x4 &cube, const std::vector<Move> &solution, std:
 int main() {
     Cube4x4 cube;
 
-    std::vector<Phase> phases = {phase5, phase6, phase7, phase8};
+    std::vector<Phase> phases = {phase1, phase2};
     for (Phase& phase : phases) {
         phase.set_table(load_table_binary(phase.table_filename));
     }
 
     //cube.import_state("WYYWYWWWYWWWWYYWOOOOOOOROOORRRRRGGGGGGGBGGGBBBBBROORRRRORRROORROBBBBBBBGBBBGGGGGYWWYWYYYWYYYYWWY");
-    std::vector<Move> scramble = cube.apply_random_moves(35, {R, L, U, D, F, B});
+    std::vector<Move> scramble = cube.apply_random_moves(35, {R, L, U, D, F, B, r, l, u, d, f, b});
     std::cout << "Scramble of size " << scramble.size() << " moves: ";
     for (Move move : scramble) {
         std::cout << move_to_string(move) << " ";

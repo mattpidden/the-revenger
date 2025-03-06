@@ -127,6 +127,10 @@ public:
     }
 };
 
+extern Phase phase1;
+extern Phase phase2;
+extern Phase phase3;
+extern Phase phase4;
 extern Phase phase5;
 extern Phase phase6;
 extern Phase phase7;

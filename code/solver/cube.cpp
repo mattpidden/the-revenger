@@ -380,7 +380,83 @@ std::string move_to_string(Move move) {
     }
 }
 
-//Phase phase1("Phase 1", {R, R_PRIME, R2, L, L_PRIME, L2, F, F_PRIME, F2, B, B_PRIME, B2, U, U_PRIME, U2, D, D_PRIME, D2, r, r_PRIME, r2, l, l_PRIME, l2, f, f_PRIME, f2, b, b_PRIME, b2, u, u_PRIME, u2, d, d_PRIME, d2}, {21,22,25,26,53,54,57,58}, {{-2, {21,22,25,26,53,54,57,58}}}, "phase1table.bin");
+// PHASE 1
+std::vector<Move> phase1_moves = {R, R_PRIME, R2, L, L_PRIME, L2, F, F_PRIME, F2, B, B_PRIME, B2, U, U_PRIME, U2, D, D_PRIME, D2, r, r_PRIME, r2, l, l_PRIME, l2, f, f_PRIME, f2, b, b_PRIME, b2, u, u_PRIME, u2, d, d_PRIME, d2};
+std::function<std::string(Cube4x4&)> phase1_mask = [](Cube4x4& cube) -> std::string {
+    std::vector<int> mask = {21,22,25,26,53,54,57,58};
+    cube.apply_mask(mask);
+    cube.apply_colour_mask(-2, mask);
+    return cube.export_state();
+};
+std::function<bool(const Cube4x4&)> phase1_is_solved = [] (const Cube4x4& cube) {
+    Cube4x4 solved_cube;
+    return phase1_mask(solved_cube) == cube.export_state();
+};
+Cube4x4 phase1_cube;
+Phase phase1("Phase 1", phase1_moves, phase1_is_solved, phase1_mask, {phase1_mask(phase1_cube)}, "phase1table.bin", -1, 8);
+
+// PHASE 2
+std::vector<Move> phase2_moves = {R, R_PRIME, R2, L, L_PRIME, L2, F, F_PRIME, F2, B, B_PRIME, B2, U, U_PRIME, U2, D, D_PRIME, D2, r, r_PRIME, r2, l, l_PRIME, l2, f2, b2, u2, d2};
+std::function<std::string(Cube4x4&)> phase2_mask = [](Cube4x4& cube) -> std::string {
+    std::vector<int> mask = {5,6,9,10,85,86,89,90,37,38,41,42,69,70,73,74,21,22,25,26,53,54,57,58};
+    std::vector<int> colour_mask1 = {5,6,9,10,85,86,89,90};
+    std::vector<int> colour_mask2 = {37,38,41,42,69,70,73,74};
+    cube.apply_mask(mask);
+    cube.apply_colour_mask(-3, colour_mask1);
+    cube.apply_colour_mask(-4, colour_mask2);
+    return cube.export_state();
+};
+std::function<bool(const Cube4x4&)> phase2_is_solved = [] (const Cube4x4& cube) {
+    Cube4x4 solved_cube;
+    return phase2_mask(solved_cube) == cube.export_state();
+};
+Cube4x4 phase2_cube;
+Phase phase2("Phase 2", phase2_moves, phase2_is_solved, phase2_mask, {"XXXXX33XX33XXXXXXXXXXORXXROXXXXXXXXXX44XX44XXXXXXXXXXROXXORXXXXXXXXXX44XX44XXXXXXXXXX33XX33XXXXX",
+"XXXXX33XX33XXXXXXXXXXOOXXRRXXXXXXXXXX44XX44XXXXXXXXXXOOXXRRXXXXXXXXXX44XX44XXXXXXXXXX33XX33XXXXX",
+"XXXXX33XX33XXXXXXXXXXRRXXOOXXXXXXXXXX44XX44XXXXXXXXXXRRXXOOXXXXXXXXXX44XX44XXXXXXXXXX33XX33XXXXX",
+"XXXXX33XX33XXXXXXXXXXROXXROXXXXXXXXXX44XX44XXXXXXXXXXORXXORXXXXXXXXXX44XX44XXXXXXXXXX33XX33XXXXX",
+"XXXXX33XX33XXXXXXXXXXORXXORXXXXXXXXXX44XX44XXXXXXXXXXROXXROXXXXXXXXXX44XX44XXXXXXXXXX33XX33XXXXX",
+"XXXXX33XX33XXXXXXXXXXOOXXRRXXXXXXXXXX44XX44XXXXXXXXXXRRXXOOXXXXXXXXXX44XX44XXXXXXXXXX33XX33XXXXX",
+"XXXXX33XX33XXXXXXXXXXROXXORXXXXXXXXXX44XX44XXXXXXXXXXORXXROXXXXXXXXXX44XX44XXXXXXXXXX33XX33XXXXX",
+"XXXXX33XX33XXXXXXXXXXRRXXRRXXXXXXXXXX44XX44XXXXXXXXXXOOXXOOXXXXXXXXXX44XX44XXXXXXXXXX33XX33XXXXX",
+"XXXXX33XX33XXXXXXXXXXRRXXOOXXXXXXXXXX44XX44XXXXXXXXXXOOXXRRXXXXXXXXXX44XX44XXXXXXXXXX33XX33XXXXX",
+"XXXXX33XX33XXXXXXXXXXROXXROXXXXXXXXXX44XX44XXXXXXXXXXROXXROXXXXXXXXXX44XX44XXXXXXXXXX33XX33XXXXX",
+"XXXXX33XX33XXXXXXXXXXORXXORXXXXXXXXXX44XX44XXXXXXXXXXORXXORXXXXXXXXXX44XX44XXXXXXXXXX33XX33XXXXX",
+"XXXXX33XX33XXXXXXXXXXOOXXOOXXXXXXXXXX44XX44XXXXXXXXXXRRXXRRXXXXXXXXXX44XX44XXXXXXXXXX33XX33XXXXX"}, "phase2table.bin", -1, 9);
+
+
+// PHASE 3
+std::vector<Move> phase3_moves = {R2, L2, F, F_PRIME, F2, B, B_PRIME, B2, U, U_PRIME, U2, D, D_PRIME, D2, r2, l2, f2, b2, u2, d2};
+std::function<std::string(Cube4x4&)> phase3_mask = [](Cube4x4& cube) -> std::string {
+    std::vector<int> mask = {37,38,41,42,69,70,73,74,21,22,25,26,53,54,57,58};
+    std::vector<int> colour_mask1 = {5,6,9,10,85,86,89,90};
+    std::vector<int> colour_mask2 = {37,38,41,42,69,70,73,74};
+    cube.apply_mask(mask);
+    cube.apply_colour_mask(-2, mask);
+    return cube.export_state();
+};
+std::function<bool(const Cube4x4&)> phase3_is_solved = [] (const Cube4x4& cube) {
+    Cube4x4 solved_cube;
+    return phase3_mask(solved_cube) == cube.export_state();
+};
+Cube4x4 phase3_cube;
+Phase phase3("Phase 3", phase3_moves, phase3_is_solved, phase3_mask, {phase3_mask(phase3_cube)}, "phase3table.bin", -1, 8);
+
+
+// PHASE 4
+std::vector<Move> phase4_moves = {R2, L2, F2, B2, U, U_PRIME, U2, D, D_PRIME, D2, r2, l2, f2, b2};
+std::function<std::string(Cube4x4&)> phase4_mask = [](Cube4x4& cube) -> std::string {
+    std::vector<int> mask = {5,6,9,10,85,86,89,90,37,38,41,42,69,70,73,74,21,22,25,26,53,54,57,58};
+    cube.apply_mask(mask);
+    return cube.export_state();
+};
+std::function<bool(const Cube4x4&)> phase4_is_solved = [] (const Cube4x4& cube) {
+    Cube4x4 solved_cube;
+    return phase4_mask(solved_cube) == cube.export_state();
+};
+Cube4x4 phase4_cube;
+Phase phase4("Phase 4", phase4_moves, phase4_is_solved, phase4_mask, {phase4_mask(phase4_cube)}, "phase4table.bin", -1, 8);
+
 
 // PHASE 5
 std::vector<Move> phase5_moves = {R, R_PRIME, R2, L, L_PRIME, L2, F, F_PRIME, F2, B, B_PRIME, B2, U, U_PRIME, U2, D, D_PRIME, D2};
