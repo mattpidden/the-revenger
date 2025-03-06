@@ -6,6 +6,7 @@
 #include <string>
 #include <iostream>
 #include <cstdlib>
+#include <functional>
 #include <map>
 
 enum Colour {
@@ -39,7 +40,6 @@ public:
     bool check_solved() const;
     void apply_mask(const std::vector<int>& mask);
     void apply_colour_mask(int value, const std::vector<int>& mask);
-    void apply_no_colour();
     
 
 private:
@@ -107,5 +107,25 @@ private:
 };
 
 std::string move_to_string(Move move);
+
+class Phase {
+public:
+    std::string name;
+    std::vector<Move> moves;
+    std::function<bool(const Cube4x4&)> is_solved;
+    std::function<std::string(Cube4x4&)> mask;
+    std::string table_filename;
+    int table_depth_limit;
+    int search_depth_limit;
+    std::unordered_map<std::string, int> table;
+
+    Phase(const std::string& name, const std::vector<Move>& moves, std::function<bool(const Cube4x4&)> is_solved, std::function<std::string(Cube4x4&)> mask, const std::string& table_filename, int table_depth_limit, int search_depth_limit) : name(name), moves(moves), is_solved(is_solved), mask(mask), table_filename(table_filename), table_depth_limit(table_depth_limit), search_depth_limit(search_depth_limit) {}
+
+    void set_table(const std::unordered_map<std::string, int>& new_table) {
+        table = new_table;
+    }
+};
+
+extern Phase phase5;
 
 #endif  // CUBE_H

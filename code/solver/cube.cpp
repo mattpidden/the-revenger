@@ -209,16 +209,6 @@ void Cube4x4::apply_colour_mask(int value, const std::vector<int>& mask) {
     }
 }
 
-void Cube4x4::apply_no_colour() {
-    for (int i = 0; i < 6; i++) {
-        for (int j = 0; j < 16; j++) {
-            if (facelets[i][j] != -1) {
-                facelets[i][j] = -2;
-            }
-        }
-    }
-}
-
 // Converts a facelet id to a char
 char Cube4x4::id_to_char(int id) {
     if (id == -1) {  // Ensuring ID is within a valid range
@@ -389,3 +379,30 @@ std::string move_to_string(Move move) {
         default: return "?";  
     }
 }
+
+//Phase phase1("Phase 1", {R, R_PRIME, R2, L, L_PRIME, L2, F, F_PRIME, F2, B, B_PRIME, B2, U, U_PRIME, U2, D, D_PRIME, D2, r, r_PRIME, r2, l, l_PRIME, l2, f, f_PRIME, f2, b, b_PRIME, b2, u, u_PRIME, u2, d, d_PRIME, d2}, {21,22,25,26,53,54,57,58}, {{-2, {21,22,25,26,53,54,57,58}}}, "phase1table.bin");
+
+
+std::vector<Move> phase5_moves = {R, R_PRIME, R2, L, L_PRIME, L2, F, F_PRIME, F2, B, B_PRIME, B2, U, U_PRIME, U2, D, D_PRIME, D2};
+std::function<bool(const Cube4x4&)> phase5_is_solved = [] (const Cube4x4& cube) {
+    Cube4x4 solved_cube;    
+    std::vector<int> phase5_mask = {1,2,4,7,8,11,13,14,36,39,40,43,68,71,72,75,81,82,84,87,88,91,93,94};
+    solved_cube.apply_mask(phase5_mask);
+    solved_cube.apply_colour_mask(-2, phase5_mask);
+    return solved_cube.export_state() == cube.export_state();
+};
+std::function<std::string(Cube4x4&)> phase5_mask = [](Cube4x4& cube) -> std::string {
+    std::vector<int> mask = {1,2,4,7,8,11,13,14,36,39,40,43,68,71,72,75,81,82,84,87,88,91,93,94};
+    
+    cube.apply_mask(mask);
+    cube.apply_colour_mask(-2, mask);
+    
+    return cube.export_state();
+};
+
+Phase phase5("Phase 5", phase5_moves, phase5_is_solved, phase5_mask, "phase5table.bin", -1, 10);
+
+// Phase phase6("Phase 6", {R, R_PRIME, R2, L, L_PRIME, L2, F2, B2, U, U_PRIME, U2, D, D_PRIME, D2}, {0,1,2,3,4,7,8,11,12,13,14,15,36,39,40,43,68,71,72,75,80,81,82,83,84,87,88,91,92,93,94,95}, {{-3, {0,1,2,3,4,7,8,11,12,13,14,15,80,81,82,83,84,87,88,91,92,93,94,95}}, {-4, {36,39,40,43,68,71,72,75}}}, "phase6table.bin");
+// Phase phase7_corners("Phase 7 (corners)", {R2, L2, F2, B2, U2, D2}, {0,3,12,15,16,17,18,19,20,23,24,27,28,29,30,31,32,33,34,35,36,39,40,43,44,45,46,47,48,49,50,51,52,55,56,59,60,61,62,63,64,65,66,67,68,71,72,75,76,77,78,79,80,83,92,95}, {{-3, {17,18,20,23,24,27,29,30,49,50,52,55,56,59,61,62}}, {-4, {33,34,36,39,40,43,45,46,65,66,68,71,72,75,77,78}}}, "phase7cornertable.bin");
+// Phase phase7("Phase 7", {R2, L2, F2, B2, U, U_PRIME, U2, D, D_PRIME, D2}, {0,3,12,15,16,17,18,19,20,23,24,27,28,29,30,31,32,33,34,35,36,39,40,43,44,45,46,47,48,49,50,51,52,55,56,59,60,61,62,63,64,65,66,67,68,71,72,75,76,77,78,79,80,83,92,95}, {{-3, {17,18,20,23,24,27,29,30,49,50,52,55,56,59,61,62}}, {-4, {33,34,36,39,40,43,45,46,65,66,68,71,72,75,77,78}}}, "phase7table.bin");
+// Phase phase8("Phase 8", {R2, L2, F2, B2, U2, D2}, {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95}, {}, "phase8table.bin");
