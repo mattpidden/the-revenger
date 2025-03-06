@@ -4,6 +4,7 @@
 #include <fstream>
 #include <unordered_map>
 #include <functional>
+#include <chrono>
 #include "cube.h"
 
 // IDA* recursive search function using pruning table
@@ -111,7 +112,7 @@ void print_apply_solution(Cube4x4 &cube, const std::vector<Move> &solution, std:
 int main() {
     Cube4x4 cube;
 
-    std::vector<Phase> phases = {phase5};
+    std::vector<Phase> phases = {phase5, phase6, phase7, phase8};
     for (Phase& phase : phases) {
         phase.set_table(load_table_binary(phase.table_filename));
     }
@@ -126,6 +127,7 @@ int main() {
     Cube4x4 scrambled_cube = cube;
     cube.print();
 
+    auto start = std::chrono::high_resolution_clock::now();
     std::vector<Move> solution = {};
     for (const Phase& phase : phases) {
         Cube4x4 phase_cube = cube;
@@ -137,8 +139,10 @@ int main() {
         print_apply_solution(cube, phase_solution, phase.name);
         cube.print();
     }
+    auto end = std::chrono::high_resolution_clock::now();
 
     print_apply_solution(scrambled_cube, solution, "Full");
-    scrambled_cube.print();
+    std::cout << "Execution time: " << std::chrono::duration<double>(end - start).count() << " seconds\n";
+
     return 0;
 }

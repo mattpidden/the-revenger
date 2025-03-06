@@ -78,13 +78,26 @@ void save_table_binary(const std::unordered_map<std::string, int>& table, const 
 }
 
 int main() { 
-    std::array<Phase, 1> phases = {phase5};
+    std::array<Phase, 1> phases = {phase8};
 
-    for (const Phase& phase : phases) {
-        Cube4x4 phase_cube;
-        std::vector<std::string> solved_states = {phase.mask(phase_cube)};
-        
-        auto table = generate_table(solved_states, phase.moves, phase.table_depth_limit);
+    // This generated 96 starting stats for phase 7 (corner paritys)
+    // Cube4x4 corner_cube;
+    // std::function<std::string(Cube4x4&)> phase7_mask = [](Cube4x4& cube) -> std::string {
+    //     std::vector<int> mask = {0,3,12,15,16,17,18,19,20,23,24,27,28,29,30,31,32,33,34,35,36,39,40,43,44,45,46,47,48,49,50,51,52,55,56,59,60,61,62,63,64,65,66,67,68,71,72,75,76,77,78,79,80,83,92,95};
+    //     std::vector<int> colour_mask1 = {17,18,20,23,24,27,29,30,49,50,52,55,56,59,61,62};
+    //     std::vector<int> colour_mask2 = {33,34,36,39,40,43,45,46,65,66,68,71,72,75,77,78};
+    //     cube.apply_mask(mask);
+    //     cube.apply_colour_mask(-3, colour_mask1);
+    //     cube.apply_colour_mask(-4, colour_mask2);
+    //     return cube.export_state();
+    // };
+    // std::unordered_map<std::string, int> corner_table = generate_table({phase7_mask(corner_cube)}, {R2, L2, F2, B2, U2, D2}, 10);
+    // for (const auto& [state, depth] : corner_table) {
+    //     std::cout << '"' << state << "\",\n";
+    // }
+
+    for (const Phase& phase : phases) {        
+        auto table = generate_table(phase.solved_states, phase.moves, phase.table_depth_limit);
         save_table_binary(table, phase.table_filename);
     }
 

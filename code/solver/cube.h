@@ -114,12 +114,13 @@ public:
     std::vector<Move> moves;
     std::function<bool(const Cube4x4&)> is_solved;
     std::function<std::string(Cube4x4&)> mask;
+    std::vector<std::string> solved_states;
     std::string table_filename;
     int table_depth_limit;
     int search_depth_limit;
     std::unordered_map<std::string, int> table;
 
-    Phase(const std::string& name, const std::vector<Move>& moves, std::function<bool(const Cube4x4&)> is_solved, std::function<std::string(Cube4x4&)> mask, const std::string& table_filename, int table_depth_limit, int search_depth_limit) : name(name), moves(moves), is_solved(is_solved), mask(mask), table_filename(table_filename), table_depth_limit(table_depth_limit), search_depth_limit(search_depth_limit) {}
+    Phase(const std::string& name, const std::vector<Move>& moves, std::function<bool(const Cube4x4&)> is_solved, std::function<std::string(Cube4x4&)> mask, std::vector<std::string> solved_states, const std::string& table_filename, int table_depth_limit, int search_depth_limit) : name(name), moves(moves), is_solved(is_solved), mask(mask), solved_states(solved_states), table_filename(table_filename), table_depth_limit(table_depth_limit), search_depth_limit(search_depth_limit) {}
 
     void set_table(const std::unordered_map<std::string, int>& new_table) {
         table = new_table;
@@ -127,5 +128,8 @@ public:
 };
 
 extern Phase phase5;
+extern Phase phase6;
+extern Phase phase7;
+extern Phase phase8;
 
 #endif  // CUBE_H
