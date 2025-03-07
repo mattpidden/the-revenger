@@ -78,7 +78,7 @@ void save_table_binary(const std::unordered_map<std::string, int>& table, const 
 }
 
 int main() { 
-    std::vector<Phase> phases = {phase4};
+    std::vector<Phase> phases = {phase3};
 
     // This generated 96 starting stats for phase 7 (corner paritys)
     // Cube4x4 corner_cube;

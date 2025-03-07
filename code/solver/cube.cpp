@@ -211,14 +211,10 @@ void Cube4x4::apply_colour_mask(int value, const std::vector<int>& mask) {
 
 // Converts a facelet id to a char
 char Cube4x4::id_to_char(int id) {
-    if (id == -1) {  // Ensuring ID is within a valid range
-        return 'X';
-    } else if (id == -2) {
-        return '2';
-    } else if (id == -3) {
-        return '3';
-    } else if (id == -4) {
-        return '4';
+    if (id == -1) {  
+        return 'X'; 
+    } else if (id < 0) {  
+        return '0' + (-id);
     }
     return "WOGRBY"[id / 16];
 }
@@ -236,7 +232,12 @@ int Cube4x4::char_to_id(char c) {
         case '2': return -2;
         case '3': return -3;
         case '4': return -4;
-        default: return -5;
+        case '5': return -5;
+        default:
+            if (c >= '0' && c <= '9') {
+                return - (c - '0');
+            }
+            return -99;
     }
 }
 
@@ -253,7 +254,7 @@ std::string Cube4x4::char_to_emoji(char c) {
         case '2':  return "⬜";
         case '3':  return "🟪";
         case '4':  return "🟫";
-        default:   return "?";
+        default:   return std::string(1, c); 
     }
 }
 
@@ -429,10 +430,15 @@ Phase phase2("Phase 2", phase2_moves, phase2_is_solved, phase2_mask, {"XXXXX33XX
 std::vector<Move> phase3_moves = {R2, L2, F, F_PRIME, F2, B, B_PRIME, B2, U, U_PRIME, U2, D, D_PRIME, D2, r2, l2, f2, b2, u2, d2};
 std::function<std::string(Cube4x4&)> phase3_mask = [](Cube4x4& cube) -> std::string {
     std::vector<int> mask = {37,38,41,42,69,70,73,74,21,22,25,26,53,54,57,58};
-    std::vector<int> colour_mask1 = {5,6,9,10,85,86,89,90};
-    std::vector<int> colour_mask2 = {37,38,41,42,69,70,73,74};
+    std::vector<int> colour_mask1 = {37,41,69,73};
+    std::vector<int> colour_mask2 = {38,42,70,74};
+    std::vector<int> colour_mask3 = {21,25,53,57};
+    std::vector<int> colour_mask4 = {22,26,54,58};
     cube.apply_mask(mask);
-    cube.apply_colour_mask(-2, mask);
+    cube.apply_colour_mask(-2, colour_mask1);
+    cube.apply_colour_mask(-3, colour_mask2);
+    cube.apply_colour_mask(-4, colour_mask3);
+    cube.apply_colour_mask(-5, colour_mask4);
     return cube.export_state();
 };
 std::function<bool(const Cube4x4&)> phase3_is_solved = [] (const Cube4x4& cube) {

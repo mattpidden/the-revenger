@@ -112,7 +112,7 @@ void print_apply_solution(Cube4x4 &cube, const std::vector<Move> &solution, std:
 int main() {
     Cube4x4 cube;
 
-    std::vector<Phase> phases = {phase1, phase2};
+    std::vector<Phase> phases = {phase1, phase2, phase3};
     for (Phase& phase : phases) {
         phase.set_table(load_table_binary(phase.table_filename));
     }
