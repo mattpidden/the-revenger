@@ -127,112 +127,46 @@ void save_table_binary(const std::unordered_map<std::string, int>& table, const 
     std::cout << "Saved table to " << filename << " (binary format)\n\n";
 }
 
-int main() { 
-    // This generated 12 starting stats for phase 2 (centre states)
-    // Cube4x4 centre_cube;
-    // std::function<std::string(Cube4x4&)> phase2_mask = [](Cube4x4& cube) -> std::string {
-    //     std::vector<int> mask = {5,6,9,10,85,86,89,90,37,38,41,42,69,70,73,74,21,22,25,26,53,54,57,58};
-    //     std::vector<int> colour_mask1 = {5,6,9,10,85,86,89,90};
-    //     std::vector<int> colour_mask2 = {37,38,41,42,69,70,73,74};
-    //     cube.apply_mask(mask);
-    //     cube.apply_colour_mask(-3, colour_mask1);
-    //     cube.apply_colour_mask(-4, colour_mask2);
-    //     return cube.export_state();
-    // };
-    // std::unordered_map<std::string, int> centre_table = generate_table({phase2_mask(centre_cube)}, {R2, L2, F, B, U, D, r2, l2, f2, b2, u2, d2}, 10);
-    // for (const auto& [state, depth] : centre_table) {
-    //     std::cout << '"' << state << "\",\n";
-    // }
-
-    // This generated 36 starting stats for phase 3 (centre columns with paired edges)
-//     Cube4x4 centre_cube;
-//     std::function<std::string(Cube4x4&)> phase3_mask = [](Cube4x4& cube) -> std::string {
-//         std::vector<int> mask = {37,38,41,42,69,70,73,74,21,22,25,26,53,54,57,58};
-//         cube.apply_mask(mask);
-//         return cube.export_state();
-//     };
-//     std::unordered_map<std::string, int> centre_table = generate_table({phase3_mask(centre_cube)}, {R2, L2, F2, B2, U, U_PRIME, U2, D, D_PRIME, D2, r2, l2, f2, b2}, 10);
-//     for (const auto& [fixed_state, depth] : centre_table) {
-//         std::string state = fixed_state; 
-//         std::vector<int> edge_facelets = {20,24,23,27,36,40,39,43,52,56,55,59,68,72,71,75};
-//         for (const int facelet : edge_facelets) {
-//             //state[facelet] = '3';
-//         }
-//         std::cout << '"' << state << "\",\n";
-//     }
-//     std::unordered_map<std::string, int> phase3_table = generate_table({"XXXXXXXXXXXXXXXXXXXXXRRXXRRXXXXXXXXXXGBXXGBXXXXXXXXXXOOXXOOXXXXXXXXXXBGXXBGXXXXXXXXXXXXXXXXXXXXX",
-// "XXXXXXXXXXXXXXXXXXXXXROXXROXXXXXXXXXXGBXXGBXXXXXXXXXXORXXORXXXXXXXXXXBGXXBGXXXXXXXXXXXXXXXXXXXXX",
-// "XXXXXXXXXXXXXXXXXXXXXROXXROXXXXXXXXXXBBXXBBXXXXXXXXXXORXXORXXXXXXXXXXGGXXGGXXXXXXXXXXXXXXXXXXXXX",
-// "XXXXXXXXXXXXXXXXXXXXXORXXORXXXXXXXXXXGBXXGBXXXXXXXXXXROXXROXXXXXXXXXXBGXXBGXXXXXXXXXXXXXXXXXXXXX",
-// "XXXXXXXXXXXXXXXXXXXXXORXXORXXXXXXXXXXGGXXGGXXXXXXXXXXROXXROXXXXXXXXXXBBXXBBXXXXXXXXXXXXXXXXXXXXX",
-// "XXXXXXXXXXXXXXXXXXXXXRRXXRRXXXXXXXXXXBBXXBBXXXXXXXXXXOOXXOOXXXXXXXXXXGGXXGGXXXXXXXXXXXXXXXXXXXXX",
-// "XXXXXXXXXXXXXXXXXXXXXROXXROXXXXXXXXXXGGXXGGXXXXXXXXXXROXXROXXXXXXXXXXBBXXBBXXXXXXXXXXXXXXXXXXXXX",
-// "XXXXXXXXXXXXXXXXXXXXXRRXXRRXXXXXXXXXXBGXXBGXXXXXXXXXXOOXXOOXXXXXXXXXXBGXXBGXXXXXXXXXXXXXXXXXXXXX",
-// "XXXXXXXXXXXXXXXXXXXXXROXXROXXXXXXXXXXGBXXGBXXXXXXXXXXROXXROXXXXXXXXXXGBXXGBXXXXXXXXXXXXXXXXXXXXX",
-// "XXXXXXXXXXXXXXXXXXXXXORXXORXXXXXXXXXXBGXXBGXXXXXXXXXXORXXORXXXXXXXXXXBGXXBGXXXXXXXXXXXXXXXXXXXXX",
-// "XXXXXXXXXXXXXXXXXXXXXORXXORXXXXXXXXXXGBXXGBXXXXXXXXXXORXXORXXXXXXXXXXGBXXGBXXXXXXXXXXXXXXXXXXXXX",
-// "XXXXXXXXXXXXXXXXXXXXXOOXXOOXXXXXXXXXXGBXXGBXXXXXXXXXXRRXXRRXXXXXXXXXXBGXXBGXXXXXXXXXXXXXXXXXXXXX",
-// "XXXXXXXXXXXXXXXXXXXXXOOXXOOXXXXXXXXXXBBXXBBXXXXXXXXXXRRXXRRXXXXXXXXXXGGXXGGXXXXXXXXXXXXXXXXXXXXX",
-// "XXXXXXXXXXXXXXXXXXXXXOOXXOOXXXXXXXXXXBGXXBGXXXXXXXXXXRRXXRRXXXXXXXXXXGBXXGBXXXXXXXXXXXXXXXXXXXXX",
-// "XXXXXXXXXXXXXXXXXXXXXORXXORXXXXXXXXXXBBXXBBXXXXXXXXXXROXXROXXXXXXXXXXGGXXGGXXXXXXXXXXXXXXXXXXXXX",
-// "XXXXXXXXXXXXXXXXXXXXXORXXORXXXXXXXXXXBBXXBBXXXXXXXXXXORXXORXXXXXXXXXXGGXXGGXXXXXXXXXXXXXXXXXXXXX",
-// "XXXXXXXXXXXXXXXXXXXXXROXXROXXXXXXXXXXGBXXGBXXXXXXXXXXORXXORXXXXXXXXXXGBXXGBXXXXXXXXXXXXXXXXXXXXX",
-// "XXXXXXXXXXXXXXXXXXXXXOOXXOOXXXXXXXXXXBGXXBGXXXXXXXXXXRRXXRRXXXXXXXXXXBGXXBGXXXXXXXXXXXXXXXXXXXXX",
-// "XXXXXXXXXXXXXXXXXXXXXROXXROXXXXXXXXXXBGXXBGXXXXXXXXXXROXXROXXXXXXXXXXBGXXBGXXXXXXXXXXXXXXXXXXXXX",
-// "XXXXXXXXXXXXXXXXXXXXXOOXXOOXXXXXXXXXXGGXXGGXXXXXXXXXXRRXXRRXXXXXXXXXXBBXXBBXXXXXXXXXXXXXXXXXXXXX",
-// "XXXXXXXXXXXXXXXXXXXXXORXXORXXXXXXXXXXGGXXGGXXXXXXXXXXORXXORXXXXXXXXXXBBXXBBXXXXXXXXXXXXXXXXXXXXX",
-// "XXXXXXXXXXXXXXXXXXXXXROXXROXXXXXXXXXXGGXXGGXXXXXXXXXXORXXORXXXXXXXXXXBBXXBBXXXXXXXXXXXXXXXXXXXXX",
-// "XXXXXXXXXXXXXXXXXXXXXORXXORXXXXXXXXXXBGXXBGXXXXXXXXXXORXXORXXXXXXXXXXGBXXGBXXXXXXXXXXXXXXXXXXXXX",
-// "XXXXXXXXXXXXXXXXXXXXXROXXROXXXXXXXXXXBGXXBGXXXXXXXXXXROXXROXXXXXXXXXXGBXXGBXXXXXXXXXXXXXXXXXXXXX",
-// "XXXXXXXXXXXXXXXXXXXXXRRXXRRXXXXXXXXXXBGXXBGXXXXXXXXXXOOXXOOXXXXXXXXXXGBXXGBXXXXXXXXXXXXXXXXXXXXX",
-// "XXXXXXXXXXXXXXXXXXXXXORXXORXXXXXXXXXXGBXXGBXXXXXXXXXXORXXORXXXXXXXXXXBGXXBGXXXXXXXXXXXXXXXXXXXXX",
-// "XXXXXXXXXXXXXXXXXXXXXROXXROXXXXXXXXXXBGXXBGXXXXXXXXXXORXXORXXXXXXXXXXBGXXBGXXXXXXXXXXXXXXXXXXXXX",
-// "XXXXXXXXXXXXXXXXXXXXXROXXROXXXXXXXXXXGBXXGBXXXXXXXXXXROXXROXXXXXXXXXXBGXXBGXXXXXXXXXXXXXXXXXXXXX",
-// "XXXXXXXXXXXXXXXXXXXXXOOXXOOXXXXXXXXXXGBXXGBXXXXXXXXXXRRXXRRXXXXXXXXXXGBXXGBXXXXXXXXXXXXXXXXXXXXX",
-// "XXXXXXXXXXXXXXXXXXXXXRRXXRRXXXXXXXXXXGBXXGBXXXXXXXXXXOOXXOOXXXXXXXXXXGBXXGBXXXXXXXXXXXXXXXXXXXXX",
-// "XXXXXXXXXXXXXXXXXXXXXRRXXRRXXXXXXXXXXGGXXGGXXXXXXXXXXOOXXOOXXXXXXXXXXBBXXBBXXXXXXXXXXXXXXXXXXXXX",
-// "XXXXXXXXXXXXXXXXXXXXXORXXORXXXXXXXXXXBGXXBGXXXXXXXXXXROXXROXXXXXXXXXXBGXXBGXXXXXXXXXXXXXXXXXXXXX",
-// "XXXXXXXXXXXXXXXXXXXXXORXXORXXXXXXXXXXGBXXGBXXXXXXXXXXROXXROXXXXXXXXXXGBXXGBXXXXXXXXXXXXXXXXXXXXX",
-// "XXXXXXXXXXXXXXXXXXXXXORXXORXXXXXXXXXXBGXXBGXXXXXXXXXXROXXROXXXXXXXXXXGBXXGBXXXXXXXXXXXXXXXXXXXXX",
-// "XXXXXXXXXXXXXXXXXXXXXROXXROXXXXXXXXXXBBXXBBXXXXXXXXXXROXXROXXXXXXXXXXGGXXGGXXXXXXXXXXXXXXXXXXXXX",
-// "XXXXXXXXXXXXXXXXXXXXXROXXROXXXXXXXXXXBGXXBGXXXXXXXXXXORXXORXXXXXXXXXXGBXXGBXXXXXXXXXXXXXXXXXXXXX",}, {R2, L2, F, F_PRIME, F2, B, B_PRIME, B2, U, U_PRIME, U2, D, D_PRIME, D2, r2, l2, f2, b2, u2, d2}, 10);
-//     save_table_binary(phase3_table, "phase3table.bin");
-// for (const auto& [fixed_state, depth] : phase3_table) {
-//         std::string state = fixed_state; 
-//         std::vector<int> edge_facelets = {20,24,23,27,36,40,39,43,52,56,55,59,68,72,71,75};
-//         for (const int facelet : edge_facelets) {
-//             //state[facelet] = '3';
-//         }
-//         std::cout << '"' << state << "\",\n";
-//     }
-
-
-
-        //auto table = generate_table(phase.solved_states, phase.moves, phase.table_depth_limit);
-        
+int main() {         
     Cube4x4 cube;
 
-    std::cout << "Generating " << phase1.name << " tables...\n";
-    auto table1 = generate_table(phase1, {cube}, phase1.moves, phase1.table_depth_limit);
-    save_table_binary(table1, phase1.table_filename);
+    // std::cout << "Generating " << phase1.name << " tables...\n";
+    // auto table1 = generate_table(phase1, {cube}, phase1.moves, phase1.table_depth_limit);
+    // save_table_binary(table1, phase1.table_filename);
 
-    std::cout << "Generating " << phase5.name << " tables...\n";
-    auto table5 = generate_table(phase5, {cube}, phase5.moves, phase5.table_depth_limit);
-    save_table_binary(table5, phase5.table_filename);
-
-    std::cout << "Generating " << phase6.name << " tables...\n";
-    auto table6 = generate_table(phase6, {cube}, phase6.moves, phase6.table_depth_limit);
-    save_table_binary(table6, phase6.table_filename);
+    // std::cout << "Generating " << phase2.name << " tables...\n";
+    // Cube4x4 centre_cube;
+    // std::vector<Cube4x4> centre_table = generate_cube_table(phase2, {centre_cube}, {R2, L2, F, B, U, D, r2, l2, f2, b2, u2, d2}, 3);
+    // auto table2 = generate_table(phase2, centre_table, phase2.moves, phase2.table_depth_limit);
+    // save_table_binary(table2, phase2.table_filename);
     
-    std::cout << "Generating " << phase7.name << " tables...\n";
-    Cube4x4 corner_cube;
-    std::vector<Cube4x4> corner_table = generate_cube_table(phase7, {corner_cube}, {R2, L2, F2, B2, U2, D2}, 10);
-    auto table7 = generate_table(phase7, corner_table, phase7.moves, phase7.table_depth_limit);
-    save_table_binary(table7, phase7.table_filename);
+    std::cout << "Generating " << phase3.name << " tables...\n";
+    Cube4x4 centre_column_cube;
+    std::vector<Cube4x4> centre_column_table = generate_cube_table(phase3, {centre_column_cube}, {R2, L2, F2, B2, U, U_PRIME, U2, D, D_PRIME, D2, r2, l2, f2, b2}, 10);
+    auto table3 = generate_table(phase3, centre_column_table, phase3.moves, phase3.table_depth_limit);
+    save_table_binary(table3, phase3.table_filename);
 
-    std::cout << "Generating " << phase8.name << " tables...\n";
-    auto table8 = generate_table(phase8, {cube}, phase8.moves, phase8.table_depth_limit);
-    save_table_binary(table8, phase8.table_filename);
+    std::cout << "Generating " << phase4.name << " tables...\n";
+    auto table4 = generate_table(phase4, {cube}, phase4.moves, phase4.table_depth_limit);
+    save_table_binary(table4, phase4.table_filename);
+
+    // std::cout << "Generating " << phase5.name << " tables...\n";
+    // auto table5 = generate_table(phase5, {cube}, phase5.moves, phase5.table_depth_limit);
+    // save_table_binary(table5, phase5.table_filename);
+
+    // std::cout << "Generating " << phase6.name << " tables...\n";
+    // auto table6 = generate_table(phase6, {cube}, phase6.moves, phase6.table_depth_limit);
+    // save_table_binary(table6, phase6.table_filename);
+    
+    // std::cout << "Generating " << phase7.name << " tables...\n";
+    // Cube4x4 corner_cube;
+    // std::vector<Cube4x4> corner_table = generate_cube_table(phase7, {corner_cube}, {R2, L2, F2, B2, U2, D2}, 5);
+    // auto table7 = generate_table(phase7, corner_table, phase7.moves, phase7.table_depth_limit);
+    // save_table_binary(table7, phase7.table_filename);
+
+    // std::cout << "Generating " << phase8.name << " tables...\n";
+    // auto table8 = generate_table(phase8, {cube}, phase8.moves, phase8.table_depth_limit);
+    // save_table_binary(table8, phase8.table_filename);
 
     return 0;
 }
