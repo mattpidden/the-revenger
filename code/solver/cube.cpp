@@ -18,24 +18,11 @@ Cube4x4::Cube4x4() {
 
 // Reset to goal state:
 void Cube4x4::reset() {
-    // facelets[U_FACE].fill(WHITE);
-    // facelets[L_FACE].fill(ORANGE);
-    // facelets[F_FACE].fill(GREEN);
-    // facelets[R_FACE].fill(RED);
-    // facelets[B_FACE].fill(BLUE);
-    // facelets[D_FACE].fill(YELLOW);
-
     for (int i = 0; i < 6; i++) {
         for (int j = 0; j < 16; j++) {
             facelets[i][j] = (i * 16) + j;
         }
     }
-
-    edges_pairs = {0,1,2,3,4,5,6,7,8,9,10,11};
-    edges_pairs_parity.fill(false);
-    corners = {0,1,2,3,4,5,6,7};
-    corners_orientation.fill(0);
-    // TODO Update the centres, edges, corners, parity, oreitnations arrays here too.
 }
 
 // Export the facelet data as a 96-char string in the order U, L, F, R, B, D
@@ -209,6 +196,16 @@ void Cube4x4::apply_colour_mask(int value, const std::vector<int>& mask) {
     }
 }
 
+void Cube4x4::apply_location_colour_mask(int value, const std::vector<int>& location_mask) {
+    for (int i = 0; i < 6; i++) {
+        for (int j = 0; j < 16; j++) {
+            if (std::find(location_mask.begin(), location_mask.end(), (i * 16 + j)) != location_mask.end()) {
+                facelets[i][j] = value;
+            }
+        }
+    }
+}
+
 // Converts a facelet id to a char
 char Cube4x4::id_to_char(int id) {
     if (id == -1) {  
@@ -254,7 +251,7 @@ std::string Cube4x4::char_to_emoji(char c) {
         case '2':  return "⬜";
         case '3':  return "🟪";
         case '4':  return "🟫";
-        default:   return std::string(1, c); 
+        default:   return std::string(2, c); 
     }
 }
 
@@ -296,41 +293,6 @@ void Cube4x4::turn_outer_face(int face_index, bool clockwise) {
     last_face[lastEdges[1]] = temp_edges[1];  
     last_face[lastEdges[2]] = temp_edges[2];  
     last_face[lastEdges[3]] = temp_edges[3];  
-
-    // TODO Finish this function, including updating centres, edges, corners, paritys, orientation arrays
-    const int* edge_cycle = edge_pairs_swaps[face_index];
-    const int* corner_cycle = corner_swaps[face_index];
-    
-    if (face_index == U_FACE || face_index == D_FACE) {
-        edges_pairs_parity[edges_pairs[edge_cycle[0]]] = !edges_pairs_parity[edges_pairs[edge_cycle[0]]];
-        edges_pairs_parity[edges_pairs[edge_cycle[1]]] = !edges_pairs_parity[edges_pairs[edge_cycle[1]]];
-        edges_pairs_parity[edges_pairs[edge_cycle[2]]] = !edges_pairs_parity[edges_pairs[edge_cycle[2]]];
-        edges_pairs_parity[edges_pairs[edge_cycle[3]]] = !edges_pairs_parity[edges_pairs[edge_cycle[3]]];
-    }
-    
-    if (clockwise) {
-        auto tmp = edges_pairs[edge_cycle[0]];
-        edges_pairs[edge_cycle[0]] = edges_pairs[edge_cycle[3]];
-        edges_pairs[edge_cycle[3]] = edges_pairs[edge_cycle[2]];
-        edges_pairs[edge_cycle[2]] = edges_pairs[edge_cycle[1]];
-        edges_pairs[edge_cycle[1]] = tmp;
-        tmp = corners[corner_cycle[0]];
-        corners[corner_cycle[0]] = corners[corner_cycle[3]];
-        corners[corner_cycle[3]] = corners[corner_cycle[2]];
-        corners[corner_cycle[2]] = corners[corner_cycle[1]];
-        corners[corner_cycle[1]] = tmp;
-    } else {
-        auto tmp = edges_pairs[edge_cycle[0]];
-        edges_pairs[edge_cycle[0]] = edges_pairs[edge_cycle[1]];
-        edges_pairs[edge_cycle[1]] = edges_pairs[edge_cycle[2]];
-        edges_pairs[edge_cycle[2]] = edges_pairs[edge_cycle[3]];
-        edges_pairs[edge_cycle[3]] = tmp;
-        tmp = corners[corner_cycle[0]];
-        corners[corner_cycle[0]] = corners[corner_cycle[1]];
-        corners[corner_cycle[1]] = corners[corner_cycle[2]];
-        corners[corner_cycle[2]] = corners[corner_cycle[3]];
-        corners[corner_cycle[3]] = tmp;
-    }
 }
 
 // Turns an inner slice of the cube
@@ -383,7 +345,7 @@ std::string move_to_string(Move move) {
 
 // PHASE 1
 std::vector<Move> phase1_moves = {R, R_PRIME, R2, L, L_PRIME, L2, F, F_PRIME, F2, B, B_PRIME, B2, U, U_PRIME, U2, D, D_PRIME, D2, r, r_PRIME, r2, l, l_PRIME, l2, f, f_PRIME, f2, b, b_PRIME, b2, u, u_PRIME, u2, d, d_PRIME, d2};
-std::function<std::string(Cube4x4&)> phase1_mask = [](Cube4x4& cube) -> std::string {
+std::function<std::string(Cube4x4&)> phase1_mask = [](Cube4x4 cube) -> std::string {
     std::vector<int> mask = {21,22,25,26,53,54,57,58};
     cube.apply_mask(mask);
     cube.apply_colour_mask(-2, mask);
@@ -398,7 +360,7 @@ Phase phase1("Phase 1", phase1_moves, phase1_is_solved, phase1_mask, {phase1_mas
 
 // PHASE 2
 std::vector<Move> phase2_moves = {R, R_PRIME, R2, L, L_PRIME, L2, F, F_PRIME, F2, B, B_PRIME, B2, U, U_PRIME, U2, D, D_PRIME, D2, r, r_PRIME, r2, l, l_PRIME, l2, f2, b2, u2, d2};
-std::function<std::string(Cube4x4&)> phase2_mask = [](Cube4x4& cube) -> std::string {
+std::function<std::string(Cube4x4&)> phase2_mask = [](Cube4x4 cube) -> std::string {
     std::vector<int> mask = {5,6,9,10,85,86,89,90,37,38,41,42,69,70,73,74,21,22,25,26,53,54,57,58};
     std::vector<int> colour_mask1 = {5,6,9,10,85,86,89,90};
     std::vector<int> colour_mask2 = {37,38,41,42,69,70,73,74};
@@ -428,17 +390,23 @@ Phase phase2("Phase 2", phase2_moves, phase2_is_solved, phase2_mask, {"XXXXX33XX
 
 // PHASE 3
 std::vector<Move> phase3_moves = {R2, L2, F, F_PRIME, F2, B, B_PRIME, B2, U, U_PRIME, U2, D, D_PRIME, D2, r2, l2, f2, b2, u2, d2};
-std::function<std::string(Cube4x4&)> phase3_mask = [](Cube4x4& cube) -> std::string {
-    std::vector<int> mask = {37,38,41,42,69,70,73,74,21,22,25,26,53,54,57,58};
-    std::vector<int> colour_mask1 = {37,41,69,73};
-    std::vector<int> colour_mask2 = {38,42,70,74};
-    std::vector<int> colour_mask3 = {21,25,53,57};
-    std::vector<int> colour_mask4 = {22,26,54,58};
+std::function<std::string(Cube4x4&)> phase3_mask = [](Cube4x4 cube) -> std::string {
+    std::vector<int> mask = {37,38,41,42,69,70,73,74,21,22,25,26,53,54,57,58}; // all centres pieces on R,L,F,B faces
+    // std::vector<int> edge_facelets = {20,24,23,27,36,40,39,43,52,56,55,59,68,72,71,75}; // all edge facelets in middle slice
+    // std::vector<int> paired_facelets = {};
+    // std::vector<int> unpaired_facelets = {};
+    // for (size_t i = 0; i < edge_facelets.size(); i += 2) {
+    //     if (cube.id_to_char(cube.facelets[i / 16][i % 16]) == cube.id_to_char(cube.facelets[i / 16][i % 16])) {
+    //         paired_facelets.push_back(i);
+    //         paired_facelets.push_back(i+1);            
+    //     } else {
+    //         unpaired_facelets.push_back(i);
+    //         unpaired_facelets.push_back(i+1);      
+    //     }
+    // }
     cube.apply_mask(mask);
-    cube.apply_colour_mask(-2, colour_mask1);
-    cube.apply_colour_mask(-3, colour_mask2);
-    cube.apply_colour_mask(-4, colour_mask3);
-    cube.apply_colour_mask(-5, colour_mask4);
+    // cube.apply_location_colour_mask(-3, paired_facelets);
+    // cube.apply_location_colour_mask(-4, unpaired_facelets);
     return cube.export_state();
 };
 std::function<bool(const Cube4x4&)> phase3_is_solved = [] (const Cube4x4& cube) {
@@ -446,12 +414,47 @@ std::function<bool(const Cube4x4&)> phase3_is_solved = [] (const Cube4x4& cube) 
     return phase3_mask(solved_cube) == cube.export_state();
 };
 Cube4x4 phase3_cube;
-Phase phase3("Phase 3", phase3_moves, phase3_is_solved, phase3_mask, {phase3_mask(phase3_cube)}, "phase3table.bin", -1, 8);
+Phase phase3("Phase 3", phase3_moves, phase3_is_solved, phase3_mask, {"XXXXXXXXXXXXXXXXXXXX3RR33RR3XXXXXXXX3GB33GB3XXXXXXXX3OO33OO3XXXXXXXX3BG33BG3XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXX3RO33RO3XXXXXXXX3GB33GB3XXXXXXXX3OR33OR3XXXXXXXX3BG33BG3XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXX3RO33RO3XXXXXXXX3BB33BB3XXXXXXXX3OR33OR3XXXXXXXX3GG33GG3XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXX3OR33OR3XXXXXXXX3GB33GB3XXXXXXXX3RO33RO3XXXXXXXX3BG33BG3XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXX3OR33OR3XXXXXXXX3GG33GG3XXXXXXXX3RO33RO3XXXXXXXX3BB33BB3XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXX3RR33RR3XXXXXXXX3BB33BB3XXXXXXXX3OO33OO3XXXXXXXX3GG33GG3XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXX3RO33RO3XXXXXXXX3GG33GG3XXXXXXXX3RO33RO3XXXXXXXX3BB33BB3XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXX3RR33RR3XXXXXXXX3BG33BG3XXXXXXXX3OO33OO3XXXXXXXX3BG33BG3XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXX3RO33RO3XXXXXXXX3GB33GB3XXXXXXXX3RO33RO3XXXXXXXX3GB33GB3XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXX3OR33OR3XXXXXXXX3BG33BG3XXXXXXXX3OR33OR3XXXXXXXX3BG33BG3XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXX3OR33OR3XXXXXXXX3GB33GB3XXXXXXXX3OR33OR3XXXXXXXX3GB33GB3XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXX3OO33OO3XXXXXXXX3GB33GB3XXXXXXXX3RR33RR3XXXXXXXX3BG33BG3XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXX3OO33OO3XXXXXXXX3BB33BB3XXXXXXXX3RR33RR3XXXXXXXX3GG33GG3XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXX3OO33OO3XXXXXXXX3BG33BG3XXXXXXXX3RR33RR3XXXXXXXX3GB33GB3XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXX3OR33OR3XXXXXXXX3BB33BB3XXXXXXXX3RO33RO3XXXXXXXX3GG33GG3XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXX3OR33OR3XXXXXXXX3BB33BB3XXXXXXXX3OR33OR3XXXXXXXX3GG33GG3XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXX3RO33RO3XXXXXXXX3GB33GB3XXXXXXXX3OR33OR3XXXXXXXX3GB33GB3XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXX3OO33OO3XXXXXXXX3BG33BG3XXXXXXXX3RR33RR3XXXXXXXX3BG33BG3XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXX3RO33RO3XXXXXXXX3BG33BG3XXXXXXXX3RO33RO3XXXXXXXX3BG33BG3XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXX3OO33OO3XXXXXXXX3GG33GG3XXXXXXXX3RR33RR3XXXXXXXX3BB33BB3XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXX3OR33OR3XXXXXXXX3GG33GG3XXXXXXXX3OR33OR3XXXXXXXX3BB33BB3XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXX3RO33RO3XXXXXXXX3GG33GG3XXXXXXXX3OR33OR3XXXXXXXX3BB33BB3XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXX3OR33OR3XXXXXXXX3BG33BG3XXXXXXXX3OR33OR3XXXXXXXX3GB33GB3XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXX3RO33RO3XXXXXXXX3BG33BG3XXXXXXXX3RO33RO3XXXXXXXX3GB33GB3XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXX3RR33RR3XXXXXXXX3BG33BG3XXXXXXXX3OO33OO3XXXXXXXX3GB33GB3XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXX3OR33OR3XXXXXXXX3GB33GB3XXXXXXXX3OR33OR3XXXXXXXX3BG33BG3XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXX3RO33RO3XXXXXXXX3BG33BG3XXXXXXXX3OR33OR3XXXXXXXX3BG33BG3XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXX3RO33RO3XXXXXXXX3GB33GB3XXXXXXXX3RO33RO3XXXXXXXX3BG33BG3XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXX3OO33OO3XXXXXXXX3GB33GB3XXXXXXXX3RR33RR3XXXXXXXX3GB33GB3XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXX3RR33RR3XXXXXXXX3GB33GB3XXXXXXXX3OO33OO3XXXXXXXX3GB33GB3XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXX3RR33RR3XXXXXXXX3GG33GG3XXXXXXXX3OO33OO3XXXXXXXX3BB33BB3XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXX3OR33OR3XXXXXXXX3BG33BG3XXXXXXXX3RO33RO3XXXXXXXX3BG33BG3XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXX3OR33OR3XXXXXXXX3GB33GB3XXXXXXXX3RO33RO3XXXXXXXX3GB33GB3XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXX3OR33OR3XXXXXXXX3BG33BG3XXXXXXXX3RO33RO3XXXXXXXX3GB33GB3XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXX3RO33RO3XXXXXXXX3BB33BB3XXXXXXXX3RO33RO3XXXXXXXX3GG33GG3XXXXXXXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXXXXXXX3RO33RO3XXXXXXXX3BG33BG3XXXXXXXX3OR33OR3XXXXXXXX3GB33GB3XXXXXXXXXXXXXXXXXXXX",}, "phase3table.bin", -1, 8);
 
 
 // PHASE 4
 std::vector<Move> phase4_moves = {R2, L2, F2, B2, U, U_PRIME, U2, D, D_PRIME, D2, r2, l2, f2, b2};
-std::function<std::string(Cube4x4&)> phase4_mask = [](Cube4x4& cube) -> std::string {
+std::function<std::string(Cube4x4&)> phase4_mask = [](Cube4x4 cube) -> std::string {
     std::vector<int> mask = {5,6,9,10,85,86,89,90,37,38,41,42,69,70,73,74,21,22,25,26,53,54,57,58};
     cube.apply_mask(mask);
     return cube.export_state();
@@ -466,7 +469,7 @@ Phase phase4("Phase 4", phase4_moves, phase4_is_solved, phase4_mask, {phase4_mas
 
 // PHASE 5
 std::vector<Move> phase5_moves = {R, R_PRIME, R2, L, L_PRIME, L2, F, F_PRIME, F2, B, B_PRIME, B2, U, U_PRIME, U2, D, D_PRIME, D2};
-std::function<std::string(Cube4x4&)> phase5_mask = [](Cube4x4& cube) -> std::string {
+std::function<std::string(Cube4x4&)> phase5_mask = [](Cube4x4 cube) -> std::string {
     std::vector<int> mask = {1,2,4,7,8,11,13,14,36,39,40,43,68,71,72,75,81,82,84,87,88,91,93,94};
     cube.apply_mask(mask);
     cube.apply_colour_mask(-2, mask);
@@ -481,7 +484,7 @@ Phase phase5("Phase 5", phase5_moves, phase5_is_solved, phase5_mask, {phase5_mas
 
 // PHASE 6
 std::vector<Move> phase6_moves = {R, R_PRIME, R2, L, L_PRIME, L2, F2, B2, U, U_PRIME, U2, D, D_PRIME, D2};
-std::function<std::string(Cube4x4&)> phase6_mask = [](Cube4x4& cube) -> std::string {
+std::function<std::string(Cube4x4&)> phase6_mask = [](Cube4x4 cube) -> std::string {
     std::vector<int> mask = {0,1,2,3,4,7,8,11,12,13,14,15,36,39,40,43,68,71,72,75,80,81,82,83,84,87,88,91,92,93,94,95};
     std::vector<int> colour_mask1 = {0,1,2,3,4,7,8,11,12,13,14,15,80,81,82,83,84,87,88,91,92,93,94,95};
     std::vector<int> colour_mask2 = {36,39,40,43,68,71,72,75};
@@ -499,7 +502,7 @@ Phase phase6("Phase 6", phase6_moves, phase6_is_solved, phase6_mask, {phase6_mas
 
 // PHASE 7
 std::vector<Move> phase7_moves = {R2, L2, F2, B2, U, U_PRIME, U2, D, D_PRIME, D2};
-std::function<std::string(Cube4x4&)> phase7_mask = [](Cube4x4& cube) -> std::string {
+std::function<std::string(Cube4x4&)> phase7_mask = [](Cube4x4 cube) -> std::string {
     std::vector<int> mask = {0,3,12,15,16,17,18,19,20,23,24,27,28,29,30,31,32,33,34,35,36,39,40,43,44,45,46,47,48,49,50,51,52,55,56,59,60,61,62,63,64,65,66,67,68,71,72,75,76,77,78,79,80,83,92,95};
     std::vector<int> colour_mask1 = {17,18,20,23,24,27,29,30,49,50,52,55,56,59,61,62};
     std::vector<int> colour_mask2 = {33,34,36,39,40,43,45,46,65,66,68,71,72,75,77,78};
@@ -611,7 +614,7 @@ Phase phase7("Phase 7", phase7_moves, phase7_is_solved, phase7_mask, {"YXXYXXXXX
 
 // PHASE 8
 std::vector<Move> phase8_moves = {R2, L2, F2, B2, U2, D2};
-std::function<std::string(Cube4x4&)> phase8_mask = [](Cube4x4& cube) -> std::string {
+std::function<std::string(Cube4x4&)> phase8_mask = [](Cube4x4 cube) -> std::string {
     std::vector<int> mask = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95};
     cube.apply_mask(mask);
     return cube.export_state();

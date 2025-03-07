@@ -29,6 +29,7 @@ enum Move {
 class Cube4x4 {
 public:
     Cube4x4();  
+    std::array<std::array<int, 16>, 6> facelets;
  
     void reset();  
     std::string export_state() const;  
@@ -40,19 +41,8 @@ public:
     bool check_solved() const;
     void apply_mask(const std::vector<int>& mask);
     void apply_colour_mask(int value, const std::vector<int>& mask);
+    void apply_location_colour_mask(int value, const std::vector<int>& location_mask);
     
-
-private:
-    std::array<std::array<int, 16>, 6> facelets;
-
-    std::array<int,24> centers;  
-    std::array<int,24> edges;   
-    std::array<int, 24> edge_flips;
-    std::array<int,12> edges_pairs;   
-    std::array<bool,12> edges_pairs_parity;   
-    std::array<int,8> corners;
-    std::array<int,8> corners_orientation;
-
     static constexpr int adjacent_faces[6][4] = {
       {L_FACE, B_FACE, R_FACE, F_FACE},  // U (Up)
       {U_FACE, F_FACE, D_FACE, B_FACE},  // L (Left)
@@ -104,6 +94,9 @@ private:
     static char id_to_char(int id);
     static int char_to_id(char c);
     static std::string char_to_emoji(char c);
+private:
+
+    
 };
 
 std::string move_to_string(Move move);

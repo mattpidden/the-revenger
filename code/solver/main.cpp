@@ -13,7 +13,7 @@ static bool ida_search(const Phase &phase, Cube4x4 &cube, int depth, double &thr
     if (phase.is_solved(cube)) {
         return true;
     }
-    std::string state = cube.export_state();
+    std::string state = phase.mask(cube);
     double h = pruning_table.count(state) ? pruning_table.at(state) : pruning_depth + 1;
     double f = depth + h;
 
@@ -112,7 +112,7 @@ void print_apply_solution(Cube4x4 &cube, const std::vector<Move> &solution, std:
 int main() {
     Cube4x4 cube;
 
-    std::vector<Phase> phases = {phase1, phase2, phase3};
+    std::vector<Phase> phases = {phase1, phase2, phase3, phase4};
     for (Phase& phase : phases) {
         phase.set_table(load_table_binary(phase.table_filename));
     }
@@ -138,6 +138,7 @@ int main() {
         }
         print_apply_solution(cube, phase_solution, phase.name);
         cube.print();
+        
     }
     auto end = std::chrono::high_resolution_clock::now();
 
