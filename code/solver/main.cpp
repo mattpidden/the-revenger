@@ -134,7 +134,7 @@ int main() {
     }
     auto end = std::chrono::high_resolution_clock::now();
     print_apply_solution(scrambled_cube, solution, "Full");
-    std::cout << "Execution time: " << std::chrono::duration<double>(end - start).count() << " seconds\n";
+    std::cout << "Solution time: " << std::chrono::duration<double>(end - start).count() << " seconds\n";
 
     return 0;
 }

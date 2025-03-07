@@ -381,21 +381,23 @@ Phase phase2("Phase 2", phase2_moves, phase2_is_solved, phase2_mask, "phase2tabl
 std::vector<Move> phase3_moves = {R2, L2, F, F_PRIME, F2, B, B_PRIME, B2, U, U_PRIME, U2, D, D_PRIME, D2, r2, l2, f2, b2, u2, d2};
 std::function<std::string(Cube4x4&)> phase3_mask = [](Cube4x4 cube) -> std::string {
     std::vector<int> mask = {37,38,41,42,69,70,73,74,21,22,25,26,53,54,57,58}; // all centres pieces on R,L,F,B faces
-    // std::vector<int> edge_facelets = {20,24,23,27,36,40,39,43,52,56,55,59,68,72,71,75}; // all edge facelets in middle slice
-    // std::vector<int> paired_facelets = {};
-    // std::vector<int> unpaired_facelets = {};
-    // for (size_t i = 0; i < edge_facelets.size(); i += 2) {
-    //     if (cube.id_to_char(cube.facelets[i / 16][i % 16]) == cube.id_to_char(cube.facelets[i / 16][i % 16])) {
-    //         paired_facelets.push_back(i);
-    //         paired_facelets.push_back(i+1);            
-    //     } else {
-    //         unpaired_facelets.push_back(i);
-    //         unpaired_facelets.push_back(i+1);      
-    //     }
-    // }
+    std::vector<int> edge_facelets = {20,24,23,27,36,40,39,43,52,56,55,59,68,72,71,75}; // all edge facelets in middle slice
+    std::vector<int> paired_facelets = {};
+    std::vector<int> unpaired_facelets = {};
+    for (size_t i = 0; i < edge_facelets.size(); i += 2) {
+        int pos1 = edge_facelets[i];
+        int pos2 = edge_facelets[i + 1];
+        if (cube.id_to_char(cube.facelets[pos1 / 16][pos1 % 16]) == cube.id_to_char(cube.facelets[pos2 / 16][pos2 % 16])) {
+            paired_facelets.push_back(pos1);
+            paired_facelets.push_back(pos2);            
+        } else {
+            unpaired_facelets.push_back(pos1);
+            unpaired_facelets.push_back(pos2);      
+        }
+    }
     cube.apply_mask(mask);
-    // cube.apply_location_colour_mask(-3, paired_facelets);
-    // cube.apply_location_colour_mask(-4, unpaired_facelets);
+    cube.apply_location_colour_mask(-3, paired_facelets);
+    cube.apply_location_colour_mask(-4, unpaired_facelets);
     return cube.export_state();
 };
 std::function<bool(const Cube4x4&)> phase3_is_solved = [] (const Cube4x4& cube) {
@@ -403,14 +405,30 @@ std::function<bool(const Cube4x4&)> phase3_is_solved = [] (const Cube4x4& cube) 
     return phase3_mask(solved_cube) == cube.export_state();
 };
 Cube4x4 phase3_cube;
-Phase phase3("Phase 3", phase3_moves, phase3_is_solved, phase3_mask, "phase3table.bin", -1, 8);
+Phase phase3("Phase 3", phase3_moves, phase3_is_solved, phase3_mask, "phase3table.bin", -1, 13);
 
 
 // PHASE 4
 std::vector<Move> phase4_moves = {R2, L2, F2, B2, U, U_PRIME, U2, D, D_PRIME, D2, r2, l2, f2, b2};
 std::function<std::string(Cube4x4&)> phase4_mask = [](Cube4x4 cube) -> std::string {
     std::vector<int> mask = {5,6,9,10,85,86,89,90,37,38,41,42,69,70,73,74,21,22,25,26,53,54,57,58}; // all centre pieces
+    std::vector<int> edge_facelets = {1,2,4,8,7,11,13,14,17,18,33,34,49,50,65,66,29,30,45,46,61,62,77,78,81,82,84,88,87,91,93,94}; // all edge facelets except those in middle slice
+    std::vector<int> paired_facelets = {};
+    std::vector<int> unpaired_facelets = {};
+    for (size_t i = 0; i < edge_facelets.size(); i += 2) {
+        int pos1 = edge_facelets[i]; 
+        int pos2 = edge_facelets[i + 1];
+        if (cube.id_to_char(cube.facelets[pos1 / 16][pos1 % 16]) == cube.id_to_char(cube.facelets[pos2 / 16][pos2 % 16])) {
+            paired_facelets.push_back(pos1);
+            paired_facelets.push_back(pos2);            
+        } else {
+            unpaired_facelets.push_back(pos1);
+            unpaired_facelets.push_back(pos2);      
+        }
+    }
     cube.apply_mask(mask);
+    cube.apply_location_colour_mask(-3, paired_facelets);
+    cube.apply_location_colour_mask(-4, unpaired_facelets);
     return cube.export_state();
 };
 std::function<bool(const Cube4x4&)> phase4_is_solved = [] (const Cube4x4& cube) {
@@ -418,13 +436,13 @@ std::function<bool(const Cube4x4&)> phase4_is_solved = [] (const Cube4x4& cube) 
     return phase4_mask(solved_cube) == cube.export_state();
 };
 Cube4x4 phase4_cube;
-Phase phase4("Phase 4", phase4_moves, phase4_is_solved, phase4_mask, "phase4table.bin", -1, 8);
+Phase phase4("Phase 4", phase4_moves, phase4_is_solved, phase4_mask, "phase4table.bin", 8, 15);
 
 
 // PHASE 5
 std::vector<Move> phase5_moves = {R, R_PRIME, R2, L, L_PRIME, L2, F, F_PRIME, F2, B, B_PRIME, B2, U, U_PRIME, U2, D, D_PRIME, D2};
 std::function<std::string(Cube4x4&)> phase5_mask = [](Cube4x4 cube) -> std::string {
-    std::vector<int> mask = {1,2,4,7,8,11,13,14,36,39,40,43,68,71,72,75,81,82,84,87,88,91,93,94};
+    std::vector<int> mask = {1,2,4,7,8,11,13,14,36,39,40,43,68,71,72,75,81,82,84,87,88,91,93,94}; // 'good' edges facelets
     cube.apply_mask(mask);
     cube.apply_colour_mask(-2, mask);
     return cube.export_state();
@@ -440,7 +458,7 @@ Phase phase5("Phase 5", phase5_moves, phase5_is_solved, phase5_mask, "phase5tabl
 std::vector<Move> phase6_moves = {R, R_PRIME, R2, L, L_PRIME, L2, F2, B2, U, U_PRIME, U2, D, D_PRIME, D2};
 std::function<std::string(Cube4x4&)> phase6_mask = [](Cube4x4 cube) -> std::string {
     std::vector<int> mask = {0,1,2,3,4,7,8,11,12,13,14,15,36,39,40,43,68,71,72,75,80,81,82,83,84,87,88,91,92,93,94,95};
-    std::vector<int> colour_mask1 = {0,1,2,3,4,7,8,11,12,13,14,15,80,81,82,83,84,87,88,91,92,93,94,95};
+    std::vector<int> colour_mask1 = {0,1,2,3,4,7,8,11,12,13,14,15,80,81,82,83,84,87,88,91,92,93,94,95}; 
     std::vector<int> colour_mask2 = {36,39,40,43,68,71,72,75};
     cube.apply_mask(mask);
     cube.apply_colour_mask(-3, colour_mask1);

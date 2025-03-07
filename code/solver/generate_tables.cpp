@@ -136,22 +136,22 @@ int main() {
 
     // std::cout << "Generating " << phase2.name << " tables...\n";
     // Cube4x4 centre_cube;
-    // std::vector<Cube4x4> centre_table = generate_cube_table(phase2, {centre_cube}, {R2, L2, F, B, U, D, r2, l2, f2, b2, u2, d2}, 3);
-    // auto table2 = generate_table(phase2, centre_table, phase2.moves, phase2.table_depth_limit);
+    // std::vector<Cube4x4> centre_table = generate_cube_table(phase2, {centre_cube}, {R2, L2, F, B, U, D, r2, l2, f2, b2, u2, d2}, 3); //12
+    // auto table2 = generate_table(phase2, centre_table, phase2.moves, phase2.table_depth_limit); //900900
     // save_table_binary(table2, phase2.table_filename);
-    
-    std::cout << "Generating " << phase3.name << " tables...\n";
-    Cube4x4 centre_column_cube;
-    std::vector<Cube4x4> centre_column_table = generate_cube_table(phase3, {centre_column_cube}, {R2, L2, F2, B2, U, U_PRIME, U2, D, D_PRIME, D2, r2, l2, f2, b2}, 10);
-    auto table3 = generate_table(phase3, centre_column_table, phase3.moves, phase3.table_depth_limit);
-    save_table_binary(table3, phase3.table_filename);
+
+    // std::cout << "Generating " << phase3.name << " tables...\n";
+    // Cube4x4 centre_column_cube;
+    // std::vector<Cube4x4> centre_column_table = generate_cube_table(phase3, {centre_column_cube}, {R2, L2, F2, B2, U, U_PRIME, U2, D, D_PRIME, D2, r2, l2, f2, b2}, 4); //36, 4
+    // auto table3 = generate_table(phase3, centre_column_table, phase3.moves, phase3.table_depth_limit); //215028, 13
+    // save_table_binary(table3, phase3.table_filename);
 
     std::cout << "Generating " << phase4.name << " tables...\n";
-    auto table4 = generate_table(phase4, {cube}, phase4.moves, phase4.table_depth_limit);
+    auto table4 = generate_table(phase4, {cube}, phase4.moves, phase4.table_depth_limit); //2520
     save_table_binary(table4, phase4.table_filename);
 
     // std::cout << "Generating " << phase5.name << " tables...\n";
-    // auto table5 = generate_table(phase5, {cube}, phase5.moves, phase5.table_depth_limit);
+    // auto table5 = generate_table(phase5, {cube}, phase5.moves, phase5.table_depth_limit); //~2080
     // save_table_binary(table5, phase5.table_filename);
 
     // std::cout << "Generating " << phase6.name << " tables...\n";
@@ -160,7 +160,7 @@ int main() {
     
     // std::cout << "Generating " << phase7.name << " tables...\n";
     // Cube4x4 corner_cube;
-    // std::vector<Cube4x4> corner_table = generate_cube_table(phase7, {corner_cube}, {R2, L2, F2, B2, U2, D2}, 5);
+    // std::vector<Cube4x4> corner_table = generate_cube_table(phase7, {corner_cube}, {R2, L2, F2, B2, U2, D2}, 5); //96
     // auto table7 = generate_table(phase7, corner_table, phase7.moves, phase7.table_depth_limit);
     // save_table_binary(table7, phase7.table_filename);
 
