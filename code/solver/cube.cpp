@@ -361,12 +361,67 @@ Phase phase1("Phase 1", phase1_moves, phase1_is_solved, phase1_mask, "phase1tabl
 // PHASE 2
 std::vector<Move> phase2_moves = {R, R_PRIME, R2, L, L_PRIME, L2, F, F_PRIME, F2, B, B_PRIME, B2, U, U_PRIME, U2, D, D_PRIME, D2, r, r_PRIME, r2, l, l_PRIME, l2, f2, b2, u2, d2};
 std::function<std::string(Cube4x4&)> phase2_mask = [](Cube4x4 cube) -> std::string {
-    std::vector<int> mask = {5,6,9,10,85,86,89,90,37,38,41,42,69,70,73,74,21,22,25,26,53,54,57,58}; // all centre pieces
+    std::vector<int> mask = {5,6,9,10,85,86,89,90,37,38,41,42,69,70,73,74,21,22,25,26,53,54,57,58};
+    //0,1,2,3,4,7,8,11,12,13,14,15}; 
+    //14,94,8,1,7,88,81,87,56,55,23,24};
+    //14,34,94,74,8,18,1,66,7,50,88,29,81,45,87,61,56,43,55,68,23,36,24,75,13,33,93,78,4,17,2,65,11,49,84,30,82,46,91,62,52,39,59,72,27,40,20,71}; // all centre pieces
     std::vector<int> colour_mask1 = {5,6,9,10,85,86,89,90}; // U and D centre pieces
     std::vector<int> colour_mask2 = {37,38,41,42,69,70,73,74}; // F and B centre pieces
+    // std::vector<int> high_edges = {14,94,8,1,7,88,81,87,56,55,23,24};
+    // std::vector<int> low_edges = {13,93,4,2,11,84,82,91,52,59,27,20};
+    std::vector<int> high_edges = {14,34,94,74,8,18,1,66,7,50,88,29,81,45,87,61,56,43,55,68,23,36,24,75};
+    std::vector<int> low_edges = {13,33,93,78,4,17,2,65,11,49,84,30,82,46,91,62,52,39,59,72,27,40,20,71};
+    std::vector<int> matched_orientations = {};
+    std::vector<int> unmatched_orientations = {};
+    // check if each edge pair pieces are both flipped, or neither flipped (for example is id14 at a location in high_edges and is id13 in a location in low_edges)
+    std::string edge_invariant; // 12-character string: one bit per edge pair.
+    int flipped_edges = 0;
+    for (size_t i = 0; i < high_edges.size(); i += 2) {
+        bool high_edge_flipped = true;
+        bool low_edge_flipped = true;
+        for (size_t l = 0; l < high_edges.size(); l += 2) {
+            auto high_edge_location = high_edges[l];
+            if (cube.facelets[high_edge_location / 16][high_edge_location % 16] == high_edges[i]) {
+                high_edge_flipped = false;
+            }
+            auto low_edge_location = low_edges[l];
+            if (cube.facelets[low_edge_location / 16][low_edge_location % 16] == low_edges[i]) {
+                low_edge_flipped = false;
+            }
+        }
+        if (high_edge_flipped == true && low_edge_flipped == true) {
+            flipped_edges++;
+            //matched_orientations.push_back(high_edges[i]);
+            //matched_orientations.push_back(high_edges[i+1]);
+            //matched_orientations.push_back(low_edges[i]);
+            //matched_orientations.push_back(low_edges[i+1]);
+        } else {
+            //unmatched_orientations.push_back(high_edges[i]);
+            //unmatched_orientations.push_back(high_edges[i+1]);
+            //unmatched_orientations.push_back(low_edges[i]);
+            //unmatched_orientations.push_back(low_edges[i+1]);
+        }
+        edge_invariant.push_back((high_edge_flipped == low_edge_flipped) ? '1' : '0');
+    }
     cube.apply_mask(mask);
-    cube.apply_colour_mask(-3, colour_mask1);
-    cube.apply_colour_mask(-4, colour_mask2);
+    cube.apply_colour_mask(0, colour_mask1);
+    cube.apply_colour_mask(32, colour_mask2);
+    //cube.apply_colour_mask(-3, matched_orientations);
+    //cube.apply_colour_mask(-4, unmatched_orientations);
+    std::vector<int> U_edge_bits = {0,1,2,3,4,7,8,11,12,13,14,15};
+    for (size_t i = 0; i < U_edge_bits.size(); i++) {
+        int pos = U_edge_bits[i]; // position on U face.
+        // If the corresponding bit is '1', colour with -3; if '0', with -4.
+        // if (edge_invariant[i] == '1') {
+        //     cube.apply_location_colour_mask(-3, {pos});
+        // } else {
+        //     cube.apply_location_colour_mask(-4, {pos});
+        // }
+        if (i < flipped_edges) {
+            cube.apply_location_colour_mask(-3, {pos});
+        }
+    }
+
     return cube.export_state();
 };
 std::function<bool(const Cube4x4&)> phase2_is_solved = [] (const Cube4x4& cube) {
