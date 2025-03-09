@@ -10,8 +10,6 @@
 #include <queue>
 #include <functional>
 #include <cassert>
-
-
 #include "cube.h"
 
 class BloomFilter {
@@ -52,7 +50,7 @@ void save_table_binary(const std::unordered_map<std::string, int>& table, const 
     file.write(reinterpret_cast<const char*>(&table_size), sizeof(table_size));
 
     for (const auto& [state, depth] : table) {
-        file.write(state.c_str(), 96); 
+        file.write(state.c_str(), 48);
         file.write(reinterpret_cast<const char*>(&depth), sizeof(depth));
     }
 
@@ -64,17 +62,19 @@ std::unordered_map<std::string, int> load_table_binary(const std::string& filena
     std::ifstream file(filename, std::ios::binary);
     size_t table_size;
     file.read(reinterpret_cast<char*>(&table_size), sizeof(table_size));
-
+    const size_t state_size = 48;
+    
     for (size_t i = 0; i < table_size; i++) {
-        char state[97] = {0};
+        char state_buffer[49] = {0};
         int depth;
-        file.read(state, 96);
+        file.read(state_buffer, state_size);
         file.read(reinterpret_cast<char*>(&depth), sizeof(depth));
-        table[state] = depth;
+        table.emplace(std::string(state_buffer, state_size), depth);
     }
     file.close();
     return table;
 }
+
 
 std::vector<Cube4x4> generate_cube_table(const Phase &phase, const std::vector<Cube4x4> solved_cubes, const std::vector<Move>& moveset, int depth_limit = -1) {
     std::unordered_map<std::string, int> table;

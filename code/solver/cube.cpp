@@ -28,41 +28,47 @@ void Cube4x4::reset() {
 // Export the facelet data as a 96-char string in the order U, L, F, R, B, D
 std::string Cube4x4::export_state() const {
     std::string result;
-    result.reserve(96);
-    auto appendFace = [&](Face f) {
-        for(int i=0; i<16; i++){
-            result.push_back(id_to_char(facelets[f][i]) );
-        }
-    }; 
-    appendFace(U_FACE);
-    appendFace(L_FACE);
-    appendFace(F_FACE);
-    appendFace(R_FACE);
-    appendFace(B_FACE);
-    appendFace(D_FACE);
+    result.resize(48, '\0');
+    for (int i = 0; i < 96; i += 2) {
+        int face_index1 = i / 16;
+        int pos1 = i % 16;
+        int id1 = facelets[face_index1][pos1];
+        int code1 = (id1 >= 0) ? (id1 / 16) : (6 + (-id1 - 1));
+        
+        int face_index2 = (i+1) / 16;
+        int pos2 = (i+1) % 16;
+        int id2 = facelets[face_index2][pos2];
+        int code2 = (id2 >= 0) ? (id2 / 16) : (6 + (-id2 - 1));
+        
+        unsigned char byte = (static_cast<unsigned char>(code1) << 4) | (static_cast<unsigned char>(code2) & 0x0F);
+        result[i / 2] = byte;
+    }
     return result;
 }
 
-void Cube4x4::import_state(const std::string& state) {
-    Cube4x4 cube;
-    auto extractFace = [&](Face f, int startIndex) {
-        for (int i = 0; i < 16; i++) {
-            facelets[f][i] = char_to_id(state[startIndex + i]);
-        }
-    };
-
-    extractFace(U_FACE, 0);
-    extractFace(L_FACE, 16);
-    extractFace(F_FACE, 32);
-    extractFace(R_FACE, 48);
-    extractFace(B_FACE, 64);
-    extractFace(D_FACE, 80);
+char code_to_char(int code) {
+    if (code < 6) {
+        return "WOGRBY"[code];
+    } else {
+        int id = -(code - 5);
+        return Cube4x4::id_to_char(id);
+    }
 }
 
 // Prints visulisation of cube in command line
 void Cube4x4::print() const {
     std::cout << "\n\n";
-    std::string s = export_state(); 
+    std::string packed = export_state();
+    std::string s;
+    s.resize(96, '\0');
+    for (int i = 0; i < 48; i++) {
+        unsigned char byte = static_cast<unsigned char>(packed[i]);
+        int code1 = (byte >> 4) & 0x0F;  
+        int code2 = byte & 0x0F;        
+        s[2 * i] = code_to_char(code1);
+        s[2 * i + 1] = code_to_char(code2);
+    }
+
     std::cout << "          Up (U)\n";
     for (int row = 0; row < 4; ++row) {
         std::cout << "          ";

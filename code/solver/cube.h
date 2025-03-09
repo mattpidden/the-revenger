@@ -33,7 +33,6 @@ public:
  
     void reset();  
     std::string export_state() const;  
-    void import_state(const std::string& state);
     void print() const;  
     void move(Move m); 
     std::vector<Move> apply_random_moves(int n,  std::vector<Move> all_moves);

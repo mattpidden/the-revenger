@@ -67,22 +67,17 @@ std::vector<Move> solve_any_phase_ida(const Phase &phase, Cube4x4 start_cube) {
 std::unordered_map<std::string, int> load_table_binary(const std::string& filename) {
     std::unordered_map<std::string, int> table;
     std::ifstream file(filename, std::ios::binary);
-    if (!file) {
-        std::cerr << "Error opening file: " << filename << std::endl;
-        return table;
-    }
-
     size_t table_size;
     file.read(reinterpret_cast<char*>(&table_size), sizeof(table_size));
-
+    const size_t state_size = 48;
+    
     for (size_t i = 0; i < table_size; i++) {
-        char state[97] = {0};
+        char state_buffer[49] = {0};
         int depth;
-        file.read(state, 96);
+        file.read(state_buffer, state_size);
         file.read(reinterpret_cast<char*>(&depth), sizeof(depth));
-        table[state] = depth;
+        table.emplace(std::string(state_buffer, state_size), depth);
     }
-
     file.close();
     return table;
 }
@@ -105,7 +100,7 @@ void print_apply_solution(Cube4x4 &cube, const std::vector<Move> &solution, std:
 int main() {
     // Create cube and scramble it
     Cube4x4 cube;
-    std::vector<Move> scramble = cube.apply_random_moves(35, {R, L, U, D, F, B});
+    std::vector<Move> scramble = cube.apply_random_moves(35, {R2, L2, F2, B2, U, U_PRIME, U2, D, D_PRIME, D2, r2, l2, f2, b2});
     std::cout << "Scramble of size " << scramble.size() << " moves: ";
     for (Move move : scramble) {
         std::cout << move_to_string(move) << " ";
@@ -115,8 +110,9 @@ int main() {
     cube.print();
 
     // Load the solving phases
-    std::vector<Phase> phases = {phase5, phase6, phase7, phase8};
+    std::vector<Phase> phases = {phase3, phase4, phase5, phase6, phase7, phase8};
     for (Phase& phase : phases) {
+        std::cout << "Loading " << phase.name << " table...\n";
         phase.set_table(load_table_binary(phase.table_filename));
     }
 
