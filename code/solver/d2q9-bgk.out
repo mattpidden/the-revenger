@@ -1,0 +1,7 @@
+Running on host compute072.bc4.acrc.priv
+Time is Sun Mar 9 22:36:52 GMT 2025
+Directory is /user/home/bb22475/DIS/the-revenger/code/solver
+Slurm job ID is 11646699
+This job runs on the following machines:
+compute072
+slurmstepd: error: *** JOB 11646699 ON compute072 CANCELLED AT 2025-03-09T22:37:36 ***

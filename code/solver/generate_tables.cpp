@@ -160,13 +160,13 @@ void generate_table(const Phase &phase, const std::vector<Cube4x4> solved_cubes,
         }
         table.clear();
         save_table_binary(total_table, phase.table_filename);
-        std::cout << "Reached depth " << depth << " | States so far: " << total_table.size() << "\n";
+        std::cout << "Reached depth " << depth << " | States so far: " << total_table.size() << "\n" << std::endl;
 
         // TODO empty current_layer, replace it with next_layer and then clear next_layer
         current_layer = std::move(next_layer);
     }
     
-    std::cout << "Found all states. \n\n";
+    std::cout << "Found all states. \n\n" << std::endl;
     
     return;
 }

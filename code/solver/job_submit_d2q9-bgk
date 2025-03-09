@@ -1,0 +1,22 @@
+#!/bin/bash
+
+#SBATCH --job-name=d2q9-bgk
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=1
+#SBATCH --time=00:30:00
+#SBATCH --partition=teach_cpu
+#SBATCH --account=COMS033964
+#SBATCH --output=d2q9-bgk.out
+#SBATCH --exclusive 
+
+#lscpu
+echo Running on host `hostname`
+echo Time is `date`
+echo Directory is `pwd`
+echo Slurm job ID is $SLURM_JOB_ID
+echo This job runs on the following machines:
+echo `echo $SLURM_JOB_NODELIST | uniq` 
+
+
+./generate_tables
