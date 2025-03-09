@@ -98,13 +98,6 @@ void Cube4x4::print() const {
     std::cout << "\n";
 }
 
-// Visualize runs the ./vis executable
-void Cube4x4::visualize() const {
-    std::string s = export_state();
-    std::string cmd = "./vis \"" + s + "\"";
-    std::system(cmd.c_str());
-}
-
 // Handles moves
 void Cube4x4::move(Move m) {
     switch(m) {
@@ -432,7 +425,7 @@ std::function<bool(const Cube4x4&)> phase2_is_solved = [] (const Cube4x4& cube) 
     return phase2_mask(solved_cube) == cube.export_state();
 };
 Cube4x4 phase2_cube;
-Phase phase2("Phase 2", phase2_moves, phase2_is_solved, phase2_mask, "phase2table.bin", -1, 9);
+Phase phase2("Phase 2", phase2_moves, phase2_is_solved, phase2_mask, "phase2table.bin", 4, 15);
 
 
 // PHASE 3
