@@ -425,7 +425,7 @@ std::function<bool(const Cube4x4&)> phase2_is_solved = [] (const Cube4x4& cube) 
     return phase2_mask(solved_cube) == cube.export_state();
 };
 Cube4x4 phase2_cube;
-Phase phase2("Phase 2", phase2_moves, phase2_is_solved, phase2_mask, "phase2table.bin", 4, 15);
+Phase phase2("Phase 2", phase2_moves, phase2_is_solved, phase2_mask, "phase2table.bin", -1, 15);
 
 
 // PHASE 3
@@ -487,7 +487,7 @@ std::function<bool(const Cube4x4&)> phase4_is_solved = [] (const Cube4x4& cube) 
     return phase4_mask(solved_cube) == cube.export_state();
 };
 Cube4x4 phase4_cube;
-Phase phase4("Phase 4", phase4_moves, phase4_is_solved, phase4_mask, "phase4table.bin", 8, 15);
+Phase phase4("Phase 4", phase4_moves, phase4_is_solved, phase4_mask, "phase4table.bin", -1, 15);
 
 
 // PHASE 5

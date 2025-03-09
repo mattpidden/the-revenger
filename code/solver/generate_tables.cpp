@@ -178,27 +178,21 @@ void generate_table(const Phase &phase, const std::vector<Cube4x4> solved_cubes,
 int main() {         
     Cube4x4 cube;
 
-    std::cout << "Generating " << phase1.name << " tables...\n";
-    generate_table(phase1, {cube}, phase1.moves, phase1.table_depth_limit); // 735,471 at 9
-
-    // Cube4x4 test;
-    // std::cout << phase2.mask(test);
+    // std::cout << "Generating " << phase1.name << " tables...\n";
+    // generate_table(phase1, {cube}, phase1.moves, phase1.table_depth_limit); // 735,471 at 9
 
     std::cout << "Generating " << phase2.name << " tables...\n";
     Cube4x4 centre_cube;
-    std::vector<Cube4x4> centre_table = generate_cube_table(phase2, {centre_cube}, {R2, L2, F, B, U, D, r2, l2, f2, b2, u2, d2}, 3); 
-    // for (auto cube : centre_table) {
-    //     std::cout << phase2.mask(cube) << "\n";
-    // }
-    generate_table(phase2, centre_table, phase2.moves, phase2.table_depth_limit);
+    std::vector<Cube4x4> centre_table = generate_cube_table(phase2, {centre_cube}, {R2, L2, F, B, U, D, r2, l2, f2, b2, u2, d2}, 3); // 88  at 3 (should be 12)
+    generate_table(phase2, centre_table, phase2.moves, phase2.table_depth_limit); // 1,914,822 at 4
 
     // std::cout << "Generating " << phase3.name << " tables...\n";
     // Cube4x4 centre_column_cube;
     // std::vector<Cube4x4> centre_column_table = generate_cube_table(phase3, {centre_column_cube}, {R2, L2, F2, B2, U, U_PRIME, U2, D, D_PRIME, D2, r2, l2, f2, b2}, 4); //36, 4
-    // generate_table(phase3, centre_column_table, phase3.moves, phase3.table_depth_limit); //215028, 13
+    // generate_table(phase3, centre_column_table, phase3.moves, phase3.table_depth_limit); // 215,028 at 14
 
-    // std::cout << "Generating " << phase4.name << " tables...\n";
-    // generate_table(phase4, {cube}, phase4.moves, phase4.table_depth_limit); //2520
+    std::cout << "Generating " << phase4.name << " tables...\n";
+    generate_table(phase4, {cube}, phase4.moves, phase4.table_depth_limit); // 
 
     // std::cout << "Generating " << phase5.name << " tables...\n";
     // generate_table(phase5, {cube}, phase5.moves, phase5.table_depth_limit); // 2,048 at 8
