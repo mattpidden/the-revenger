@@ -1,7 +1,60 @@
-Running on host compute072.bc4.acrc.priv
-Time is Sun Mar 9 22:36:52 GMT 2025
+Running on host compute068.bc4.acrc.priv
+Time is Sun Mar 9 23:19:19 GMT 2025
 Directory is /user/home/bb22475/DIS/the-revenger/code/solver
-Slurm job ID is 11646699
+Slurm job ID is 11646845
 This job runs on the following machines:
-compute072
-slurmstepd: error: *** JOB 11646699 ON compute072 CANCELLED AT 2025-03-09T22:37:36 ***
+compute068
+Generating Phase 2 tables...
+Reached depth 1 | States so far: 8
+Reached depth 2 | States so far: 31
+Reached depth 3 | States so far: 88
+Final depth reached: 3
+Total states found: 88
+Total cubes found: 88
+Reached depth 0 | States so far: 88
+Reached depth 1 | States so far: 526
+
+Reached depth 2 | States so far: 7446
+
+Reached depth 3 | States so far: 120244
+
+Reached depth 4 | States so far: 1914822
+
+Reached depth 5 | States so far: 27908794
+
+Found all states. 
+
+
+Generating Phase 4 tables...
+Reached depth 0 | States so far: 1
+Reached depth 1 | States so far: 5
+
+Reached depth 2 | States so far: 47
+
+Reached depth 3 | States so far: 363
+
+Reached depth 4 | States so far: 2544
+
+Reached depth 5 | States so far: 16432
+
+Reached depth 6 | States so far: 100320
+
+Reached depth 7 | States so far: 550641
+
+Reached depth 8 | States so far: 2821549
+
+Reached depth 9 | States so far: 12089495
+
+Reached depth 10 | States so far: 28952214
+
+Reached depth 11 | States so far: 35051260
+
+Reached depth 12 | States so far: 35899423
+
+Reached depth 13 | States so far: 36036069
+
+Reached depth 14 | States so far: 36062931
+
+Reached depth 15 | States so far: 36068960
+
+slurmstepd: error: *** JOB 11646845 ON compute068 CANCELLED AT 2025-03-09T23:49:39 DUE TO TIME LIMIT ***
