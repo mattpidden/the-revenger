@@ -1,60 +1,208 @@
 Running on host compute068.bc4.acrc.priv
-Time is Sun Mar 9 23:19:19 GMT 2025
+Time is Mon Mar 10 20:57:47 GMT 2025
 Directory is /user/home/bb22475/DIS/the-revenger/code/solver
-Slurm job ID is 11646845
+Slurm job ID is 11659250
 This job runs on the following machines:
 compute068
-Generating Phase 2 tables...
-Reached depth 1 | States so far: 8
-Reached depth 2 | States so far: 31
-Reached depth 3 | States so far: 88
-Final depth reached: 3
-Total states found: 88
-Total cubes found: 88
-Reached depth 0 | States so far: 88
-Reached depth 1 | States so far: 526
-
-Reached depth 2 | States so far: 7446
-
-Reached depth 3 | States so far: 120244
-
-Reached depth 4 | States so far: 1914822
-
-Reached depth 5 | States so far: 27908794
-
+Generating Phase 1 tables...
+Reached depth 0 | 1 states | Total states: 1
+Reached depth 1 | 4 states | Total states: 5
+Reached depth 2 | 90 states | Total states: 95
+Reached depth 3 | 1314 states | Total states: 1409
+Reached depth 4 | 14644 states | Total states: 16053
+Reached depth 5 | 107254 states | Total states: 123307
+Reached depth 6 | 378108 states | Total states: 501415
+Reached depth 7 | 231776 states | Total states: 733191
+Reached depth 8 | 2280 states | Total states: 735471
 Found all states. 
 
+Generating Phase 2 tables...
+Reached depth 1 | States so far: 5
+Reached depth 2 | States so far: 10
+Reached depth 3 | States so far: 12
+Final depth reached: 3
+Total states found: 12
+Total cubes found: 12
+Reached depth 0 | 12 states | Total states: 12
+Reached depth 1 | 48 states | Total states: 60
+Reached depth 2 | 840 states | Total states: 900
+Reached depth 3 | 13200 states | Total states: 14100
+Reached depth 4 | 208920 states | Total states: 223020
+Reached depth 5 | 3472432 states | Total states: 3695452
+Reached depth 6 | 32082432 states | Total states: 35777884
+Found all states. 
+
+Generating Phase 3 tables...
+Reached depth 1 | States so far: 5
+Reached depth 2 | States so far: 15
+Reached depth 3 | States so far: 27
+Reached depth 4 | States so far: 36
+Final depth reached: 4
+Total states found: 36
+Total cubes found: 36
+Reached depth 0 | 36 states | Total states: 36
+Reached depth 1 | 84 states | Total states: 120
+Reached depth 2 | 492 states | Total states: 612
+Reached depth 3 | 2124 states | Total states: 2736
+Reached depth 4 | 6068 states | Total states: 8804
+Reached depth 5 | 15484 states | Total states: 24288
+Reached depth 6 | 35949 states | Total states: 60237
+Reached depth 7 | 63753 states | Total states: 123990
+Reached depth 8 | 57871 states | Total states: 181861
+Reached depth 9 | 24883 states | Total states: 206744
+Reached depth 10 | 6820 states | Total states: 213564
+Reached depth 11 | 1325 states | Total states: 214889
+Reached depth 12 | 131 states | Total states: 215020
+Reached depth 13 | 8 states | Total states: 215028
+Found all states. 
 
 Generating Phase 4 tables...
-Reached depth 0 | States so far: 1
-Reached depth 1 | States so far: 5
+Reached depth 0 | 1 states | Total states: 1
+Reached depth 1 | 4 states | Total states: 5
+Reached depth 2 | 42 states | Total states: 47
+Reached depth 3 | 316 states | Total states: 363
+Reached depth 4 | 2181 states | Total states: 2544
+Reached depth 5 | 13888 states | Total states: 16432
+Reached depth 6 | 83888 states | Total states: 100320
+Reached depth 7 | 450321 states | Total states: 550641
+Reached depth 8 | 2270908 states | Total states: 2821549
+Reached depth 9 | 9267946 states | Total states: 12089495
+Reached depth 10 | 16862719 states | Total states: 28952214
+Found all states. 
 
-Reached depth 2 | States so far: 47
+Generating Phase 5 tables...
+Reached depth 0 | 1 states | Total states: 1
+Reached depth 1 | 2 states | Total states: 3
+Reached depth 2 | 25 states | Total states: 28
+Reached depth 3 | 202 states | Total states: 230
+Reached depth 4 | 620 states | Total states: 850
+Reached depth 5 | 900 states | Total states: 1750
+Reached depth 6 | 285 states | Total states: 2035
+Reached depth 7 | 13 states | Total states: 2048
+Found all states. 
 
-Reached depth 3 | States so far: 363
+Generating Phase 6 tables...
+Reached depth 0 | 1 states | Total states: 1
+Reached depth 1 | 2 states | Total states: 3
+Reached depth 2 | 17 states | Total states: 20
+Reached depth 3 | 134 states | Total states: 154
+Reached depth 4 | 1065 states | Total states: 1219
+Reached depth 5 | 8190 states | Total states: 9409
+Reached depth 6 | 54694 states | Total states: 64103
+Reached depth 7 | 267576 states | Total states: 331679
+Reached depth 8 | 560568 states | Total states: 892247
+Reached depth 9 | 187204 states | Total states: 1079451
+Reached depth 10 | 3114 states | Total states: 1082565
+Found all states. 
 
-Reached depth 4 | States so far: 2544
+Generating Phase 7 tables...
+Reached depth 1 | States so far: 7
+Reached depth 2 | States so far: 34
+Reached depth 3 | States so far: 76
+Reached depth 4 | States so far: 96
+Final depth reached: 4
+Total states found: 96
+Total cubes found: 96
+Reached depth 0 | 96 states | Total states: 96
+Reached depth 1 | 192 states | Total states: 288
+Reached depth 2 | 864 states | Total states: 1152
+Reached depth 3 | 3456 states | Total states: 4608
+Reached depth 4 | 11904 states | Total states: 16512
+Reached depth 5 | 50880 states | Total states: 67392
+Reached depth 6 | 173376 states | Total states: 240768
+Reached depth 7 | 358272 states | Total states: 599040
+Reached depth 8 | 495168 states | Total states: 1094208
+Reached depth 9 | 678720 states | Total states: 1772928
+Reached depth 10 | 692927 states | Total states: 2465855
+Reached depth 11 | 307391 states | Total states: 2773246
+Reached depth 12 | 46846 states | Total states: 2820092
+Reached depth 13 | 2304 states | Total states: 2822396
+Found all states. 
 
-Reached depth 5 | States so far: 16432
+Generating Phase 8 tables...
+Reached depth 0 | 1 states | Total states: 1
+Reached depth 1 | 6 states | Total states: 7
+Reached depth 2 | 27 states | Total states: 34
+Reached depth 3 | 120 states | Total states: 154
+Reached depth 4 | 519 states | Total states: 673
+Reached depth 5 | 1932 states | Total states: 2605
+Reached depth 6 | 6484 states | Total states: 9089
+Reached depth 7 | 20310 states | Total states: 29399
+Reached depth 8 | 55034 states | Total states: 84433
+Reached depth 9 | 113892 states | Total states: 198325
+Reached depth 10 | 178495 states | Total states: 376820
+Reached depth 11 | 179196 states | Total states: 556016
+Reached depth 12 | 89728 states | Total states: 645744
+Reached depth 13 | 16176 states | Total states: 661920
+Reached depth 14 | 1488 states | Total states: 663408
+Reached depth 15 | 144 states | Total states: 663552
+Found all states. 
 
-Reached depth 6 | States so far: 100320
+Scramble of size 35 moves: f l f L r B D b U r D F U L B f l B f B B D r B b r F F L f R L U L l 
 
-Reached depth 7 | States so far: 550641
+          Up (U)
+          🟨🟩🟦🟦
+          🟥🟦🟦⬜
+          🟩🟥🟧🟩
+          ⬜🟩🟦🟦
 
-Reached depth 8 | States so far: 2821549
+Left (L)  Front (F) Right (R) Back (B)
+🟦🟩🟨🟧  🟩⬜🟥🟧  ⬜🟨🟥⬜  🟥🟨⬜🟧
+🟧🟥🟦⬜  🟦🟨🟨🟦  🟧🟨⬜🟥  🟦⬜🟩🟨
+🟩🟨🟩🟩  🟧🟧🟩🟨  🟦🟥🟦🟦  🟧⬜🟧🟧
+⬜🟨🟦🟧  🟩🟧🟥🟩  🟥🟨🟥🟨  🟥🟥🟧🟩
 
-Reached depth 9 | States so far: 12089495
+          Down (D)
+          🟨⬜⬜🟨
+          ⬜🟧⬜🟧
+          🟥🟩🟥🟩
+          🟥⬜🟨🟦
 
-Reached depth 10 | States so far: 28952214
+Loading Phase 1 table...
+Loading Phase 2 table...
+Loading Phase 3 table...
+Loading Phase 4 table...
+Phase 1 solution found in 6 moves: L2 B' l' U2 u' b 
 
-Reached depth 11 | States so far: 35051260
 
-Reached depth 12 | States so far: 35899423
+          Up (U)
+          🟦🟦🟧🟥
+          🟨🟨🟦🟥
+          ⬜🟦🟨⬜
+          🟧🟩⬜🟧
 
-Reached depth 13 | States so far: 36036069
+Left (L)  Front (F) Right (R) Back (B)
+⬜🟥🟥🟨  🟩🟧🟩🟩  ⬜🟦🟩⬜  🟩⬜🟥🟧
+⬜🟧🟥🟧  ⬜🟩🟨🟩  🟧🟧🟥🟦  🟧🟨⬜🟩
+🟨🟧🟥🟧  🟨🟩🟩🟨  🟦🟥🟧🟦  🟨⬜🟦🟥
+🟦🟩🟩🟦  🟧🟦🟥🟩  🟥🟨🟩🟦  🟥🟦⬜🟥
 
-Reached depth 14 | States so far: 36062931
+          Down (D)
+          🟨🟧⬜🟨
+          🟥⬜⬜🟧
+          🟨🟩🟦🟨
+          🟨🟦🟥⬜
 
-Reached depth 15 | States so far: 36068960
+Phase 2 solution found in 11 moves: R' r2 D F r b2 L' B u2 L l 
 
-slurmstepd: error: *** JOB 11646845 ON compute068 CANCELLED AT 2025-03-09T23:49:39 DUE TO TIME LIMIT ***
+
+          Up (U)
+          🟥⬜🟨🟧
+          🟥⬜🟨⬜
+          🟧⬜⬜🟧
+          ⬜🟨🟥🟨
+
+Left (L)  Front (F) Right (R) Back (B)
+🟦🟦🟩🟥  🟦🟩🟩🟩  🟧🟦🟩🟩  ⬜🟧🟥🟨
+⬜🟥🟥🟨  🟩🟩🟦🟧  ⬜🟥🟥⬜  🟦🟩🟩🟩
+🟨🟧🟧🟥  🟩🟦🟦🟦  🟥🟧🟧🟨  🟦🟦🟩🟥
+🟨🟦🟥🟨  🟦🟧🟩🟥  🟩🟦🟥🟧  🟦🟧🟦🟥
+
+          Down (D)
+          🟧🟨🟧⬜
+          ⬜⬜🟨🟧
+          🟨🟨🟨🟨
+          🟩⬜⬜⬜
+
+Phase 3 solution found in 8 moves: R2 U' D' F' U' u2 r2 B 
+slurmstepd: error: *** JOB 11659250 ON compute068 CANCELLED AT 2025-03-10T21:28:01 DUE TO TIME LIMIT ***

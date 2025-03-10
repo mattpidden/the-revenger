@@ -1,0 +1,97 @@
+Running on host compute068.bc4.acrc.priv
+Time is Mon Mar 10 21:42:47 GMT 2025
+Directory is /user/home/bb22475/DIS/the-revenger/code/solver
+Slurm job ID is 11659678
+This job runs on the following machines:
+compute068
+Scramble of size 35 moves: f F L D R R R b L B d l r B U b f R u r L l b B B b r u B U U R u D b 
+
+          Up (U)
+          🟥🟧🟧🟧
+          🟥⬜🟨🟨
+          🟥⬜🟧⬜
+          🟨🟩⬜🟩
+
+Left (L)  Front (F) Right (R) Back (B)
+🟩🟩🟨🟦  🟥🟥🟩🟨  🟥🟥🟧🟩  ⬜🟦🟩⬜
+🟥🟦🟥⬜  🟧🟧🟩🟧  🟦🟥🟦🟩  🟧🟧⬜⬜
+🟥🟥🟦⬜  🟩🟨🟦🟥  🟨🟥🟧🟥  🟦🟩🟩🟦
+🟧🟩🟧🟩  🟨⬜⬜⬜  🟧🟨🟩⬜  🟦🟦🟧🟦
+
+          Down (D)
+          🟧🟦🟦🟦
+          🟨🟩🟨🟦
+          🟨🟨⬜🟨
+          🟨⬜🟨🟥
+
+Loading Phase 1 table...
+Loading Phase 2 table...
+Loading Phase 3 table...
+Loading Phase 4 table...
+Loading Phase 5 table...
+Loading Phase 6 table...
+Loading Phase 7 table...
+Loading Phase 8 table...
+Phase 1 solution found in 6 moves: F U' f U u' f 
+
+
+          Up (U)
+          🟥🟧🟧🟧
+          🟥🟦🟨🟨
+          🟦🟨⬜🟨
+          🟩🟩⬜🟦
+
+Left (L)  Front (F) Right (R) Back (B)
+🟩🟩🟨🟧  🟨🟧🟧🟥  🟨🟥🟧🟩  ⬜🟦🟨⬜
+🟧🟧🟥⬜  🟥🟦🟩🟦  ⬜🟥🟧🟥  🟩⬜🟦🟩
+🟥🟥🟥🟦  ⬜🟦🟩🟩  ⬜🟧🟧🟥  🟦🟩🟩🟦
+🟧🟩🟩🟦  ⬜🟥🟧🟨  🟩⬜🟩⬜  🟦🟦🟧🟦
+
+          Down (D)
+          🟧🟨🟦🟥
+          ⬜⬜🟨🟥
+          🟨🟨⬜🟨
+          🟨⬜🟨🟥
+
+Phase 2 solution found in 10 moves: R2 F r' U r B u2 R2 D2 L 
+
+
+          Up (U)
+          🟥⬜⬜⬜
+          🟨🟨🟨🟨
+          🟧⬜⬜🟨
+          🟩🟨⬜🟧
+
+Left (L)  Front (F) Right (R) Back (B)
+🟦🟦🟩🟥  ⬜🟩🟥🟦  🟨🟥🟧🟥  🟦🟦🟩🟨
+🟨🟥🟧⬜  🟦🟦🟩🟧  ⬜🟥🟧⬜  🟧🟦🟦🟧
+🟨🟥🟧🟧  🟦🟩🟩🟥  🟨🟥🟧⬜  🟥🟩🟦🟦
+🟨🟦🟩🟨  🟧🟦🟩🟧  🟦🟩🟩🟧  ⬜🟩🟦🟥
+
+          Down (D)
+          🟩🟥🟧⬜
+          🟥⬜🟨🟨
+          🟧🟨⬜⬜
+          🟩🟥🟥🟩
+
+Phase 3 solution found in 9 moves: F' d2 r2 F U r2 F' D2 B 
+
+
+          Up (U)
+          🟨⬜🟨🟧
+          ⬜⬜🟨⬜
+          ⬜⬜⬜🟧
+          🟦⬜🟥🟦
+
+Left (L)  Front (F) Right (R) Back (B)
+🟥🟥🟥⬜  🟥🟧🟩🟧  ⬜🟦🟩🟦  🟨🟩🟧🟦
+🟧🟥🟧🟨  🟥🟩🟦🟦  🟨🟥🟧⬜  🟦🟩🟦🟩
+🟧🟥🟧🟨  🟥🟩🟦🟦  🟨🟥🟧⬜  🟦🟩🟦🟩
+🟩🟩🟩🟧  ⬜🟧🟦🟥  🟨🟦🟩🟨  🟧🟦🟧🟥
+
+          Down (D)
+          🟩🟨🟥🟩
+          ⬜🟨🟨🟧
+          🟨🟨⬜🟥
+          ⬜🟨🟥🟩
+

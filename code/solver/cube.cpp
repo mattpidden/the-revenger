@@ -101,7 +101,7 @@ void Cube4x4::print() const {
         }
         std::cout << "\n";
     }
-    std::cout << "\n";
+    std::cout << std::endl;
 }
 
 // Handles moves
@@ -383,6 +383,7 @@ Phase phase2("Phase 2", phase2_moves, phase2_is_solved, phase2_mask, "phase2tabl
 // PHASE 3
 std::vector<Move> phase3_moves = {R2, L2, F, F_PRIME, F2, B, B_PRIME, B2, U, U_PRIME, U2, D, D_PRIME, D2, r2, l2, f2, b2, u2, d2};
 std::function<std::string(Cube4x4&)> phase3_mask = [](Cube4x4 cube) -> std::string {
+    // this mask takes a long time to compute
     std::vector<int> mask = {37,38,41,42,69,70,73,74,21,22,25,26,53,54,57,58}; // all centres pieces on R,L,F,B faces
     std::vector<int> edge_facelets = {20,24,23,27,36,40,39,43,52,56,55,59,68,72,71,75}; // all edge facelets in middle slice
     std::vector<int> paired_facelets = {};
@@ -414,6 +415,7 @@ Phase phase3("Phase 3", phase3_moves, phase3_is_solved, phase3_mask, "phase3tabl
 // PHASE 4
 std::vector<Move> phase4_moves = {R2, L2, F2, B2, U, U_PRIME, U2, D, D_PRIME, D2, r2, l2, f2, b2};
 std::function<std::string(Cube4x4&)> phase4_mask = [](Cube4x4 cube) -> std::string {
+    // this mask takes a really long time to compute
     std::vector<int> mask = {5,6,9,10,85,86,89,90,37,38,41,42,69,70,73,74,21,22,25,26,53,54,57,58}; // all centre pieces
     std::vector<int> edge_facelets = {1,2,4,8,7,11,13,14,17,18,33,34,49,50,65,66,29,30,45,46,61,62,77,78,81,82,84,88,87,91,93,94}; // all edge facelets except those in middle slice
     std::vector<int> paired_facelets = {};

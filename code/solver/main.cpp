@@ -92,7 +92,7 @@ void print_apply_solution(Cube4x4 &cube, const std::vector<Move> &solution, std:
         }
         std::cout << std::endl;
     } else {
-        std::cout << "No solution found.\n";
+        std::cout << "No solution found." << std::endl;
     }
 }
 
@@ -110,9 +110,9 @@ int main() {
     cube.print();
 
     // Load the solving phases
-    std::vector<Phase> phases = {phase1, phase2, phase3, phase4};
+    std::vector<Phase> phases = {phase1, phase2, phase3, phase4, phase5, phase6, phase7, phase8};
     for (Phase& phase : phases) {
-        std::cout << "Loading " << phase.name << " table...\n";
+        std::cout << "Loading " << phase.name << " table..." << std::endl;;
         phase.set_table(load_table_binary(phase.table_filename));
     }
 
@@ -130,7 +130,7 @@ int main() {
     }
     auto end = std::chrono::high_resolution_clock::now();
     print_apply_solution(scrambled_cube, solution, "Full");
-    std::cout << "Solution time: " << std::chrono::duration<double>(end - start).count() << " seconds\n";
+    std::cout << "Solution time: " << std::chrono::duration<double>(end - start).count() << " seconds." << std::endl;
 
     return 0;
 }

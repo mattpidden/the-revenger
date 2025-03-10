@@ -7,7 +7,7 @@
 #SBATCH --time=00:30:00
 #SBATCH --partition=teach_cpu
 #SBATCH --account=COMS033964
-#SBATCH --output=d2q9-bgk.out
+#SBATCH --output=solver.out
 #SBATCH --exclusive 
 
 #lscpu
@@ -19,4 +19,14 @@ echo This job runs on the following machines:
 echo `echo $SLURM_JOB_NODELIST | uniq` 
 
 
-./generate_tables
+#./generate_tables
+./solver
+./solver
+./solver
+./solver
+./solver
+./solver
+./solver
+./solver
+./solver
+./solver

@@ -184,7 +184,7 @@ int main() {
 
     // phase 1,5,6,7,8 are working perfectly
     // phase 2,4 tables are too large
-    // phase 3,4 masks might not be quite right
+    // phase 3,4 masks take a long time to compute
     // phase 2 mask does not account for parities (but it might>)
     // phase 4 mask does account for parities
 
