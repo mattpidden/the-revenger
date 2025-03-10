@@ -135,7 +135,9 @@ void generate_table(const Phase &phase, const std::vector<Cube4x4> solved_cubes,
         current_layer.push_back(cube);
     }
     save_table_binary(table, phase.table_filename);
-    std::cout << "Reached depth " << depth << " | States so far: " << table.size() << "\n";
+    std::cout << "Reached depth " << depth << " | " << table.size() << " states | Total states: " << table.size() << std::endl;
+    table.clear();
+
     
     while (!current_layer.empty() && (depth_limit < 0 || depth < depth_limit)) {
         std::vector<Cube4x4> next_layer;
@@ -158,15 +160,17 @@ void generate_table(const Phase &phase, const std::vector<Cube4x4> solved_cubes,
         for (const auto& [state, depth] : table) {
             total_table[state] = depth;
         }
-        table.clear();
         save_table_binary(total_table, phase.table_filename);
-        std::cout << "Reached depth " << depth << " | States so far: " << total_table.size() << "\n" << std::endl;
+        if (table.size() > 0) {
+            std::cout << "Reached depth " << depth << " | " << table.size() << " states | Total states: " << total_table.size() << std::endl;
+        }
+        table.clear();
 
         // TODO empty current_layer, replace it with next_layer and then clear next_layer
         current_layer = std::move(next_layer);
     }
     
-    std::cout << "Found all states. \n\n" << std::endl;
+    std::cout << "Found all states. \n" << std::endl;
     
     return;
 }
@@ -178,35 +182,41 @@ void generate_table(const Phase &phase, const std::vector<Cube4x4> solved_cubes,
 int main() {         
     Cube4x4 cube;
 
-    // std::cout << "Generating " << phase1.name << " tables...\n";
-    // generate_table(phase1, {cube}, phase1.moves, phase1.table_depth_limit); // 735,471 at 9
+    // phase 1,5,6,7,8 are working perfectly
+    // phase 2,4 tables are too large
+    // phase 3,4 masks might not be quite right
+    // phase 2 mask does not account for parities (but it might>)
+    // phase 4 mask does account for parities
+
+    std::cout << "Generating " << phase1.name << " tables...\n";
+    generate_table(phase1, {cube}, phase1.moves, phase1.table_depth_limit); // 735,471 at 8
 
     std::cout << "Generating " << phase2.name << " tables...\n";
     Cube4x4 centre_cube;
-    std::vector<Cube4x4> centre_table = generate_cube_table(phase2, {centre_cube}, {R2, L2, F, B, U, D, r2, l2, f2, b2, u2, d2}, 3); // 88  at 3 (should be 12)
-    generate_table(phase2, centre_table, phase2.moves, phase2.table_depth_limit); // 1,914,822 at 4
+    std::vector<Cube4x4> centre_table = generate_cube_table(phase2, {centre_cube}, {R2, L2, F, B, U, D, r2, l2, f2, b2, u2, d2}, 3); // 12  at 3
+    generate_table(phase2, {centre_table}, phase2.moves, phase2.table_depth_limit); // 3,695,452 at 5 (limited)
 
-    // std::cout << "Generating " << phase3.name << " tables...\n";
-    // Cube4x4 centre_column_cube;
-    // std::vector<Cube4x4> centre_column_table = generate_cube_table(phase3, {centre_column_cube}, {R2, L2, F2, B2, U, U_PRIME, U2, D, D_PRIME, D2, r2, l2, f2, b2}, 4); //36, 4
-    // generate_table(phase3, centre_column_table, phase3.moves, phase3.table_depth_limit); // 215,028 at 14
+    std::cout << "Generating " << phase3.name << " tables...\n";
+    Cube4x4 centre_column_cube;
+    std::vector<Cube4x4> centre_column_table = generate_cube_table(phase3, {centre_column_cube}, {R2, L2, F2, B2, U, U_PRIME, U2, D, D_PRIME, D2, r2, l2, f2, b2}, 4); // 36 at 4
+    generate_table(phase3, {centre_column_table}, phase3.moves, phase3.table_depth_limit); // 215,028 at 13
 
     std::cout << "Generating " << phase4.name << " tables...\n";
-    generate_table(phase4, {cube}, phase4.moves, phase4.table_depth_limit); // 
+    generate_table(phase4, {cube}, phase4.moves, phase4.table_depth_limit); // 12,089,495 at 9
 
-    // std::cout << "Generating " << phase5.name << " tables...\n";
-    // generate_table(phase5, {cube}, phase5.moves, phase5.table_depth_limit); // 2,048 at 8
+    std::cout << "Generating " << phase5.name << " tables...\n";
+    generate_table(phase5, {cube}, phase5.moves, phase5.table_depth_limit); // 2,048 at 8
 
-    // std::cout << "Generating " << phase6.name << " tables...\n";
-    // generate_table(phase6, {cube}, phase6.moves, phase6.table_depth_limit); // 1,082,565 at 11
+    std::cout << "Generating " << phase6.name << " tables...\n";
+    generate_table(phase6, {cube}, phase6.moves, phase6.table_depth_limit); // 1,082,565 at 11
     
-    // std::cout << "Generating " << phase7.name << " tables...\n";
-    // Cube4x4 corner_cube;
-    // std::vector<Cube4x4> corner_table = generate_cube_table(phase7, {corner_cube}, {R2, L2, F2, B2, U2, D2}, 5); // 96 at 4
-    // generate_table(phase7, corner_table, phase7.moves, phase7.table_depth_limit); // 2,822,398 at 14
+    std::cout << "Generating " << phase7.name << " tables...\n";
+    Cube4x4 corner_cube;
+    std::vector<Cube4x4> corner_table = generate_cube_table(phase7, {corner_cube}, {R2, L2, F2, B2, U2, D2}, 5); // 96 at 4
+    generate_table(phase7, corner_table, phase7.moves, phase7.table_depth_limit); // 2,822,398 at 14
 
-    // std::cout << "Generating " << phase8.name << " tables...\n";
-    // generate_table(phase8, {cube}, phase8.moves, phase8.table_depth_limit); // 663,552 at 16
+    std::cout << "Generating " << phase8.name << " tables...\n";
+    generate_table(phase8, {cube}, phase8.moves, phase8.table_depth_limit); // 663,552 at 16
 
     return 0;
 }
