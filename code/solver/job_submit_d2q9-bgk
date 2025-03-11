@@ -4,7 +4,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
-#SBATCH --time=00:30:00
+#SBATCH --time=01:00:00
 #SBATCH --partition=teach_cpu
 #SBATCH --account=COMS033964
 #SBATCH --output=solver.out
@@ -20,13 +20,5 @@ echo `echo $SLURM_JOB_NODELIST | uniq`
 
 
 #./generate_tables
-./solver
-./solver
-./solver
-./solver
-./solver
-./solver
-./solver
-./solver
-./solver
+./generate_tables
 ./solver
