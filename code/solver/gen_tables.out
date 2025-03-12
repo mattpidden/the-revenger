@@ -1,0 +1,20 @@
+Running on host compute068.bc4.acrc.priv
+Time is Wed Mar 12 00:52:33 GMT 2025
+Directory is /user/home/bb22475/DIS/the-revenger/code/solver
+Slurm job ID is 11679984
+This job runs on the following machines:
+compute068
+Generating Phase 1 tables...
+Reached depth 1 | States so far: 5
+Reached depth 2 | States so far: 95
+Reached depth 3 | States so far: 1409
+Reached depth 4 | States so far: 16053
+Reached depth 5 | States so far: 123307
+Reached depth 6 | States so far: 501415
+Reached depth 7 | States so far: 733191
+Reached depth 8 | States so far: 735471
+Final depth reached: 8
+Total states found: 735471
+BBHash MPH built & saved to phase1table.mph and phase1table.depths
+
+/tmp/slurmd/job11679984/slurm_script: line 20: 940210 Killed                  ./generate_tables

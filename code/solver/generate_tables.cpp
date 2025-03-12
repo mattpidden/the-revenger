@@ -37,7 +37,7 @@ std::vector<Cube4x4> generate_cube_table(const Phase &phase, const std::vector<C
         
         if (depth > max_depth) {
             max_depth = depth;
-            std::cout << "Reached depth " << max_depth << " | States so far: " << table.size() << "\n";
+            std::cout << "Reached depth " << max_depth << " | States so far: " << table.size() << std::endl;
         }
         
         if (depth_limit < 0 || depth < depth_limit) {
@@ -55,9 +55,9 @@ std::vector<Cube4x4> generate_cube_table(const Phase &phase, const std::vector<C
         }
     }
     
-    std::cout << "Final depth reached: " << max_depth << "\n";
-    std::cout << "Total states found: " << table.size() << "\n";
-    std::cout << "Total cubes found: " << cube_table.size() << "\n";
+    std::cout << "Final depth reached: " << max_depth << std::endl;
+    std::cout << "Total states found: " << table.size() << std::endl;
+    std::cout << "Total cubes found: " << cube_table.size() << std::endl;
     
     return cube_table;
 }
@@ -81,7 +81,7 @@ std::unordered_map<std::string, int> generate_table(const Phase &phase, const st
         
         if (depth > max_depth) {
             max_depth = depth;
-            std::cout << "Reached depth " << max_depth << " | States so far: " << table.size() << "\n";
+            std::cout << "Reached depth " << max_depth << " | States so far: " << table.size() << std::endl;
         }
         
         if (depth_limit < 0 || depth < depth_limit) {
@@ -98,8 +98,8 @@ std::unordered_map<std::string, int> generate_table(const Phase &phase, const st
         }
     }
     
-    std::cout << "Final depth reached: " << max_depth << "\n";
-    std::cout << "Total states found: " << table.size() << "\n";
+    std::cout << "Final depth reached: " << max_depth << std::endl;
+    std::cout << "Total states found: " << table.size() << std::endl;
     
     return table;
 }
@@ -149,10 +149,10 @@ int main() {
     
 
     // phase 1,5,6,7,8 are working perfectly
-    // phase 2,4 tables are too large
+    // phase 2 mask needs tweaking to make smaller state space
     // phase 3,4 masks take a long time to compute
-    // phase 2 mask does not account for parities (but it might>)
-    // phase 4 mask does account for parities
+    // phase 2 mask does not account for parities (but it might)
+    // phase 4 mask does account for parities (but it might)
 
     std::cout << "Generating " << phase1.name << " tables...\n";
     Cube4x4 cube1;

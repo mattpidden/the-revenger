@@ -7,8 +7,7 @@
 #SBATCH --time=01:00:00
 #SBATCH --partition=teach_cpu
 #SBATCH --account=COMS033964
-#SBATCH --output=solver.out
-#SBATCH --exclusive 
+#SBATCH --output=gen_tables.out
 
 #lscpu
 echo Running on host `hostname`
@@ -18,7 +17,4 @@ echo Slurm job ID is $SLURM_JOB_ID
 echo This job runs on the following machines:
 echo `echo $SLURM_JOB_NODELIST | uniq` 
 
-
-#./generate_tables
 ./generate_tables
-./solver
