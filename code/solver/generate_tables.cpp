@@ -15,6 +15,45 @@
 
 using namespace boomphf;
 
+// Save / load depths
+void save_depths(const std::vector<int> &depths, const std::string &filename) {
+    std::ofstream out(filename, std::ios::binary);
+    uint64_t sz = depths.size();
+    out.write(reinterpret_cast<const char*>(&sz), sizeof(sz));
+    out.write(reinterpret_cast<const char*>(depths.data()), sizeof(int)*sz);
+}
+
+
+
+void build_and_save_mph(const std::unordered_map<std::string,int> &table, const std::string &mph_filename, const std::string &depth_filename) {
+    std::vector<std::string> keys;
+    keys.reserve(table.size());
+    for (auto &kv : table) {
+        keys.push_back(kv.first);
+    }
+    auto mph = new boomphf::mphf<std::string, MyStringHash>(
+        keys.size(),   // # of keys
+        keys,          // pass the vector
+        1,             // # of threads
+        4.0  ,         // gamma
+        false,         // writeEach
+        false,         // progress
+        0.03f          // alpha ratio
+    );
+    // Build parallel depths
+    std::vector<int> depths(keys.size(), -1);
+    for (auto &kv : table) {
+        uint64_t idx = mph->lookup(kv.first);
+        depths[idx] = kv.second;
+    }
+    // Save depths and hash
+    save_depths(depths, depth_filename);
+    std::ofstream ofs(mph_filename, std::ios::binary);
+    mph->save(ofs);
+
+    delete mph;
+    std::cout << "BBHash MPH built & saved to " << mph_filename << " and " << depth_filename << "\n" << std::endl;
+}
 
 std::vector<Cube4x4> generate_cube_table(const Phase &phase, const std::vector<Cube4x4> solved_cubes, const std::vector<Move>& moveset, int depth_limit = -1) {
     std::unordered_map<std::string, int> table;
@@ -81,7 +120,11 @@ std::unordered_map<std::string, int> generate_table(const Phase &phase, const st
         
         if (depth > max_depth) {
             max_depth = depth;
+            std::string mph_file = phase.table_filename + ".mph";
+            std::string depth_file = phase.table_filename + ".depths";
+            build_and_save_mph(table, mph_file, depth_file);
             std::cout << "Reached depth " << max_depth << " | States so far: " << table.size() << std::endl;
+
         }
         
         if (depth_limit < 0 || depth < depth_limit) {
@@ -105,44 +148,8 @@ std::unordered_map<std::string, int> generate_table(const Phase &phase, const st
 }
 
 
-// Save / load depths
-void save_depths(const std::vector<int> &depths, const std::string &filename) {
-    std::ofstream out(filename, std::ios::binary);
-    uint64_t sz = depths.size();
-    out.write(reinterpret_cast<const char*>(&sz), sizeof(sz));
-    out.write(reinterpret_cast<const char*>(depths.data()), sizeof(int)*sz);
-}
 
 
-void build_and_save_mph(const std::unordered_map<std::string,int> &table, const std::string &mph_filename, const std::string &depth_filename) {
-    std::vector<std::string> keys;
-    keys.reserve(table.size());
-    for (auto &kv : table) {
-        keys.push_back(kv.first);
-    }
-    auto mph = new boomphf::mphf<std::string, MyStringHash>(
-        keys.size(),   // # of keys
-        keys,          // pass the vector
-        1,             // # of threads
-        4.0  ,         // gamma
-        false,         // writeEach
-        false,         // progress
-        0.03f          // alpha ratio
-    );
-    // Build parallel depths
-    std::vector<int> depths(keys.size(), -1);
-    for (auto &kv : table) {
-        uint64_t idx = mph->lookup(kv.first);
-        depths[idx] = kv.second;
-    }
-    // Save depths and hash
-    save_depths(depths, depth_filename);
-    std::ofstream ofs(mph_filename, std::ios::binary);
-    mph->save(ofs);
-
-    delete mph;
-    std::cout << "BBHash MPH built & saved to " << mph_filename << " and " << depth_filename << "\n" << std::endl;
-}
 
 
 int main() {         
