@@ -11,69 +11,9 @@
 #include <functional>
 #include <cassert>
 #include "cube.h"
+#include "BooPHF.h"
 
-class BloomFilter {
-public:
-    BloomFilter(size_t size_in_bits, int num_hashes) : bitset(size_in_bits, false), size(size_in_bits), num_hashes(num_hashes) {}
-
-    void add(const std::string &s) {
-        for (int i = 0; i < num_hashes; i++) {
-            size_t hash_val = hash(s, i);
-            bitset[hash_val % size] = true;
-        }
-    }
-
-    bool contains(const std::string &s) const {
-        for (int i = 0; i < num_hashes; i++) {
-            size_t hash_val = hash(s, i);
-            if (!bitset[hash_val % size])
-                return false;
-        }
-        return true;
-    }
-
-private:
-    std::vector<bool> bitset;
-    size_t size;
-    int num_hashes;
-
-    size_t hash(const std::string &s, int seed) const {
-        std::hash<std::string> hasher;
-        size_t h1 = hasher(s);
-        return h1 ^ (static_cast<size_t>(seed) * 0x9e3779b97f4a7c15ULL);
-    }
-};
-
-void save_table_binary(const std::unordered_map<std::string, int>& table, const std::string& filename) {
-    std::ofstream file(filename, std::ios::binary);
-    size_t table_size = table.size();
-    file.write(reinterpret_cast<const char*>(&table_size), sizeof(table_size));
-
-    for (const auto& [state, depth] : table) {
-        file.write(state.c_str(), 48);
-        file.write(reinterpret_cast<const char*>(&depth), sizeof(depth));
-    }
-
-    file.close();
-}
-
-std::unordered_map<std::string, int> load_table_binary(const std::string& filename) {
-    std::unordered_map<std::string, int> table;
-    std::ifstream file(filename, std::ios::binary);
-    size_t table_size;
-    file.read(reinterpret_cast<char*>(&table_size), sizeof(table_size));
-    const size_t state_size = 48;
-    
-    for (size_t i = 0; i < table_size; i++) {
-        char state_buffer[49] = {0};
-        int depth;
-        file.read(state_buffer, state_size);
-        file.read(reinterpret_cast<char*>(&depth), sizeof(depth));
-        table.emplace(std::string(state_buffer, state_size), depth);
-    }
-    file.close();
-    return table;
-}
+using namespace boomphf;
 
 
 std::vector<Cube4x4> generate_cube_table(const Phase &phase, const std::vector<Cube4x4> solved_cubes, const std::vector<Move>& moveset, int depth_limit = -1) {
@@ -122,65 +62,91 @@ std::vector<Cube4x4> generate_cube_table(const Phase &phase, const std::vector<C
     return cube_table;
 }
 
-void generate_table(const Phase &phase, const std::vector<Cube4x4> solved_cubes, const std::vector<Move>& moveset, int depth_limit = -1) {
-    BloomFilter bf(100000000, 7);
+std::unordered_map<std::string, int> generate_table(const Phase &phase, const std::vector<Cube4x4> solved_cubes, const std::vector<Move>& moveset, int depth_limit = -1) {
     std::unordered_map<std::string, int> table;
-    std::vector<Cube4x4> current_layer;
-    int depth = 0;
+    std::queue<Cube4x4> frontier;
     
     for (Cube4x4 cube : solved_cubes) {
         std::string state = phase.mask(cube);
-        bf.add(state);
         table[state] = 0;
-        current_layer.push_back(cube);
+        frontier.push(cube);
     }
-    save_table_binary(table, phase.table_filename);
-    std::cout << "Reached depth " << depth << " | " << table.size() << " states | Total states: " << table.size() << std::endl;
-    table.clear();
-
     
-    while (!current_layer.empty() && (depth_limit < 0 || depth < depth_limit)) {
-        std::vector<Cube4x4> next_layer;
-
-        for (const Cube4x4 &current_cube : current_layer) {
-            for (const auto &move : moveset) {
-                Cube4x4 next_cube = current_cube;
+    int max_depth = 0;
+    while (!frontier.empty()) {
+        Cube4x4 current_cube = frontier.front();
+        frontier.pop();
+        std::string current_state = phase.mask(current_cube);
+        int depth = table[current_state];
+        
+        if (depth > max_depth) {
+            max_depth = depth;
+            std::cout << "Reached depth " << max_depth << " | States so far: " << table.size() << "\n";
+        }
+        
+        if (depth_limit < 0 || depth < depth_limit) {
+            for (const auto& move : moveset) {
+                Cube4x4 next_cube = current_cube; 
                 next_cube.move(move);
                 std::string next_state = phase.mask(next_cube);
-                if (!bf.contains(next_state)) {
-                    bf.add(next_state);
+                
+                if (table.find(next_state) == table.end()) {
                     table[next_state] = depth + 1;
-                    next_layer.push_back(next_cube);
+                    frontier.push(next_cube);
                 }
             }
         }
-
-        depth++;
-        std::unordered_map<std::string, int> total_table = load_table_binary(phase.table_filename);
-        for (const auto& [state, depth] : table) {
-            total_table[state] = depth;
-        }
-        save_table_binary(total_table, phase.table_filename);
-        if (table.size() > 0) {
-            std::cout << "Reached depth " << depth << " | " << table.size() << " states | Total states: " << total_table.size() << std::endl;
-        }
-        table.clear();
-
-        // TODO empty current_layer, replace it with next_layer and then clear next_layer
-        current_layer = std::move(next_layer);
     }
     
-    std::cout << "Found all states. \n" << std::endl;
+    std::cout << "Final depth reached: " << max_depth << "\n";
+    std::cout << "Total states found: " << table.size() << "\n";
     
-    return;
+    return table;
 }
 
 
+// Save / load depths
+void save_depths(const std::vector<int> &depths, const std::string &filename) {
+    std::ofstream out(filename, std::ios::binary);
+    uint64_t sz = depths.size();
+    out.write(reinterpret_cast<const char*>(&sz), sizeof(sz));
+    out.write(reinterpret_cast<const char*>(depths.data()), sizeof(int)*sz);
+}
 
+
+void build_and_save_mph(const std::unordered_map<std::string,int> &table, const std::string &mph_filename, const std::string &depth_filename) {
+    std::vector<std::string> keys;
+    keys.reserve(table.size());
+    for (auto &kv : table) {
+        keys.push_back(kv.first);
+    }
+    auto mph = new boomphf::mphf<std::string, MyStringHash>(
+        keys.size(),   // # of keys
+        keys,          // pass the vector
+        1,             // # of threads
+        4.0  ,         // gamma
+        false,         // writeEach
+        false,         // progress
+        0.03f          // alpha ratio
+    );
+    // Build parallel depths
+    std::vector<int> depths(keys.size(), -1);
+    for (auto &kv : table) {
+        uint64_t idx = mph->lookup(kv.first);
+        depths[idx] = kv.second;
+    }
+    // Save depths and hash
+    save_depths(depths, depth_filename);
+    std::ofstream ofs(mph_filename, std::ios::binary);
+    mph->save(ofs);
+
+    delete mph;
+    std::cout << "BBHash MPH built & saved to " << mph_filename << " and " << depth_filename << "\n" << std::endl;
+}
 
 
 int main() {         
-    Cube4x4 cube;
+    
 
     // phase 1,5,6,7,8 are working perfectly
     // phase 2,4 tables are too large
@@ -188,35 +154,64 @@ int main() {
     // phase 2 mask does not account for parities (but it might>)
     // phase 4 mask does account for parities
 
-    // std::cout << "Generating " << phase1.name << " tables...\n";
-    // generate_table(phase1, {cube}, phase1.moves, phase1.table_depth_limit); // 735,471 at 8
+    std::cout << "Generating " << phase1.name << " tables...\n";
+    Cube4x4 cube1;
+    auto table1 = generate_table(phase1, {cube1}, phase1.moves, phase1.table_depth_limit); // 735,471 at 8
+    std::string mph_file1 = phase1.table_filename + ".mph";
+    std::string depth_file1 = phase1.table_filename + ".depths";
+    build_and_save_mph(table1, mph_file1, depth_file1);
 
-    // std::cout << "Generating " << phase2.name << " tables...\n";
-    // Cube4x4 centre_cube;
-    // std::vector<Cube4x4> centre_table = generate_cube_table(phase2, {centre_cube}, {R2, L2, F, B, U, D, r2, l2, f2, b2, u2, d2}, 3); // 12  at 3
-    // generate_table(phase2, {centre_table}, phase2.moves, phase2.table_depth_limit); // 3,695,452 at 5 (limited)
+    std::cout << "Generating " << phase2.name << " tables...\n";
+    Cube4x4 centre_cube;
+    std::vector<Cube4x4> centre_table = generate_cube_table(phase2, {centre_cube}, {R2, L2, F, B, U, D, r2, l2, f2, b2, u2, d2}, 3); // 12  at 3
+    auto table2 = generate_table(phase2, centre_table, phase2.moves, phase2.table_depth_limit); // 3,695,452 at 5 (limited)
+    std::string mph_file2 = phase2.table_filename + ".mph";
+    std::string depth_file2 = phase2.table_filename + ".depths";
+    build_and_save_mph(table2, mph_file2, depth_file2);
 
-    // std::cout << "Generating " << phase3.name << " tables...\n";
-    // Cube4x4 centre_column_cube;
-    // std::vector<Cube4x4> centre_column_table = generate_cube_table(phase3, {centre_column_cube}, {R2, L2, F2, B2, U, U_PRIME, U2, D, D_PRIME, D2, r2, l2, f2, b2}, 4); // 36 at 4
-    // generate_table(phase3, {centre_column_table}, phase3.moves, phase3.table_depth_limit); // 215,028 at 13
+    std::cout << "Generating " << phase3.name << " tables...\n";
+    Cube4x4 centre_column_cube;
+    std::vector<Cube4x4> centre_column_table = generate_cube_table(phase3, {centre_column_cube}, {R2, L2, F2, B2, U, U_PRIME, U2, D, D_PRIME, D2, r2, l2, f2, b2}, 4); // 36 at 4
+    auto table3 = generate_table(phase3, centre_column_table, phase3.moves, phase3.table_depth_limit); // 215,028 at 13
+    std::string mph_file3 = phase3.table_filename + ".mph";
+    std::string depth_file3 = phase3.table_filename + ".depths";
+    build_and_save_mph(table3, mph_file3, depth_file3);
 
     std::cout << "Generating " << phase4.name << " tables...\n";
-    generate_table(phase4, {cube}, phase4.moves, phase4.table_depth_limit); // 12,089,495 at 9
+    Cube4x4 cube4;
+    auto table4 = generate_table(phase4, {cube4}, phase4.moves, phase4.table_depth_limit); // 12,089,495 at 9
+    std::string mph_file4 = phase4.table_filename + ".mph";
+    std::string depth_file4 = phase4.table_filename + ".depths";
+    build_and_save_mph(table4, mph_file4, depth_file4);
 
-    // std::cout << "Generating " << phase5.name << " tables...\n";
-    // generate_table(phase5, {cube}, phase5.moves, phase5.table_depth_limit); // 2,048 at 8
+    Cube4x4 cube5;
+    std::cout << "Generating " << phase5.name << " tables...\n";
+    auto table5 = generate_table(phase5, {cube5}, phase5.moves, phase5.table_depth_limit); // 2,048 at 8
+    std::string mph_file5 = phase5.table_filename + ".mph";
+    std::string depth_file5 = phase5.table_filename + ".depths";
+    build_and_save_mph(table5, mph_file5, depth_file5);
 
-    // std::cout << "Generating " << phase6.name << " tables...\n";
-    // generate_table(phase6, {cube}, phase6.moves, phase6.table_depth_limit); // 1,082,565 at 11
+    Cube4x4 cube6;
+    std::cout << "Generating " << phase6.name << " tables...\n";
+    auto table6 = generate_table(phase6, {cube6}, phase6.moves, phase6.table_depth_limit); // 1,082,565 at 11
+    std::string mph_file6 = phase6.table_filename + ".mph";
+    std::string depth_file6 = phase6.table_filename + ".depths";
+    build_and_save_mph(table6, mph_file6, depth_file6);
     
-    // std::cout << "Generating " << phase7.name << " tables...\n";
-    // Cube4x4 corner_cube;
-    // std::vector<Cube4x4> corner_table = generate_cube_table(phase7, {corner_cube}, {R2, L2, F2, B2, U2, D2}, 5); // 96 at 4
-    // generate_table(phase7, corner_table, phase7.moves, phase7.table_depth_limit); // 2,822,398 at 14
+    std::cout << "Generating " << phase7.name << " tables...\n";
+    Cube4x4 corner_cube;
+    std::vector<Cube4x4> corner_table = generate_cube_table(phase7, {corner_cube}, {R2, L2, F2, B2, U2, D2}, 5); // 96 at 4
+    auto table7 = generate_table(phase7, corner_table, phase7.moves, phase7.table_depth_limit);  // 2,822,398 at 14
+    std::string mph_file7 = phase7.table_filename + ".mph";
+    std::string depth_file7 = phase7.table_filename + ".depths";
+    build_and_save_mph(table7, mph_file7, depth_file7);
 
-    // std::cout << "Generating " << phase8.name << " tables...\n";
-    // generate_table(phase8, {cube}, phase8.moves, phase8.table_depth_limit); // 663,552 at 16
+    std::cout << "Generating " << phase8.name << " tables...\n";
+    Cube4x4 cube8;
+    auto table8 = generate_table(phase8, {cube8}, phase8.moves, phase8.table_depth_limit); // 663,552 at 15
+    std::string mph_file8 = phase8.table_filename + ".mph";
+    std::string depth_file8 = phase8.table_filename + ".depths";
+    build_and_save_mph(table8, mph_file8, depth_file8);
 
     return 0;
 }

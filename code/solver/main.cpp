@@ -6,16 +6,18 @@
 #include <functional>
 #include <chrono>
 #include "cube.h"
+#include "BooPHF.h"
+
+using namespace boomphf;
 
 // IDA* recursive search function using table
-static bool ida_search(const Phase &phase, Cube4x4 &cube, int depth, double &threshold, std::vector<Move> &path, double &next_threshold) {
-    if (phase.is_solved(cube)) {
-        return true;
-    }
+static bool ida_search(Phase &phase, Cube4x4 &cube, int depth, double &threshold, std::vector<Move> &path, double &next_threshold) {
     std::string state = phase.mask(cube);
-    double h = phase.table.count(state) ? phase.table.at(state) : phase.table_depth_limit + 1;
-    double f = depth + h;
+    uint64_t idx = phase.hash_table.lookup(state);
 
+    double h = (idx >= phase.depths.size()) ? (phase.table_depth_limit + 1) : static_cast<double>(phase.depths[idx]);
+
+    double f = depth + h;
     if (f > threshold) {
         if (f < next_threshold) {
             next_threshold = f;
@@ -30,28 +32,31 @@ static bool ida_search(const Phase &phase, Cube4x4 &cube, int depth, double &thr
     }
 
     Cube4x4 backup = cube;
-    for (Move move : phase.moves) {
-        cube.move(move);
-        path.push_back(move);
+    for (Move mv : phase.moves) {
+        cube.move(mv);
+        path.push_back(mv);
+
         if (ida_search(phase, cube, depth + 1, threshold, path, next_threshold)) {
             return true;
         }
         path.pop_back();
-        cube = backup; 
+        cube = backup;
     }
 
     return false;
 }
 
-// IDA* solver using table
-std::vector<Move> solve_any_phase_ida(const Phase &phase, Cube4x4 start_cube) {
+std::vector<Move> solve_any_phase_ida(Phase &phase, Cube4x4 start_cube) {
     std::vector<Move> path;
     std::string state = phase.mask(start_cube);
-    double threshold = phase.table.count(state) ? phase.table.at(state) : phase.table_depth_limit + 1;
+    uint64_t idx = phase.hash_table.lookup(state);
+
+    double threshold = (idx >= phase.depths.size()) ? (phase.table_depth_limit + 1) : static_cast<double>(phase.depths[idx]);
 
     while (true) {
         double next_threshold = std::numeric_limits<double>::infinity();
         path.clear();
+
         bool found = ida_search(phase, start_cube, 0, threshold, path, next_threshold);
         if (found) {
             return path;
@@ -63,24 +68,6 @@ std::vector<Move> solve_any_phase_ida(const Phase &phase, Cube4x4 start_cube) {
     }
 }
 
-// Load the pruning table from a binary file
-std::unordered_map<std::string, int> load_table_binary(const std::string& filename) {
-    std::unordered_map<std::string, int> table;
-    std::ifstream file(filename, std::ios::binary);
-    size_t table_size;
-    file.read(reinterpret_cast<char*>(&table_size), sizeof(table_size));
-    const size_t state_size = 48;
-    
-    for (size_t i = 0; i < table_size; i++) {
-        char state_buffer[49] = {0};
-        int depth;
-        file.read(state_buffer, state_size);
-        file.read(reinterpret_cast<char*>(&depth), sizeof(depth));
-        table.emplace(std::string(state_buffer, state_size), depth);
-    }
-    file.close();
-    return table;
-}
 
 // Print and apply solution to the cube
 void print_apply_solution(Cube4x4 &cube, const std::vector<Move> &solution, std::string name) {
@@ -96,37 +83,67 @@ void print_apply_solution(Cube4x4 &cube, const std::vector<Move> &solution, std:
     }
 }
 
+std::vector<int> load_depths(const std::string &filename) {
+    std::ifstream in(filename, std::ios::binary);
+    uint64_t sz = 0;
+    in.read(reinterpret_cast<char*>(&sz), sizeof(sz));
+    std::vector<int> depths(sz);
+    in.read(reinterpret_cast<char*>(depths.data()), sizeof(int)*sz);
+    return depths;
+}
+
+boomphf::mphf<std::string, MyStringHash> load_hash_table(const std::string &filename) {
+    boomphf::mphf<std::string, MyStringHash> mph;
+    std::ifstream ifs(filename, std::ios::binary);
+    mph.load(ifs);
+    return mph;
+}
+
+int lookup_depth(const std::string &state, const std::string &mph_file, const std::string &depth_file) {
+    auto mph = new boomphf::mphf<std::string, MyStringHash>();
+    std::ifstream ifs(mph_file, std::ios::binary);
+    mph->load(ifs);
+    auto depths = load_depths(depth_file);
+    uint64_t idx = mph->lookup(state);
+    delete mph;
+    if (idx >= depths.size()) {
+        return -1;
+    }
+    return depths[idx];
+}
+
 
 int main() {
     // Create cube and scramble it
     Cube4x4 cube;
-    std::vector<Move> scramble = cube.apply_random_moves(35, {R,L,F,B,U,D,r,l,f,b,u,d});
+    std::vector<Move> scramble = cube.apply_random_moves(35, {R,L,F,B,U,D});
     std::cout << "Scramble of size " << scramble.size() << " moves: ";
     for (Move move : scramble) {
         std::cout << move_to_string(move) << " ";
-        cube.move(move);
     }
     Cube4x4 scrambled_cube = cube;
     cube.print();
 
-    // Load the solving phases
+    // Load the data in
     std::vector<Phase> phases = {phase1, phase2, phase3, phase4, phase5, phase6, phase7, phase8};
-    for (Phase& phase : phases) {
+    for (Phase &phase : phases) {
         std::cout << "Loading " << phase.name << " table..." << std::endl;;
-        phase.set_table(load_table_binary(phase.table_filename));
+        std::string mphFile = phase.table_filename + ".mph";
+        std::string depthFile = phase.table_filename + ".depths";
+        auto mph = load_hash_table(mphFile);
+        auto dvec = load_depths(depthFile);
+        phase.set_hash_table(mph);
+        phase.set_depths(dvec);
     }
 
     // Solve the cube
     auto start = std::chrono::high_resolution_clock::now();
     std::vector<Move> solution = {};
-    for (const Phase& phase : phases) {        
+    for (Phase &phase : phases) {
         std::vector<Move> phase_solution = solve_any_phase_ida(phase, cube);
-        for (const Move& move : phase_solution) {
-            solution.push_back(move);
-        }
+        solution.insert(solution.end(), phase_solution.begin(), phase_solution.end());
         print_apply_solution(cube, phase_solution, phase.name);
         cube.print();
-        
     }
     auto end = std::chrono::high_resolution_clock::now();
     print_apply_solution(scrambled_cube, solution, "Full");

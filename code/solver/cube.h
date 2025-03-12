@@ -8,6 +8,9 @@
 #include <cstdlib>
 #include <functional>
 #include <map>
+#include "BooPHF.h"
+
+using namespace boomphf;
 
 enum Colour {
     WHITE = 0, YELLOW, GREEN, BLUE, ORANGE, RED
@@ -97,23 +100,37 @@ private:
     
 };
 
+struct MyStringHash {
+    // BooPHF calls operator()(key, seed)
+    inline uint64_t operator()(const std::string &str, uint64_t seed = 0) const {
+        static std::hash<std::string> stdhasher;
+        uint64_t val = stdhasher(str);
+        // Combine with seed
+        val ^= seed + 0x9e3779b97f4a7c15ULL + (val << 6) + (val >> 2);
+        return val;
+    }
+};
+
 std::string move_to_string(Move move);
 
 class Phase {
 public:
     std::string name;
     std::vector<Move> moves;
-    std::function<bool(const Cube4x4&)> is_solved;
     std::function<std::string(Cube4x4&)> mask;
     std::string table_filename;
     int table_depth_limit;
     int search_depth_limit;
-    std::unordered_map<std::string, int> table;
+    boomphf::mphf<std::string, MyStringHash> hash_table;
+    std::vector<int> depths;
 
-    Phase(const std::string& name, const std::vector<Move>& moves, std::function<bool(const Cube4x4&)> is_solved, std::function<std::string(Cube4x4&)> mask, const std::string& table_filename, int table_depth_limit, int search_depth_limit) : name(name), moves(moves), is_solved(is_solved), mask(mask), table_filename(table_filename), table_depth_limit(table_depth_limit), search_depth_limit(search_depth_limit) {}
+    Phase(const std::string& name, const std::vector<Move>& moves, std::function<std::string(Cube4x4&)> mask, const std::string& table_filename, int table_depth_limit, int search_depth_limit) : name(name), moves(moves), mask(mask), table_filename(table_filename), table_depth_limit(table_depth_limit), search_depth_limit(search_depth_limit) {}
 
-    void set_table(const std::unordered_map<std::string, int>& new_table) {
-        table = new_table;
+    void set_hash_table(boomphf::mphf<std::string, MyStringHash>& new_table) {
+        hash_table = new_table;
+    }
+    void set_depths(std::vector<int>& new_depths) {
+        depths = new_depths;
     }
 };
 

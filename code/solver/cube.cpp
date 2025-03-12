@@ -8,7 +8,6 @@
 #include <cstdlib>  
 #include <ctime>
 #include <unordered_set>
-
 #include "cube.h"
 
 
@@ -28,47 +27,25 @@ void Cube4x4::reset() {
 // Export the facelet data as a 96-char string in the order U, L, F, R, B, D
 std::string Cube4x4::export_state() const {
     std::string result;
-    result.resize(48, '\0');
-    for (int i = 0; i < 96; i += 2) {
-        int face_index1 = i / 16;
-        int pos1 = i % 16;
-        int id1 = facelets[face_index1][pos1];
-        int code1 = (id1 >= 0) ? (id1 / 16) : (6 + (-id1 - 1));
-        
-        int face_index2 = (i+1) / 16;
-        int pos2 = (i+1) % 16;
-        int id2 = facelets[face_index2][pos2];
-        int code2 = (id2 >= 0) ? (id2 / 16) : (6 + (-id2 - 1));
-        
-        unsigned char byte = (static_cast<unsigned char>(code1) << 4) | (static_cast<unsigned char>(code2) & 0x0F);
-        result[i / 2] = byte;
-    }
+    result.reserve(96);
+    auto appendFace = [&](Face f) {
+        for(int i=0; i<16; i++){
+            result.push_back(id_to_char(facelets[f][i]) );
+        }
+    }; 
+    appendFace(U_FACE);
+    appendFace(L_FACE);
+    appendFace(F_FACE);
+    appendFace(R_FACE);
+    appendFace(B_FACE);
+    appendFace(D_FACE);
     return result;
-}
-
-char code_to_char(int code) {
-    if (code < 6) {
-        return "WOGRBY"[code];
-    } else {
-        int id = -(code - 5);
-        return Cube4x4::id_to_char(id);
-    }
 }
 
 // Prints visulisation of cube in command line
 void Cube4x4::print() const {
     std::cout << "\n\n";
-    std::string packed = export_state();
-    std::string s;
-    s.resize(96, '\0');
-    for (int i = 0; i < 48; i++) {
-        unsigned char byte = static_cast<unsigned char>(packed[i]);
-        int code1 = (byte >> 4) & 0x0F;  
-        int code2 = byte & 0x0F;        
-        s[2 * i] = code_to_char(code1);
-        s[2 * i + 1] = code_to_char(code2);
-    }
-
+    std::string s = export_state(); 
     std::cout << "          Up (U)\n";
     for (int row = 0; row < 4; ++row) {
         std::cout << "          ";
@@ -101,7 +78,7 @@ void Cube4x4::print() const {
         }
         std::cout << "\n";
     }
-    std::cout << std::endl;
+    std::cout << "\n";
 }
 
 // Handles moves
@@ -176,13 +153,9 @@ bool Cube4x4::check_solved() const {
 
 // Pass in the pieces you want to keep
 void Cube4x4::apply_mask(const std::vector<int>& mask) {
-    bool allowed[96] = { false };
-    for (int m : mask) {
-        allowed[m] = true;
-    }
     for (int i = 0; i < 6; i++) {
         for (int j = 0; j < 16; j++) {
-            if (!allowed[facelets[i][j]]) {
+            if (std::find(mask.begin(), mask.end(), facelets[i][j]) == mask.end()) {
                 facelets[i][j] = -1;
             }
         }
@@ -190,13 +163,9 @@ void Cube4x4::apply_mask(const std::vector<int>& mask) {
 }
 
 void Cube4x4::apply_colour_mask(int value, const std::vector<int>& mask) {
-    bool allowed[96] = { false };
-    for (int m : mask) {
-        allowed[m] = true;
-    }
     for (int i = 0; i < 6; i++) {
         for (int j = 0; j < 16; j++) {
-            if (allowed[facelets[i][j]]) {
+            if (std::find(mask.begin(), mask.end(), facelets[i][j]) != mask.end()) {
                 facelets[i][j] = value;
             }
         }
@@ -204,13 +173,9 @@ void Cube4x4::apply_colour_mask(int value, const std::vector<int>& mask) {
 }
 
 void Cube4x4::apply_location_colour_mask(int value, const std::vector<int>& location_mask) {
-    bool allowed[96] = { false };
-    for (int m : location_mask) {
-        allowed[m] = true;
-    }
     for (int i = 0; i < 6; i++) {
         for (int j = 0; j < 16; j++) {
-            if (allowed[i * 16 + j]) {
+            if (std::find(location_mask.begin(), location_mask.end(), (i * 16 + j)) != location_mask.end()) {
                 facelets[i][j] = value;
             }
         }
@@ -331,8 +296,6 @@ void Cube4x4::turn_inner_slice(int face_index, bool clockwise) {
     last_face[lastEdges[1]] = temp_edges[1];  
     last_face[lastEdges[2]] = temp_edges[2];  
     last_face[lastEdges[3]] = temp_edges[3];  
-
-    // TODO Finish this function, including updating centres, edges, corners, paritys, orientation arrays
 }
 
 // Converts move enum to a string
@@ -362,12 +325,8 @@ std::function<std::string(Cube4x4&)> phase1_mask = [](Cube4x4 cube) -> std::stri
     cube.apply_colour_mask(-2, mask);
     return cube.export_state();
 };
-std::function<bool(const Cube4x4&)> phase1_is_solved = [] (const Cube4x4& cube) {
-    Cube4x4 solved_cube;
-    return phase1_mask(solved_cube) == cube.export_state();
-};
 Cube4x4 phase1_cube;
-Phase phase1("Phase 1", phase1_moves, phase1_is_solved, phase1_mask, "phase1table.bin", -1, 8);
+Phase phase1("Phase 1", phase1_moves, phase1_mask, "phase1table", -1, 8);
 
 // PHASE 2
 std::vector<Move> phase2_moves = {R, R_PRIME, R2, L, L_PRIME, L2, F, F_PRIME, F2, B, B_PRIME, B2, U, U_PRIME, U2, D, D_PRIME, D2, r, r_PRIME, r2, l, l_PRIME, l2, f2, b2, u2, d2};
@@ -384,13 +343,8 @@ std::function<std::string(Cube4x4&)> phase2_mask = [](Cube4x4 cube) -> std::stri
     cube.apply_colour_mask(-4, low_edges);
     return cube.export_state();
 };
-std::function<bool(const Cube4x4&)> phase2_is_solved = [] (const Cube4x4& cube) {
-    Cube4x4 solved_cube;
-    return phase2_mask(solved_cube) == cube.export_state();
-};
 Cube4x4 phase2_cube;
-Phase phase2("Phase 2", phase2_moves, phase2_is_solved, phase2_mask, "phase2table.bin", 6, 15);
-
+Phase phase2("Phase 2", phase2_moves, phase2_mask, "phase2table", 5, 15);
 
 // PHASE 3
 std::vector<Move> phase3_moves = {R2, L2, F, F_PRIME, F2, B, B_PRIME, B2, U, U_PRIME, U2, D, D_PRIME, D2, r2, l2, f2, b2, u2, d2};
@@ -418,12 +372,8 @@ std::function<std::string(Cube4x4&)> phase3_mask = [](Cube4x4 cube) -> std::stri
     cube.apply_location_colour_mask(-4, unpaired_facelets);
     return cube.export_state();
 };
-std::function<bool(const Cube4x4&)> phase3_is_solved = [] (const Cube4x4& cube) {
-    Cube4x4 solved_cube;
-    return phase3_mask(solved_cube) == cube.export_state();
-};
 Cube4x4 phase3_cube;
-Phase phase3("Phase 3", phase3_moves, phase3_is_solved, phase3_mask, "phase3table.bin", -1, 13);
+Phase phase3("Phase 3", phase3_moves, phase3_mask, "phase3table", -1, 13);
 
 
 // PHASE 4
@@ -452,12 +402,8 @@ std::function<std::string(Cube4x4&)> phase4_mask = [](Cube4x4 cube) -> std::stri
     cube.apply_location_colour_mask(-4, unpaired_facelets);
     return cube.export_state();
 };
-std::function<bool(const Cube4x4&)> phase4_is_solved = [] (const Cube4x4& cube) {
-    Cube4x4 solved_cube;
-    return phase4_mask(solved_cube) == cube.export_state();
-};
 Cube4x4 phase4_cube;
-Phase phase4("Phase 4", phase4_moves, phase4_is_solved, phase4_mask, "phase4table.bin", -1, 25);
+Phase phase4("Phase 4", phase4_moves, phase4_mask, "phase4table", 7, 25);
 
 
 // PHASE 5
@@ -468,30 +414,22 @@ std::function<std::string(Cube4x4&)> phase5_mask = [](Cube4x4 cube) -> std::stri
     cube.apply_colour_mask(-2, mask);
     return cube.export_state();
 };
-std::function<bool(const Cube4x4&)> phase5_is_solved = [] (const Cube4x4& cube) {
-    Cube4x4 solved_cube;
-    return phase5_mask(solved_cube) == cube.export_state();
-};
 Cube4x4 phase5_cube;
-Phase phase5("Phase 5", phase5_moves, phase5_is_solved, phase5_mask, "phase5table.bin", -1, 7);
+Phase phase5("Phase 5", phase5_moves, phase5_mask, "phase5table", -1, 7);
 
 // PHASE 6
 std::vector<Move> phase6_moves = {R, R_PRIME, R2, L, L_PRIME, L2, F2, B2, U, U_PRIME, U2, D, D_PRIME, D2};
 std::function<std::string(Cube4x4&)> phase6_mask = [](Cube4x4 cube) -> std::string {
     std::vector<int> mask = {0,1,2,3,4,7,8,11,12,13,14,15,36,39,40,43,68,71,72,75,80,81,82,83,84,87,88,91,92,93,94,95};
-    std::vector<int> colour_mask1 = {0,1,2,3,4,7,8,11,12,13,14,15,80,81,82,83,84,87,88,91,92,93,94,95}; 
+    std::vector<int> colour_mask1 = {0,1,2,3,4,7,8,11,12,13,14,15,80,81,82,83,84,87,88,91,92,93,94,95};
     std::vector<int> colour_mask2 = {36,39,40,43,68,71,72,75};
     cube.apply_mask(mask);
     cube.apply_colour_mask(-3, colour_mask1);
     cube.apply_colour_mask(-4, colour_mask2);
     return cube.export_state();
 };
-std::function<bool(const Cube4x4&)> phase6_is_solved = [] (const Cube4x4& cube) {
-    Cube4x4 solved_cube;    
-    return phase6_mask(solved_cube) == cube.export_state();
-};
 Cube4x4 phase6_cube;
-Phase phase6("Phase 6", phase6_moves, phase6_is_solved, phase6_mask, "phase6table.bin", -1, 10);
+Phase phase6("Phase 6", phase6_moves, phase6_mask, "phase6table", -1, 10);
 
 // PHASE 7
 std::vector<Move> phase7_moves = {R2, L2, F2, B2, U, U_PRIME, U2, D, D_PRIME, D2};
@@ -504,11 +442,7 @@ std::function<std::string(Cube4x4&)> phase7_mask = [](Cube4x4 cube) -> std::stri
     cube.apply_colour_mask(-4, colour_mask2);
     return cube.export_state();
 };
-std::function<bool(const Cube4x4&)> phase7_is_solved = [] (const Cube4x4& cube) {
-    Cube4x4 solved_cube;    
-    return phase7_mask(solved_cube) == cube.export_state();
-};
-Phase phase7("Phase 7", phase7_moves, phase7_is_solved, phase7_mask, "phase7table.bin", -1, 13);
+Phase phase7("Phase 7", phase7_moves, phase7_mask, "phase7table", -1, 13);
 
 // PHASE 8
 std::vector<Move> phase8_moves = {R2, L2, F2, B2, U2, D2};
@@ -517,9 +451,5 @@ std::function<std::string(Cube4x4&)> phase8_mask = [](Cube4x4 cube) -> std::stri
     cube.apply_mask(mask);
     return cube.export_state();
 };
-std::function<bool(const Cube4x4&)> phase8_is_solved = [] (const Cube4x4& cube) {
-    Cube4x4 solved_cube;    
-    return solved_cube.export_state() == cube.export_state();
-};
 Cube4x4 phase8_cube;
-Phase phase8("Phase 8", phase8_moves, phase8_is_solved, phase8_mask, "phase8table.bin", -1, 15);
+Phase phase8("Phase 8", phase8_moves, phase8_mask, "phase8table", -1, 15);
