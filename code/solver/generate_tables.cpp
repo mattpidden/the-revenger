@@ -121,9 +121,9 @@ std::unordered_map<std::string, int> generate_table(const Phase &phase, const st
         
         if (depth > max_depth) {
             max_depth = depth;
-            std::string mph_file = phase.table_filename + ".mph";
-            std::string depth_file = phase.table_filename + ".depths";
-            build_and_save_mph(table, mph_file, depth_file);
+            //std::string mph_file = phase.table_filename + ".mph";
+            //std::string depth_file = phase.table_filename + ".depths";
+            //build_and_save_mph(table, mph_file, depth_file);
             std::cout << "Reached depth " << max_depth << " | States so far: " << table.size() << std::endl;
 
         }
@@ -274,11 +274,11 @@ int main() {
     std::cout << "Generating " << phase2.name << " tables...\n";
     Cube4x4 centre_cube;
     std::vector<Cube4x4> centre_table = generate_cube_table(phase2, {centre_cube}, {R2, L2, F, B, U, D, r2, l2, f2, b2, u2, d2}, 3); // 12  at 3
-    auto table2 = generate_table(phase2, centre_table, phase2.moves, phase2.table_depth_limit); // 3,695,452 at 5 (limited)
+    auto table2 = generate_table_layered_omp(phase2, centre_table, phase2.moves, phase2.table_depth_limit); // 3,695,452 at 5 (limited)
+    auto end = std::chrono::high_resolution_clock::now();
     std::string mph_file2 = phase2.table_filename + ".mph";
     std::string depth_file2 = phase2.table_filename + ".depths";
     build_and_save_mph(table2, mph_file2, depth_file2);
-    auto end = std::chrono::high_resolution_clock::now();
     std::cout << "Table generation time: " << std::chrono::duration<double>(end - start).count() << " seconds." << std::endl;
 
     // std::cout << "Generating " << phase3.name << " tables...\n";

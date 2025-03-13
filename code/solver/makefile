@@ -24,19 +24,19 @@ all: $(SOLVER_EXEC) $(VIS_EXEC) $(GEN_EXEC)
 
 # Compile solver (main.cpp + cube.cpp)
 $(SOLVER_EXEC): $(SOLVER_OBJ) $(CUBE_OBJ)
-	$(CXX) $(CXXFLAGS) $^ -o $@
+	$(CXX) $(CXXFLAGS) $^ -o $@ -pthread
 
 # Compile vis (vis.cpp + cube.cpp)
 $(VIS_EXEC): $(VIS_OBJ) $(CUBE_OBJ)
-	$(CXX) $(CXXFLAGS) $^ -o $@ -lGL -lGLU -lglut
+	$(CXX) $(CXXFLAGS) $^ -o $@ -lGL -lGLU -lglut -pthread
 
 # Compile generate_tables (generate_tables.cpp + cube.cpp)
 $(GEN_EXEC): $(GEN_OBJ) $(CUBE_OBJ)
-	$(CXX) $(CXXFLAGS) $^ -o $@
+	$(CXX) $(CXXFLAGS) $^ -o $@ -pthread
 
 # Compile source files into object files
 %.o: %.cpp cube.h
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@ -pthread
 
 # Clean build files
 clean:

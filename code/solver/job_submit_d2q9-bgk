@@ -3,7 +3,7 @@
 #SBATCH --job-name=generate_tables
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
-#SBATCH --cpus-per-task=1
+#SBATCH --cpus-per-task=28
 #SBATCH --time=00:05:00
 #SBATCH --partition=teach_cpu
 #SBATCH --account=coms031144
@@ -12,7 +12,7 @@
 
 #lscpu
 
-export OMP_NUM_THREADS=1
+export OMP_NUM_THREADS=28
 
 echo Running on host `hostname`
 echo Time is `date`
