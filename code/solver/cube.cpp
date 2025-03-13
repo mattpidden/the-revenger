@@ -328,33 +328,23 @@ std::function<std::string(Cube4x4&)> phase1_mask = [](Cube4x4 cube) -> std::stri
 Cube4x4 phase1_cube;
 Phase phase1("Phase 1", phase1_moves, phase1_mask, "phase1table", -1, 8);
 
-// PHASE 2a
-std::vector<Move> phase2a_moves = {R, R_PRIME, R2, L, L_PRIME, L2, F, F_PRIME, F2, B, B_PRIME, B2, U, U_PRIME, U2, D, D_PRIME, D2, r, r_PRIME, r2, l, l_PRIME, l2, f2, b2, u2, d2};
-std::function<std::string(Cube4x4&)> phase2a_mask = [](Cube4x4 cube) -> std::string {
-    std::vector<int> mask = {37,38,41,42,69,70,73,74,21,22,25,26,53,54,57,58,5,6,9,10,85,86,89,90};
+// PHASE 2
+std::vector<Move> phase2_moves = {R, R_PRIME, R2, L, L_PRIME, L2, F, F_PRIME, F2, B, B_PRIME, B2, U, U_PRIME, U2, D, D_PRIME, D2, r, r_PRIME, r2, l, l_PRIME, l2, f2, b2, u2, d2};
+std::function<std::string(Cube4x4&)> phase2_mask = [](Cube4x4 cube) -> std::string {
+    std::vector<int> mask = {37,38,41,42,69,70,73,74,21,22,25,26,53,54,57,58,5,6,9,10,85,86,89,90, 13,93,4,2,11,84,82,91,52,59,27,20,14,94,8,1,7,88,81,87,56,55,23,24};
     std::vector<int> colour_mask1 = {5,6,9,10,85,86,89,90}; // U and D centre pieces
     std::vector<int> colour_mask2 = {37,38,41,42,69,70,73,74}; // F and B centre pieces
-    cube.apply_mask(mask);
-    cube.apply_colour_mask(0, colour_mask1);
-    cube.apply_colour_mask(32, colour_mask2);
-    return cube.export_state();
-};
-Cube4x4 phase2a_cube;
-Phase phase2a("Phase 2a", phase2a_moves, phase2a_mask, "phase2atable", -1, 10);
-
-// PHASE 2
-std::vector<Move> phase2_moves = {R, R_PRIME, R2, L, L_PRIME, L2, F, F_PRIME, F2, B, B_PRIME, B2, U, U_PRIME, U2, D, D_PRIME, D2, r2, l2, f2, b2, u2, d2};
-std::function<std::string(Cube4x4&)> phase2_mask = [](Cube4x4 cube) -> std::string {
-    std::vector<int> mask = {13,93,4,2,11,84,82,91,52,59,27,20,14,94,8,1,7,88,81,87,56,55,23,24};
     std::vector<int> high_edges = {14,94,8,1,7,88,81,87,56,55,23,24};
     std::vector<int> low_edges = {13,93,4,2,11,84,82,91,52,59,27,20};
     cube.apply_mask(mask);
+    cube.apply_colour_mask(0, colour_mask1);
+    cube.apply_colour_mask(32, colour_mask2);
     cube.apply_colour_mask(-3, high_edges);
     cube.apply_colour_mask(-4, low_edges);
     return cube.export_state();
 };
 Cube4x4 phase2_cube;
-Phase phase2("Phase 2", phase2_moves, phase2_mask, "phase2table", -1, 25);
+Phase phase2("Phase 2", phase2_moves, phase2_mask, "phase2table", 5, 25);
 
 // PHASE 3
 std::vector<Move> phase3_moves = {R2, L2, F, F_PRIME, F2, B, B_PRIME, B2, U, U_PRIME, U2, D, D_PRIME, D2, r2, l2, f2, b2, u2, d2};
@@ -413,7 +403,7 @@ std::function<std::string(Cube4x4&)> phase4_mask = [](Cube4x4 cube) -> std::stri
     return cube.export_state();
 };
 Cube4x4 phase4_cube;
-Phase phase4("Phase 4", phase4_moves, phase4_mask, "phase4table", -1, 25);
+Phase phase4("Phase 4", phase4_moves, phase4_mask, "phase4table", 9, 25);
 
 
 // PHASE 5

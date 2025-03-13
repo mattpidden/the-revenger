@@ -1,22 +1,77 @@
 Running on host compute069.bc4.acrc.priv
-Time is Thu Mar 13 14:27:00 GMT 2025
+Time is Thu Mar 13 17:52:17 GMT 2025
 Directory is /user/home/bb22475/DIS/the-revenger/code/solver
-Slurm job ID is 11689865
+Slurm job ID is 11690737
 This job runs on the following machines:
 compute069
-Generating Phase 2 tables...
-Reached depth 1 | States so far: 5
-Reached depth 2 | States so far: 10
-Reached depth 3 | States so far: 12
-Final depth reached: 3
-Total states found: 12
-Total cubes found: 12
-Reached depth 1 | 60 states so far
-Reached depth 2 | 900 states so far
-Reached depth 3 | 14100 states so far
-Reached depth 4 | 223020 states so far
-Reached depth 5 | 3695460 states so far
-BFS done. Final depth reached: 5 | Total states found: 3695460
-BBHash MPH built & saved to phase2table.mph and phase2table.depths
+Scramble of size 35 moves: F r U L F b b u u r u R L L u l d d B r l f U r L L R B R f b F r D l 
 
-Table generation time: 8.0468 seconds.
+          Up (U)
+          ⬜🟦🟨🟦
+          🟥🟨🟦🟨
+          🟨🟩🟥🟧
+          🟥⬜⬜⬜
+
+Left (L)  Front (F) Right (R) Back (B)
+🟧⬜🟦🟩  🟨🟩🟩🟩  🟥🟦🟩🟥  🟨🟦⬜🟦
+🟩⬜🟦⬜  🟧🟨⬜⬜  🟦🟧🟨🟨  🟧🟧⬜🟥
+🟥🟩🟦🟦  🟥🟥🟦🟦  🟧🟩🟨🟩  🟧🟧⬜🟨
+🟩🟨🟩🟨  🟦🟧🟩⬜  🟦⬜🟨🟧  ⬜⬜🟦🟧
+
+          Down (D)
+          🟧🟩🟥🟥
+          🟨🟥🟧🟧
+          🟧🟩🟥🟥
+          🟨🟥🟥🟩
+
+Loading Phase 1 table...
+Loading Phase 2 table...
+Loading Phase 3 table...
+Loading Phase 4 table...
+Loading Phase 5 table...
+Loading Phase 6 table...
+Loading Phase 7 table...
+Loading Phase 8 table...
+Phase 1 solution found in 7 moves: F' f' U2 d' B2 l b 
+
+
+          Up (U)
+          🟩⬜🟥🟨
+          🟧🟨⬜🟨
+          🟨🟩🟨🟥
+          🟦⬜🟦⬜
+
+Left (L)  Front (F) Right (R) Back (B)
+🟧🟦🟩🟥  🟨🟥⬜🟦  🟧⬜🟥🟩  🟧🟦🟦⬜
+🟨🟧🟥⬜  🟩🟩🟦🟩  🟥🟧🟥🟩  ⬜🟩🟩🟥
+🟨🟧🟥🟧  🟩🟦🟨🟩  🟧🟧🟥🟩  🟥⬜🟦🟧
+⬜⬜🟨🟥  🟨🟨🟥🟦  🟧🟨🟧🟥  ⬜🟦⬜🟩
+
+          Down (D)
+          🟩🟦🟦🟨
+          🟦⬜🟦🟩
+          🟧⬜🟨🟨
+          🟥🟧🟧🟦
+
+Phase 2 solution found in 6 moves: L2 d2 R L' F l2 
+
+
+          Up (U)
+          🟩🟧🟥🟦
+          🟧⬜⬜🟩
+          🟥⬜🟨🟩
+          🟥🟧🟦🟧
+
+Left (L)  Front (F) Right (R) Back (B)
+⬜🟨🟩🟨  🟦⬜🟧🟩  ⬜⬜🟥🟧  ⬜🟦🟨🟥
+⬜🟧🟥🟦  🟨🟨🟩🟥  ⬜🟥🟧⬜  🟥🟩🟦🟧
+🟨🟥🟧🟦  🟥🟩🟦⬜  🟦🟧🟥🟥  🟨🟦⬜🟦
+🟥🟧🟧⬜  🟦🟦🟩🟨  🟦🟨🟩🟩  🟨🟦🟨🟩
+
+          Down (D)
+          🟥⬜🟨🟧
+          🟩🟨🟦🟥
+          🟩🟩🟨⬜
+          🟨🟩🟧🟧
+
+No solution found.

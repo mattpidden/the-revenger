@@ -4,7 +4,8 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=28
-#SBATCH --time=01:00:00
+#SBATCH --time=00:20:00
+#SBATCH --mem=500M
 #SBATCH --partition=teach_cpu
 #SBATCH --account=coms031144
 #SBATCH --output=gen_tables.out
@@ -21,7 +22,6 @@ echo Slurm job ID is $SLURM_JOB_ID
 echo This job runs on the following machines:
 echo `echo $SLURM_JOB_NODELIST | uniq` 
 
-./generate_tables
 ./solver
 ./solver
 ./solver
