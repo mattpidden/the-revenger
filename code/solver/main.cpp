@@ -116,7 +116,7 @@ int lookup_depth(const std::string &state, const std::string &mph_file, const st
 int main() {
     // Create cube and scramble it
     Cube4x4 cube;
-    std::vector<Move> scramble = cube.apply_random_moves(35, {R,L,F,B,U,D});
+    std::vector<Move> scramble = cube.apply_random_moves(35, {R,L,F,B,U,D,r,l,f,b,u,d});
     std::cout << "Scramble of size " << scramble.size() << " moves: ";
     for (Move move : scramble) {
         std::cout << move_to_string(move) << " ";
@@ -125,7 +125,7 @@ int main() {
     cube.print();
 
     // Load the data in
-    std::vector<Phase> phases = {phase1, phase2, phase3, phase4, phase5, phase6, phase7, phase8};
+    std::vector<Phase> phases = {phase1, phase2a, phase2, phase3, phase4, phase5, phase6, phase7, phase8};
     for (Phase &phase : phases) {
         std::cout << "Loading " << phase.name << " table..." << std::endl;;
         std::string mphFile = phase.table_filename + ".mph";
