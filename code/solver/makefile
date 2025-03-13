@@ -1,6 +1,6 @@
 # Compiler and flags
 CXX = g++
-CXXFLAGS = -Wall -Wextra -std=c++17 -Ofast -march=native -flto
+CXXFLAGS = -Wall -Wextra -std=c++17 -Ofast -march=native -flto -fopenmp
 
 # Source files
 CUBE_SRC = cube.cpp

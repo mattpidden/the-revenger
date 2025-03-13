@@ -344,7 +344,7 @@ std::function<std::string(Cube4x4&)> phase2_mask = [](Cube4x4 cube) -> std::stri
     return cube.export_state();
 };
 Cube4x4 phase2_cube;
-Phase phase2("Phase 2", phase2_moves, phase2_mask, "phase2table", 7, 25);
+Phase phase2("Phase 2", phase2_moves, phase2_mask, "phase2table", 5, 25);
 
 // PHASE 3
 std::vector<Move> phase3_moves = {R2, L2, F, F_PRIME, F2, B, B_PRIME, B2, U, U_PRIME, U2, D, D_PRIME, D2, r2, l2, f2, b2, u2, d2};

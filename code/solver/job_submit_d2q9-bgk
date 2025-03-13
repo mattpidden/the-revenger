@@ -1,15 +1,19 @@
 #!/bin/bash
 
-#SBATCH --job-name=d2q9-bgk
+#SBATCH --job-name=generate_tables
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
-#SBATCH --time=01:00:00
+#SBATCH --time=00:05:00
 #SBATCH --partition=teach_cpu
-#SBATCH --account=COMS033964
+#SBATCH --account=coms031144
 #SBATCH --output=gen_tables.out
+#SBATCH --exclusive 
 
 #lscpu
+
+export OMP_NUM_THREADS=1
+
 echo Running on host `hostname`
 echo Time is `date`
 echo Directory is `pwd`
@@ -18,3 +22,5 @@ echo This job runs on the following machines:
 echo `echo $SLURM_JOB_NODELIST | uniq` 
 
 ./generate_tables
+
+
