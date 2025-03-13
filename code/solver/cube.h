@@ -9,8 +9,6 @@
 #include <functional>
 #include <map>
 #include "BooPHF.h"
-#include <fstream>
-#include <cstdint>
 
 using namespace boomphf;
 
@@ -115,78 +113,6 @@ struct MyStringHash {
 
 std::string move_to_string(Move move);
 
-class BloomFilter {
-public:
-    BloomFilter(size_t size_in_bits, int num_hashes)
-        : bitvec((size_in_bits + 7) / 8, 0), // round up to full bytes
-            size(size_in_bits),
-            num_hashes(num_hashes)
-    {}
-
-    BloomFilter() : bitvec(), size(0), num_hashes(0) {}
-
-
-    // Add a string to the bloom filter
-    void add(const std::string &s) {
-        for (int i = 0; i < num_hashes; i++) {
-            uint64_t h = hash_with_seed(s, i);
-            uint64_t bit_index = h % size;
-            // set that bit
-            bitvec[bit_index / 8] |= (1 << (bit_index % 8));
-        }
-    }
-
-    // Check if possibly contains the string
-    bool contains(const std::string &s) const {
-        for (int i = 0; i < num_hashes; i++) {
-            uint64_t h = hash_with_seed(s, i);
-            uint64_t bit_index = h % size;
-            if ( (bitvec[bit_index / 8] & (1 << (bit_index % 8))) == 0) {
-                // if any bit is not set, definitely not in filter
-                return false;
-            }
-        }
-        return true;
-    }
-
-    // Serialize to file
-    void save(const std::string &filename) const {
-        std::ofstream out(filename, std::ios::binary);
-        // 1) write size, num_hashes
-        out.write(reinterpret_cast<const char*>(&size), sizeof(size));
-        out.write(reinterpret_cast<const char*>(&num_hashes), sizeof(num_hashes));
-        // 2) write bitvector
-        uint64_t vecsize = bitvec.size();
-        out.write(reinterpret_cast<const char*>(&vecsize), sizeof(vecsize));
-        out.write(reinterpret_cast<const char*>(bitvec.data()), vecsize);
-    }
-
-    // Load from file
-    void load(const std::string &filename) {
-        std::ifstream in(filename, std::ios::binary);
-        in.read(reinterpret_cast<char*>(&size), sizeof(size));
-        in.read(reinterpret_cast<char*>(&num_hashes), sizeof(num_hashes));
-        uint64_t vecsize = 0;
-        in.read(reinterpret_cast<char*>(&vecsize), sizeof(vecsize));
-        bitvec.resize(vecsize);
-        in.read(reinterpret_cast<char*>(bitvec.data()), vecsize);
-    }
-
-    // A trivial hash that uses std::hash<std::string>, combined with the seed
-    // so each 'i' in [0..num_hashes-1] yields a different 64-bit value.
-    uint64_t hash_with_seed(const std::string &s, int i) const {
-        static std::hash<std::string> hasher;
-        uint64_t h = hasher(s);
-        // Mix in 'i' to differentiate each hash function
-        h ^= (static_cast<uint64_t>(i) * 0x9e3779b97f4a7c15ULL);
-        return h;
-    }
-
-    std::vector<unsigned char> bitvec; // the bits
-    uint64_t size;     // number of bits
-    int num_hashes;
-};
-
 class Phase {
 public:
     std::string name;
@@ -197,7 +123,6 @@ public:
     int search_depth_limit;
     boomphf::mphf<std::string, MyStringHash> hash_table;
     std::vector<int> depths;
-    BloomFilter bloom;
 
     Phase(const std::string& name, const std::vector<Move>& moves, std::function<std::string(Cube4x4&)> mask, const std::string& table_filename, int table_depth_limit, int search_depth_limit) : name(name), moves(moves), mask(mask), table_filename(table_filename), table_depth_limit(table_depth_limit), search_depth_limit(search_depth_limit) {}
 
@@ -207,15 +132,7 @@ public:
     void set_depths(std::vector<int>& new_depths) {
         depths = new_depths;
     }
-    void set_bloom(BloomFilter new_bloom) {
-        bloom = new_bloom;
-    }
 };
-
-
-
-
-
 
 extern Phase phase1;
 extern Phase phase2;

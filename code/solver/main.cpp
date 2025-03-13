@@ -13,18 +13,9 @@ using namespace boomphf;
 // IDA* recursive search function using table
 static bool ida_search(Phase &phase, Cube4x4 &cube, int depth, double &threshold, std::vector<Move> &path, double &next_threshold) {
     std::string state = phase.mask(cube);
+    uint64_t idx = phase.hash_table.lookup(state);
 
-    double h = 0.0;
-    if (!phase.bloom.contains(state)) {
-        h = phase.table_depth_limit + 1;
-    } else {
-        uint64_t idx = phase.hash_table.lookup(state);
-        if (idx >= phase.depths.size()) {
-            h = phase.table_depth_limit + 1;
-        } else {
-            h = static_cast<double>(phase.depths[idx]);
-        }
-    }
+    double h = (idx >= phase.depths.size()) ? (phase.table_depth_limit + 1) : static_cast<double>(phase.depths[idx]);
 
     double f = depth + h;
     if (f > threshold) {
@@ -58,19 +49,9 @@ static bool ida_search(Phase &phase, Cube4x4 &cube, int depth, double &threshold
 std::vector<Move> solve_any_phase_ida(Phase &phase, Cube4x4 start_cube) {
     std::vector<Move> path;
     std::string state = phase.mask(start_cube);
+    uint64_t idx = phase.hash_table.lookup(state);
 
-    double initial_h = 0.0;
-    if (!phase.bloom.contains(state)) {
-        initial_h = phase.table_depth_limit + 1;
-    } else {
-        uint64_t idx = phase.hash_table.lookup(state);
-        if (idx >= phase.depths.size()) {
-            initial_h = phase.table_depth_limit + 1;
-        } else {
-            initial_h = static_cast<double>(phase.depths[idx]);
-        }
-    }
-    double threshold = initial_h;
+    double threshold = (idx >= phase.depths.size()) ? (phase.table_depth_limit + 1) : static_cast<double>(phase.depths[idx]);
 
     while (true) {
         double next_threshold = std::numeric_limits<double>::infinity();
@@ -118,12 +99,6 @@ boomphf::mphf<std::string, MyStringHash> load_hash_table(const std::string &file
     return mph;
 }
 
-BloomFilter load_bloom(const std::string &filename) {
-    BloomFilter bloom(1,1);
-    bloom.load(filename); 
-    return bloom;
-}
-
 int lookup_depth(const std::string &state, const std::string &mph_file, const std::string &depth_file) {
     auto mph = new boomphf::mphf<std::string, MyStringHash>();
     std::ifstream ifs(mph_file, std::ios::binary);
@@ -141,7 +116,7 @@ int lookup_depth(const std::string &state, const std::string &mph_file, const st
 int main() {
     // Create cube and scramble it
     Cube4x4 cube;
-    std::vector<Move> scramble = cube.apply_random_moves(35, {R,L,F,B,U,D,r,l,f,b,u,d});
+    std::vector<Move> scramble = cube.apply_random_moves(35, {R,L,F,B,U,D});
     std::cout << "Scramble of size " << scramble.size() << " moves: ";
     for (Move move : scramble) {
         std::cout << move_to_string(move) << " ";
@@ -153,15 +128,12 @@ int main() {
     std::vector<Phase> phases = {phase1, phase2, phase3, phase4, phase5, phase6, phase7, phase8};
     for (Phase &phase : phases) {
         std::cout << "Loading " << phase.name << " table..." << std::endl;;
-        std::string mph_file = phase.table_filename + ".mph";
-        std::string depth_file = phase.table_filename + ".depths";
-        std::string bloom_file = phase.table_filename + ".bloom";
-        auto mph = load_hash_table(mph_file);
-        auto depths = load_depths(depth_file);
-        auto bloom = load_bloom(bloom_file);
+        std::string mphFile = phase.table_filename + ".mph";
+        std::string depthFile = phase.table_filename + ".depths";
+        auto mph = load_hash_table(mphFile);
+        auto dvec = load_depths(depthFile);
         phase.set_hash_table(mph);
-        phase.set_depths(depths);
-        phase.set_bloom(bloom);
+        phase.set_depths(dvec);
     }
 
     // Solve the cube
