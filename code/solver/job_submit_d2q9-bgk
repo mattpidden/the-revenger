@@ -4,7 +4,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=28
-#SBATCH --time=04:00:00
+#SBATCH --time=01:00:00
 #SBATCH --mem=500G
 #SBATCH --partition=teach_cpu
 #SBATCH --account=coms031144
