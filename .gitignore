@@ -1,2 +1,4 @@
 admin/
 /code/solver/*.bin
+/code/solver/*.mph
+/code/solver/*.depths

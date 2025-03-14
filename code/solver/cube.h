@@ -122,20 +122,21 @@ public:
     int table_depth_limit;
     int search_depth_limit;
     boomphf::mphf<std::string, MyStringHash> hash_table;
-    std::vector<int> depths;
+    std::vector<char> depths;
 
     Phase(const std::string& name, const std::vector<Move>& moves, std::function<std::string(Cube4x4&)> mask, const std::string& table_filename, int table_depth_limit, int search_depth_limit) : name(name), moves(moves), mask(mask), table_filename(table_filename), table_depth_limit(table_depth_limit), search_depth_limit(search_depth_limit) {}
 
     void set_hash_table(boomphf::mphf<std::string, MyStringHash>& new_table) {
         hash_table = new_table;
     }
-    void set_depths(std::vector<int>& new_depths) {
+    void set_depths(std::vector<char>& new_depths) {
         depths = new_depths;
     }
 };
 
 extern Phase phase1;
 extern Phase phase2;
+extern Phase phase2a;
 extern Phase phase3;
 extern Phase phase4;
 extern Phase phase5;

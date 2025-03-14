@@ -1,30 +1,170 @@
-Running on host compute069.bc4.acrc.priv
-Time is Thu Mar 13 17:52:17 GMT 2025
+              total        used        free      shared  buff/cache   available
+Mem:            125          19          88          16          17          88
+Swap:             0           0           0
+Running on host compute076.bc4.acrc.priv
+Time is Fri Mar 14 12:37:01 GMT 2025
 Directory is /user/home/bb22475/DIS/the-revenger/code/solver
-Slurm job ID is 11690737
+Slurm job ID is 11693144
 This job runs on the following machines:
-compute069
-Scramble of size 35 moves: F r U L F b b u u r u R L L u l d d B r l f U r L L R B R f b F r D l 
+compute076
+Generating Phase 1 tables...
+Reached depth  | States so far: 5
+Reached depth  | States so far: 95
+Reached depth  | States so far: 1409
+Reached depth  | States so far: 16053
+Reached depth  | States so far: 123307
+Reached depth  | States so far: 501415
+Reached depth  | States so far: 733191
+Reached depth  | States so far: 735471
+Final depth reached: 
+Total states found: 735471
+BBHash MPH built & saved to phase1table.mph and phase1table.depths
+
+Generating Phase 3 tables...
+Reached depth 1 | States so far: 5
+Reached depth 2 | States so far: 15
+Reached depth 3 | States so far: 27
+Reached depth 4 | States so far: 36
+Final depth reached: 4
+Total states found: 36
+Total cubes found: 36
+Reached depth  | States so far: 120
+Reached depth  | States so far: 612
+Reached depth  | States so far: 2736
+Reached depth  | States so far: 8804
+Reached depth  | States so far: 24288
+Reached depth  | States so far: 60237
+Reached depth  | States so far: 123990
+Reached depth  | States so far: 181861
+Reached depth 	 | States so far: 206744
+Reached depth 
+ | States so far: 213564
+Reached depth  | States so far: 214889
+Reached depth  | States so far: 215020
+Reached depth  | States so far: 215028
+Final depth reached: 
+Total states found: 215028
+BBHash MPH built & saved to phase3table.mph and phase3table.depths
+
+Generating Phase 4 tables...
+Reached depth  | States so far: 5
+Reached depth  | States so far: 47
+Reached depth  | States so far: 363
+Reached depth  | States so far: 2544
+Reached depth  | States so far: 16432
+Reached depth  | States so far: 100320
+Reached depth  | States so far: 550641
+Reached depth  | States so far: 2821551
+Reached depth 	 | States so far: 12131663
+Reached depth 
+ | States so far: 34049075
+Reached depth  | States so far: 57748624
+Reached depth  | States so far: 69531664
+Reached depth  | States so far: 70811916
+Reached depth  | States so far: 70822043
+Reached depth  | States so far: 70822080
+Final depth reached: 
+Total states found: 70822080
+BBHash MPH built & saved to phase4table.mph and phase4table.depths
+
+Generating Phase 5 tables...
+Reached depth  | States so far: 3
+Reached depth  | States so far: 28
+Reached depth  | States so far: 230
+Reached depth  | States so far: 850
+Reached depth  | States so far: 1750
+Reached depth  | States so far: 2035
+Reached depth  | States so far: 2048
+Final depth reached: 
+Total states found: 2048
+BBHash MPH built & saved to phase5table.mph and phase5table.depths
+
+Generating Phase 6 tables...
+Reached depth  | States so far: 3
+Reached depth  | States so far: 20
+Reached depth  | States so far: 154
+Reached depth  | States so far: 1219
+Reached depth  | States so far: 9409
+Reached depth  | States so far: 64103
+Reached depth  | States so far: 331679
+Reached depth  | States so far: 892247
+Reached depth 	 | States so far: 1079451
+Reached depth 
+ | States so far: 1082565
+Final depth reached: 
+
+Total states found: 1082565
+BBHash MPH built & saved to phase6table.mph and phase6table.depths
+
+Generating Phase 7 tables...
+Reached depth 1 | States so far: 7
+Reached depth 2 | States so far: 34
+Reached depth 3 | States so far: 76
+Reached depth 4 | States so far: 96
+Final depth reached: 4
+Total states found: 96
+Total cubes found: 96
+Reached depth  | States so far: 288
+Reached depth  | States so far: 1152
+Reached depth  | States so far: 4608
+Reached depth  | States so far: 16512
+Reached depth  | States so far: 67392
+Reached depth  | States so far: 240768
+Reached depth  | States so far: 599040
+Reached depth  | States so far: 1094208
+Reached depth 	 | States so far: 1772928
+Reached depth 
+ | States so far: 2465856
+Reached depth  | States so far: 2773248
+Reached depth  | States so far: 2820096
+Reached depth  | States so far: 2822400
+Final depth reached: 
+Total states found: 2822400
+BBHash MPH built & saved to phase7table.mph and phase7table.depths
+
+Generating Phase 8 tables...
+Reached depth  | States so far: 7
+Reached depth  | States so far: 34
+Reached depth  | States so far: 154
+Reached depth  | States so far: 673
+Reached depth  | States so far: 2605
+Reached depth  | States so far: 9089
+Reached depth  | States so far: 29399
+Reached depth  | States so far: 84433
+Reached depth 	 | States so far: 198325
+Reached depth 
+ | States so far: 376820
+Reached depth  | States so far: 556016
+Reached depth  | States so far: 645744
+Reached depth  | States so far: 661920
+Reached depth  | States so far: 663408
+Reached depth  | States so far: 663552
+Final depth reached: 
+Total states found: 663552
+BBHash MPH built & saved to phase8table.mph and phase8table.depths
+
+Scramble of size 35 moves: R f2 U F U l2 L R l2 b2 L R L f2 R l2 U U B l2 F B r2 l2 U l2 D D f2 F B R R l2 B 
 
           Up (U)
-          ⬜🟦🟨🟦
-          🟥🟨🟦🟨
-          🟨🟩🟥🟧
-          🟥⬜⬜⬜
+          🟨🟦🟧🟥
+          🟨⬜⬜⬜
+          🟦🟨⬜🟦
+          🟧🟧🟥🟩
 
 Left (L)  Front (F) Right (R) Back (B)
-🟧⬜🟦🟩  🟨🟩🟩🟩  🟥🟦🟩🟥  🟨🟦⬜🟦
-🟩⬜🟦⬜  🟧🟨⬜⬜  🟦🟧🟨🟨  🟧🟧⬜🟥
-🟥🟩🟦🟦  🟥🟥🟦🟦  🟧🟩🟨🟩  🟧🟧⬜🟨
-🟩🟨🟩🟨  🟦🟧🟩⬜  🟦⬜🟨🟧  ⬜⬜🟦🟧
+🟧🟦🟧🟩  ⬜⬜⬜🟨  🟥🟥🟦🟦  ⬜🟨🟥🟩
+⬜🟥🟥🟥  🟩🟦🟦🟦  ⬜🟧🟧⬜  🟩🟦🟩🟩
+🟥🟧🟧🟩  🟨🟩🟦🟥  ⬜🟥🟥🟥  🟨🟩🟩🟨
+⬜🟨🟧🟨  🟥🟧🟧⬜  🟧⬜🟩🟨  🟦🟦🟧🟩
 
           Down (D)
-          🟧🟩🟥🟥
-          🟨🟥🟧🟧
-          🟧🟩🟥🟥
-          🟨🟥🟥🟩
+          🟦🟩🟩🟦
+          🟨🟨⬜🟧
+          🟩🟨🟨🟥
+          🟥🟦🟨🟧
 
 Loading Phase 1 table...
+Loading Phase 2a table...
 Loading Phase 2 table...
 Loading Phase 3 table...
 Loading Phase 4 table...
@@ -32,47 +172,194 @@ Loading Phase 5 table...
 Loading Phase 6 table...
 Loading Phase 7 table...
 Loading Phase 8 table...
-Phase 1 solution found in 7 moves: F' f' U2 d' B2 l b 
+Phase 1 solution found in 4 moves: f R R R 
 
 
           Up (U)
-          🟩⬜🟥🟨
-          🟧🟨⬜🟨
-          🟨🟩🟨🟥
-          🟦⬜🟦⬜
+          🟨🟦🟧🟦
+          🟨⬜⬜🟨
+          🟧🟧🟥🟩
+          🟧🟧🟥⬜
 
 Left (L)  Front (F) Right (R) Back (B)
-🟧🟦🟩🟥  🟨🟥⬜🟦  🟧⬜🟥🟩  🟧🟦🟦⬜
-🟨🟧🟥⬜  🟩🟩🟦🟩  🟥🟧🟥🟩  ⬜🟩🟩🟥
-🟨🟧🟥🟧  🟩🟦🟨🟩  🟧🟧🟥🟩  🟥⬜🟦🟧
-⬜⬜🟨🟥  🟨🟨🟥🟦  🟧🟨🟧🟥  ⬜🟦⬜🟩
+🟧🟦🟨🟩  ⬜⬜⬜🟥  🟦⬜🟥🟨  🟧🟨🟥🟩
+⬜🟥🟨🟥  🟩🟦🟦⬜  🟦🟧🟥🟩  🟥🟦🟩🟩
+🟥🟧⬜🟩  🟨🟩🟦🟧  🟦🟨⬜🟦  🟥🟩🟩🟨
+⬜🟨🟧🟨  🟥🟧🟧🟩  🟥⬜⬜🟧  🟦🟦🟧🟩
 
           Down (D)
-          🟩🟦🟦🟨
-          🟦⬜🟦🟩
-          🟧⬜🟨🟨
-          🟥🟧🟧🟦
-
-Phase 2 solution found in 6 moves: L2 d2 R L' F l2 
-
-
-          Up (U)
-          🟩🟧🟥🟦
-          🟧⬜⬜🟩
-          🟥⬜🟨🟩
-          🟥🟧🟦🟧
-
-Left (L)  Front (F) Right (R) Back (B)
-⬜🟨🟩🟨  🟦⬜🟧🟩  ⬜⬜🟥🟧  ⬜🟦🟨🟥
-⬜🟧🟥🟦  🟨🟨🟩🟥  ⬜🟥🟧⬜  🟥🟩🟦🟧
-🟨🟥🟧🟦  🟥🟩🟦⬜  🟦🟧🟥🟥  🟨🟦⬜🟦
-🟥🟧🟧⬜  🟦🟦🟩🟨  🟦🟨🟩🟩  🟨🟦🟨🟩
-
-          Down (D)
-          🟥⬜🟨🟧
-          🟩🟨🟦🟥
-          🟩🟩🟨⬜
-          🟨🟩🟧🟧
+          🟦🟩🟩🟨
+          ⬜🟥🟧🟦
+          🟩🟨🟨🟥
+          🟥🟦🟨⬜
 
 No solution found.
-slurmstepd: error: *** JOB 11690737 ON compute069 CANCELLED AT 2025-03-13T18:12:45 DUE TO TIME LIMIT ***
+
+
+          Up (U)
+          🟨🟦🟧🟦
+          🟨⬜⬜🟨
+          🟧🟧🟥🟩
+          🟧🟧🟥⬜
+
+Left (L)  Front (F) Right (R) Back (B)
+🟧🟦🟨🟩  ⬜⬜⬜🟥  🟦⬜🟥🟨  🟧🟨🟥🟩
+⬜🟥🟨🟥  🟩🟦🟦⬜  🟦🟧🟥🟩  🟥🟦🟩🟩
+🟥🟧⬜🟩  🟨🟩🟦🟧  🟦🟨⬜🟦  🟥🟩🟩🟨
+⬜🟨🟧🟨  🟥🟧🟧🟩  🟥⬜⬜🟧  🟦🟦🟧🟩
+
+          Down (D)
+          🟦🟩🟩🟨
+          ⬜🟥🟧🟦
+          🟩🟨🟨🟥
+          🟥🟦🟨⬜
+
+No solution found.
+
+
+          Up (U)
+          🟨🟦🟧🟦
+          🟨⬜⬜🟨
+          🟧🟧🟥🟩
+          🟧🟧🟥⬜
+
+Left (L)  Front (F) Right (R) Back (B)
+🟧🟦🟨🟩  ⬜⬜⬜🟥  🟦⬜🟥🟨  🟧🟨🟥🟩
+⬜🟥🟨🟥  🟩🟦🟦⬜  🟦🟧🟥🟩  🟥🟦🟩🟩
+🟥🟧⬜🟩  🟨🟩🟦🟧  🟦🟨⬜🟦  🟥🟩🟩🟨
+⬜🟨🟧🟨  🟥🟧🟧🟩  🟥⬜⬜🟧  🟦🟦🟧🟩
+
+          Down (D)
+          🟦🟩🟩🟨
+          ⬜🟥🟧🟦
+          🟩🟨🟨🟥
+          🟥🟦🟨⬜
+
+Phase 3 solution found in 1 moves: R2 
+
+
+          Up (U)
+          🟨🟦🟧🟨
+          🟨⬜⬜🟦
+          🟧🟧🟥🟥
+          🟧🟧🟥⬜
+
+Left (L)  Front (F) Right (R) Back (B)
+🟧🟦🟨🟩  ⬜⬜⬜🟦  🟧⬜⬜🟥  🟩🟨🟥🟩
+⬜🟥🟨🟥  🟩🟦🟦🟥  🟦⬜🟨🟦  🟧🟦🟩🟩
+🟥🟧⬜🟩  🟨🟩🟦🟥  🟩🟥🟧🟦  ⬜🟩🟩🟨
+⬜🟨🟧🟨  🟥🟧🟧🟧  🟨🟥⬜🟦  🟥🟦🟧🟩
+
+          Down (D)
+          🟦🟩🟩🟦
+          ⬜🟥🟧🟨
+          🟩🟨🟨🟩
+          🟥🟦🟨⬜
+
+No solution found.
+
+
+          Up (U)
+          🟨🟦🟧🟨
+          🟨⬜⬜🟦
+          🟧🟧🟥🟥
+          🟧🟧🟥⬜
+
+Left (L)  Front (F) Right (R) Back (B)
+🟧🟦🟨🟩  ⬜⬜⬜🟦  🟧⬜⬜🟥  🟩🟨🟥🟩
+⬜🟥🟨🟥  🟩🟦🟦🟥  🟦⬜🟨🟦  🟧🟦🟩🟩
+🟥🟧⬜🟩  🟨🟩🟦🟥  🟩🟥🟧🟦  ⬜🟩🟩🟨
+⬜🟨🟧🟨  🟥🟧🟧🟧  🟨🟥⬜🟦  🟥🟦🟧🟩
+
+          Down (D)
+          🟦🟩🟩🟦
+          ⬜🟥🟧🟨
+          🟩🟨🟨🟩
+          🟥🟦🟨⬜
+
+No solution found.
+
+
+          Up (U)
+          🟨🟦🟧🟨
+          🟨⬜⬜🟦
+          🟧🟧🟥🟥
+          🟧🟧🟥⬜
+
+Left (L)  Front (F) Right (R) Back (B)
+🟧🟦🟨🟩  ⬜⬜⬜🟦  🟧⬜⬜🟥  🟩🟨🟥🟩
+⬜🟥🟨🟥  🟩🟦🟦🟥  🟦⬜🟨🟦  🟧🟦🟩🟩
+🟥🟧⬜🟩  🟨🟩🟦🟥  🟩🟥🟧🟦  ⬜🟩🟩🟨
+⬜🟨🟧🟨  🟥🟧🟧🟧  🟨🟥⬜🟦  🟥🟦🟧🟩
+
+          Down (D)
+          🟦🟩🟩🟦
+          ⬜🟥🟧🟨
+          🟩🟨🟨🟩
+          🟥🟦🟨⬜
+
+Phase 6 solution found in 1 moves: R 
+
+
+          Up (U)
+          🟨🟦🟧🟦
+          🟨⬜⬜🟥
+          🟧🟧🟥🟥
+          🟧🟧🟥🟧
+
+Left (L)  Front (F) Right (R) Back (B)
+🟧🟦🟨🟩  ⬜⬜⬜🟦  🟨🟩🟦🟧  ⬜🟨🟥🟩
+⬜🟥🟨🟥  🟩🟦🟦🟨  🟥🟥⬜⬜  🟥🟦🟩🟩
+🟥🟧⬜🟩  🟨🟩🟦🟩  ⬜🟧🟨⬜  🟦🟩🟩🟨
+⬜🟨🟧🟨  🟥🟧🟧⬜  🟦🟦🟦🟥  🟨🟦🟧🟩
+
+          Down (D)
+          🟦🟩🟩🟥
+          ⬜🟥🟧⬜
+          🟩🟨🟨🟧
+          🟥🟦🟨🟩
+
+Phase 7 solution found in 1 moves: R2 
+
+
+          Up (U)
+          🟨🟦🟧🟥
+          🟨⬜⬜⬜
+          🟧🟧🟥🟧
+          🟧🟧🟥🟩
+
+Left (L)  Front (F) Right (R) Back (B)
+🟧🟦🟨🟩  ⬜⬜⬜🟨  🟥🟦🟦🟦  ⬜🟨🟥🟩
+⬜🟥🟨🟥  🟩🟦🟦🟦  ⬜🟨🟧⬜  🟩🟦🟩🟩
+🟥🟧⬜🟩  🟨🟩🟦🟥  ⬜⬜🟥🟥  🟨🟩🟩🟨
+⬜🟨🟧🟨  🟥🟧🟧⬜  🟧🟦🟩🟨  🟦🟦🟧🟩
+
+          Down (D)
+          🟦🟩🟩🟦
+          ⬜🟥🟧🟥
+          🟩🟨🟨🟥
+          🟥🟦🟨🟧
+
+No solution found.
+
+
+          Up (U)
+          🟨🟦🟧🟥
+          🟨⬜⬜⬜
+          🟧🟧🟥🟧
+          🟧🟧🟥🟩
+
+Left (L)  Front (F) Right (R) Back (B)
+🟧🟦🟨🟩  ⬜⬜⬜🟨  🟥🟦🟦🟦  ⬜🟨🟥🟩
+⬜🟥🟨🟥  🟩🟦🟦🟦  ⬜🟨🟧⬜  🟩🟦🟩🟩
+🟥🟧⬜🟩  🟨🟩🟦🟥  ⬜⬜🟥🟥  🟨🟩🟩🟨
+⬜🟨🟧🟨  🟥🟧🟧⬜  🟧🟦🟩🟨  🟦🟦🟧🟩
+
+          Down (D)
+          🟦🟩🟩🟦
+          ⬜🟥🟧🟥
+          🟩🟨🟨🟥
+          🟥🟦🟨🟧
+
+Full solution found in 7 moves: f R R R R2 R R2 
+Solution time: 0.000215908 seconds.

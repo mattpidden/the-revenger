@@ -4,14 +4,15 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=28
-#SBATCH --time=01:00:00
-#SBATCH --mem=500G
-#SBATCH --partition=teach_cpu
+#SBATCH --time=04:00:00
+#SBATCH --mem=450G
+#SBATCH --partition=hmem
 #SBATCH --account=coms031144
-#SBATCH --output=gen_tables.out
+#SBATCH --output=gen_tables1234.out
 #SBATCH --exclusive 
 
 #lscpu
+free -g
 
 export OMP_NUM_THREADS=28
 
@@ -23,6 +24,10 @@ echo This job runs on the following machines:
 echo `echo $SLURM_JOB_NODELIST | uniq` 
 
 ./generate_tables
+./solver
+./solver
+./solver
+./solver
 ./solver
 
 

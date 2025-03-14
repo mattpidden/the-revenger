@@ -15,7 +15,7 @@ static bool ida_search(Phase &phase, Cube4x4 &cube, int depth, double &threshold
     std::string state = phase.mask(cube);
     uint64_t idx = phase.hash_table.lookup(state);
 
-    double h = (idx >= phase.depths.size()) ? (phase.table_depth_limit + 1) : static_cast<double>(phase.depths[idx]);
+    double h = (idx >= phase.depths.size()) ? (phase.table_depth_limit + 1) : static_cast<double>(static_cast<unsigned char>(phase.depths[idx]));
 
     double f = depth + h;
     if (f > threshold) {
@@ -51,7 +51,7 @@ std::vector<Move> solve_any_phase_ida(Phase &phase, Cube4x4 start_cube) {
     std::string state = phase.mask(start_cube);
     uint64_t idx = phase.hash_table.lookup(state);
 
-    double threshold = (idx >= phase.depths.size()) ? (phase.table_depth_limit + 1) : static_cast<double>(phase.depths[idx]);
+    double threshold = (idx >= phase.depths.size()) ? (phase.table_depth_limit + 1) : static_cast<double>(static_cast<unsigned char>(phase.depths[idx]));
 
     while (true) {
         double next_threshold = std::numeric_limits<double>::infinity();
@@ -83,12 +83,12 @@ void print_apply_solution(Cube4x4 &cube, const std::vector<Move> &solution, std:
     }
 }
 
-std::vector<int> load_depths(const std::string &filename) {
+std::vector<char> load_depths(const std::string &filename) {
     std::ifstream in(filename, std::ios::binary);
     uint64_t sz = 0;
     in.read(reinterpret_cast<char*>(&sz), sizeof(sz));
-    std::vector<int> depths(sz);
-    in.read(reinterpret_cast<char*>(depths.data()), sizeof(int)*sz);
+    std::vector<char> depths(sz);
+    in.read(reinterpret_cast<char*>(depths.data()), sz);
     return depths;
 }
 
@@ -116,7 +116,7 @@ int lookup_depth(const std::string &state, const std::string &mph_file, const st
 int main() {
     // Create cube and scramble it
     Cube4x4 cube;
-    std::vector<Move> scramble = cube.apply_random_moves(35, {R,L,F,B,U,D});
+    std::vector<Move> scramble = cube.apply_random_moves(35, {R,L,F,B,U,D,r,l,f,b,u,d});
     std::cout << "Scramble of size " << scramble.size() << " moves: ";
     for (Move move : scramble) {
         std::cout << move_to_string(move) << " ";
@@ -125,7 +125,7 @@ int main() {
     cube.print();
 
     // Load the data in
-    std::vector<Phase> phases = {phase1, phase2, phase3, phase4, phase5, phase6, phase7, phase8};
+    std::vector<Phase> phases = {phase1, phase2a, phase2, phase3, phase4, phase5, phase6, phase7, phase8};
     for (Phase &phase : phases) {
         std::cout << "Loading " << phase.name << " table..." << std::endl;;
         std::string mphFile = phase.table_filename + ".mph";

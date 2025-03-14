@@ -23,7 +23,7 @@ void save_depths(const std::vector<char> &depths, const std::string &filename) {
     std::ofstream out(filename, std::ios::binary);
     uint64_t sz = depths.size();
     out.write(reinterpret_cast<const char*>(&sz), sizeof(sz));
-    out.write(reinterpret_cast<const char*>(depths.data()), sizeof(int)*sz);
+    out.write(reinterpret_cast<const char*>(depths.data()), depths.size());
 }
 
 void build_and_save_mph(const flat_hash_map<std::string,char> &table, const std::string &mph_filename, const std::string &depth_filename) {
@@ -77,7 +77,7 @@ std::vector<Cube4x4> generate_cube_table(const Phase &phase, const std::vector<C
         
         if (depth > max_depth) {
             max_depth = depth;
-            std::cout << "Reached depth " << max_depth << " | States so far: " << table.size() << std::endl;
+            std::cout << "Reached depth " << static_cast<int>(max_depth) << " | States so far: " << table.size() << std::endl;
         }
         
         if (depth_limit < 0 || depth < depth_limit) {
@@ -95,7 +95,7 @@ std::vector<Cube4x4> generate_cube_table(const Phase &phase, const std::vector<C
         }
     }
     
-    std::cout << "Final depth reached: " << max_depth << std::endl;
+    std::cout << "Final depth reached: " << static_cast<int>(max_depth) << std::endl;
     std::cout << "Total states found: " << table.size() << std::endl;
     std::cout << "Total cubes found: " << cube_table.size() << std::endl;
     
@@ -124,7 +124,7 @@ flat_hash_map<std::string, char> generate_table(const Phase &phase, const std::v
             //std::string mph_file = phase.table_filename + ".mph";
             //std::string depth_file = phase.table_filename + ".depths";
             //build_and_save_mph(table, mph_file, depth_file);
-            std::cout << "Reached depth " << max_depth << " | States so far: " << table.size() << std::endl;
+            std::cout << "Reached depth " << static_cast<int>(max_depth) << " | States so far: " << table.size() << std::endl;
 
         }
         
@@ -142,7 +142,7 @@ flat_hash_map<std::string, char> generate_table(const Phase &phase, const std::v
         }
     }
     
-    std::cout << "Final depth reached: " << max_depth << std::endl;
+    std::cout << "Final depth reached: " << static_cast<int>(max_depth) << std::endl;
     std::cout << "Total states found: " << table.size() << std::endl;
     
     return table;
@@ -150,14 +150,9 @@ flat_hash_map<std::string, char> generate_table(const Phase &phase, const std::v
 
 
 flat_hash_map<std::string, char> generate_table_layered_omp(const Phase &phase, const std::vector<Cube4x4> &start_cubes, const std::vector<Move> &moveset, int depth_limit = -1) {
-    // This map keeps track of (mask_string -> BFS depth).
     flat_hash_map<std::string,char> visited;
-    visited.reserve(1000000000); // optional: give some hint
-
-    // The current frontier for BFS expansions (layer d)
     std::vector<Cube4x4> current_layer;
 
-    // Initialize with solved states
     for (Cube4x4 cube : start_cubes) {
         std::string state = phase.mask(cube);
         visited[state] = 0;
@@ -166,83 +161,49 @@ flat_hash_map<std::string, char> generate_table_layered_omp(const Phase &phase, 
 
     char depth = 0;
     while (!current_layer.empty() && (depth_limit < 0 || depth < depth_limit)) {
-        // We'll build the next layer (depth d+1)
-        // We do it by collecting newly discovered states in parallel,
-        // then merging them into a single vector after.
         std::vector<Cube4x4> next_layer;
         next_layer.reserve(current_layer.size() * moveset.size()); // rough guess
 
-        // Each thread has a local container of <new_mask, new_cube>
-        // so there's no contention writing to shared memory.
-        // We'll merge at the end of the parallel region.
         #pragma omp parallel
         {
             std::vector<std::pair<std::string, Cube4x4>> local_new;
-            local_new.reserve(128); // arbitrary
 
             #pragma omp for schedule(dynamic)
             for (int i = 0; i < (int)current_layer.size(); i++) {
                 Cube4x4 parent_cube = current_layer[i];
-                int parent_depth = 0; // we’ll retrieve it from visited
-
-                // The parent_mask is needed to read parent_depth
-                // But looking it up in a map is O(logN) or average O(1). 
-                // We'll do it once outside the moves loop.
+                int parent_depth = 0; 
                 std::string parent_mask = phase.mask(parent_cube);
                 auto it = visited.find(parent_mask);
                 if (it == visited.end()) {
-                    // This should never happen if BFS is correct
                     continue;
                 }
                 parent_depth = it->second;
-
-                // If we can still go deeper
                 if (depth_limit < 0 || parent_depth < depth_limit) {
-                    // Generate children
                     for (auto &mv : moveset) {
                         Cube4x4 child_cube = parent_cube;
                         child_cube.move(mv);
                         std::string child_mask = phase.mask(child_cube);
-
-                        // Check if not visited
-                        // (We only do a local check here, to avoid locking visited.)
-                        // We'll do the real check+insert after we leave the parallel region.
-                        // But for big BFS, you probably want a better concurrency approach
-                        // or a second data structure. This is the simplest illustration.
-                        // We'll just store them in local_new for now.
-                        // We'll do the global check in the merge phase.
                         local_new.emplace_back(child_mask, child_cube);
                     }
                 }
             }
 
-            // End of parallel for; now we want to merge local_new into visited + next_layer
             #pragma omp critical
             {
                 for (auto &pair : local_new) {
                     const std::string &child_mask = pair.first;
                     Cube4x4 &child_cube = pair.second;
-
-                    // Insert into visited if not present
                     auto it2 = visited.find(child_mask);
                     if (it2 == visited.end()) {
-                        // discovered at depth = parent_depth + 1
-                        // But we must know the parent's depth. 
-                        // We used 'parent_depth' in the loop, so let's do a second approach:
-                        // We'll assume this node is at (depth+1).
-                        // Because we're layering BFS, that’s accurate.
                         visited[child_mask] = depth + 1;
                         next_layer.push_back(std::move(child_cube));
                     }
                 }
             }
-            // local_new is cleaned up as we exit the parallel region
-        } // end omp parallel
+        } 
 
         depth++;
         current_layer = std::move(next_layer);
-
-        // Some printing if we want to track progress
         std::cout << "Reached depth " << depth << " | " << visited.size() << " states so far" << std::endl;
     }
 
@@ -256,39 +217,50 @@ flat_hash_map<std::string, char> generate_table_layered_omp(const Phase &phase, 
 int main() {         
     
 
-    // phase 1,5,6,7,8 are working perfectly
-    // phase 2 mask needs tweaking to make smaller state space
-    // phase 3,4 masks take a long time to compute
+    // phase 1,3,5,6,7,8 are working perfectly
 
     // phase 2 mask does not account for parities (but it might)
     // phase 4 mask does account for parities (but it might)
 
-    // std::cout << "Generating " << phase1.name << " tables...\n";
-    // Cube4x4 cube1;
-    // auto table1 = generate_table(phase1, {cube1}, phase1.moves, phase1.table_depth_limit); // 735,471 at 8
-    // std::string mph_file1 = phase1.table_filename + ".mph";
-    // std::string depth_file1 = phase1.table_filename + ".depths";
-    // build_and_save_mph(table1, mph_file1, depth_file1);
+    // TODO Make everything more memory efficent
+    // TODO Get access to 512 GB memory nodes
+    // TODO split phase 2 into 2 again
+        // 2a does the centres
+        // 2b does the edges and R,L columns
 
-    // std::cout << "Generating " << phase2.name << " tables...\n";
-    // Cube4x4 centre_cube;
-    // std::vector<Cube4x4> centre_table = generate_cube_table(phase2, {centre_cube}, {R2, L2, F, B, U, D, r2, l2, f2, b2, u2, d2}, 3); // 12  at 3
-    // auto table2 = generate_table_layered_omp(phase2, centre_table, phase2.moves, phase2.table_depth_limit); // 3,695,452 at 5 (limited)
-    // std::string mph_file2 = phase2.table_filename + ".mph";
-    // std::string depth_file2 = phase2.table_filename + ".depths";
-    // build_and_save_mph(table2, mph_file2, depth_file2);
+    std::cout << "Generating " << phase1.name << " tables...\n";
+    Cube4x4 cube1;
+    auto table1 = generate_table(phase1, {cube1}, phase1.moves, phase1.table_depth_limit); // 735,471 at 8
+    std::string mph_file1 = phase1.table_filename + ".mph";
+    std::string depth_file1 = phase1.table_filename + ".depths";
+    build_and_save_mph(table1, mph_file1, depth_file1);
 
-    // std::cout << "Generating " << phase3.name << " tables...\n";
-    // Cube4x4 centre_column_cube;
-    // std::vector<Cube4x4> centre_column_table = generate_cube_table(phase3, {centre_column_cube}, {R2, L2, F2, B2, U, U_PRIME, U2, D, D_PRIME, D2, r2, l2, f2, b2}, 4); // 36 at 4
-    // auto table3 = generate_table(phase3, centre_column_table, phase3.moves, phase3.table_depth_limit); // 215,028 at 13
-    // std::string mph_file3 = phase3.table_filename + ".mph";
-    // std::string depth_file3 = phase3.table_filename + ".depths";
-    // build_and_save_mph(table3, mph_file3, depth_file3);
+    std::cout << "Generating " << phase2a.name << " tables...\n";
+    Cube4x4 cube2a;
+    auto table2a = generate_table_layered_omp(phase2a, {cube2a}, phase2a.moves, phase2a.table_depth_limit); // 3,695,452 at 5 (limited)
+    std::string mph_file2a = phase2a.table_filename + ".mph";
+    std::string depth_file2a = phase2a.table_filename + ".depths";
+    build_and_save_mph(table2a, mph_file2a, depth_file2a);
+
+    std::cout << "Generating " << phase2.name << " tables...\n";
+    Cube4x4 centre_cube;
+    std::vector<Cube4x4> centre_table = generate_cube_table(phase2, {centre_cube}, {R2, L2, F, B, U, D, r2, l2, f2, b2, u2, d2}, 3); // 12  at 3
+    auto table2 = generate_table_layered_omp(phase2, centre_table, phase2.moves, phase2.table_depth_limit); // 3,695,452 at 5 (limited)
+    std::string mph_file2 = phase2.table_filename + ".mph";
+    std::string depth_file2 = phase2.table_filename + ".depths";
+    build_and_save_mph(table2, mph_file2, depth_file2);
+
+    std::cout << "Generating " << phase3.name << " tables...\n";
+    Cube4x4 centre_column_cube;
+    std::vector<Cube4x4> centre_column_table = generate_cube_table(phase3, {centre_column_cube}, {R2, L2, F2, B2, U, U_PRIME, U2, D, D_PRIME, D2, r2, l2, f2, b2}, 4); // 36 at 4
+    auto table3 = generate_table(phase3, centre_column_table, phase3.moves, phase3.table_depth_limit); // 215,028 at 13
+    std::string mph_file3 = phase3.table_filename + ".mph";
+    std::string depth_file3 = phase3.table_filename + ".depths";
+    build_and_save_mph(table3, mph_file3, depth_file3);
 
     std::cout << "Generating " << phase4.name << " tables...\n";
     Cube4x4 cube4;
-    auto table4 = generate_table(phase4, {cube4}, phase4.moves, phase4.table_depth_limit); // 12,089,495 at 9
+    auto table4 = generate_table(phase4, {cube4}, phase4.moves, phase4.table_depth_limit); // 34,049,075 at 10 - 12,089,495 at 9
     std::string mph_file4 = phase4.table_filename + ".mph";
     std::string depth_file4 = phase4.table_filename + ".depths";
     build_and_save_mph(table4, mph_file4, depth_file4);
