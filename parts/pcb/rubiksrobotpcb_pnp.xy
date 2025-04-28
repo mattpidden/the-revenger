@@ -1,0 +1,63 @@
+# Pick And Place List
+# Company=
+# Author=
+# eMail=
+#
+# Project=rubiksrobotpcb
+# Date=13:42:13
+# CreatedBy=Fritzing 1.0.4.2024-10-07.1.0.4rc1-4-ga8c6ef7c
+#
+#
+# Coordinates in mils, always center of component
+# Origin 0/0=Lower left corner of PCB
+# Rotation in degree (0-360, math. pos.)
+#
+RefDes,Description,Package,X,Y,Rotation,Side,Mount
+Description: resistance;capacitance;inductance;voltage;current;power;mpn;mn;
+sC3,";100µF;;50V;;;;;","0405 [SMD, electrolytic]",2236.97,5073.2,90,Top,SMT
+x-axis claw2 SMD,";;;;;;;;","",1386.69,699.523,0,Top,MANUAL
+Via2,";;;;;;;;","",5336.97,4802.34,0,Top,MANUAL
+z-axis claw1 SMD,";;;;;;;;","",2386.68,699.512,0,Top,MANUAL
+xC2SM,";;;;;;;;","THT",1835.08,710.499,0,Top,THT
+z-axis SMD2,";;;;;;;;","",3738.59,4491.38,0,Top,MANUAL
+x-axis,";;;;;;;;","THT",736.97,3202.33,90,Top,THT
+x-axis SMD2,";;;;;;;;","",1738.58,4491.38,0,Top,MANUAL
+Via5,";;;;;;;;","",1987.56,3854.09,0,Top,MANUAL
+C1,";470µF;;50V;;;;;","0405 [SMD, electrolytic]",5566.11,2902.33,0,Top,SMT
+Via10,";;;;;;;;","",2886.97,1502.34,0,Top,MANUAL
+4 digit display,";;;;;;;;","THT",786.97,2152.33,90,Top,THT
+z-axis,";;;;;;;;","THT",736.97,2452.33,90,Top,THT
+Via13,";;;;;;;;","",1186.97,1652.34,0,Top,MANUAL
+sC5,";100µF;;50V;;;;;","0405 [SMD, electrolytic]",4236.97,5073.2,90,Top,SMT
+Via12,";;;;;;;;","",1286.97,1652.34,0,Top,MANUAL
+sC7,";100µF;;50V;;;;;","0405 [SMD, electrolytic]",886.969,1273.2,90,Top,SMT
+sC9,";100µF;;50V;;;;;","0405 [SMD, electrolytic]",2886.97,1273.2,90,Top,SMT
+zSM1,";;;;;;;;","THT",3186.97,4502.33,0,Top,THT
+z-axis claw2 SMD,";;;;;;;;","",3386.7,699.523,0,Top,MANUAL
+Ardunio Due,";;;;;;;;","",3087.04,2552.33,0,Top,MANUAL
+x-axis claw1 SMD,";;;;;;;;","",386.689,699.523,0,Top,MANUAL
+x-axis SMD1,";;;;;;;;","",738.582,4491.38,0,Top,MANUAL
+y-axis SMD1,";;;;;;;;","",4738.58,4491.38,0,Top,MANUAL
+Via4,";;;;;;;;","",886.969,3852.34,0,Top,MANUAL
+zC2SM,";;;;;;;;","THT",3835.09,710.499,0,Top,THT
+sC4,";100µF;;50V;;;;;","0405 [SMD, electrolytic]",3236.97,5073.2,90,Top,SMT
+ySM2,";;;;;;;;","THT",4835.08,710.499,0,Top,THT
+xC1SM,";;;;;;;;","THT",835.084,710.499,0,Top,THT
+y-axis,";;;;;;;;","THT",736.97,2802.33,90,Top,THT
+sC6,";100µF;;50V;;;;;","0405 [SMD, electrolytic]",5236.97,4873.2,90,Top,SMT
+sC10,";100µF;;50V;;;;;","0405 [SMD, electrolytic]",3886.97,1273.2,90,Top,SMT
+sC11,";100µF;;50V;;;;;","0405 [SMD, electrolytic]",4886.97,1073.2,90,Top,SMT
+zC1SM,";;;;;;;;","THT",2835.08,710.487,0,Top,THT
+y-axis SMD2,";;;;;;;;","",4386.69,699.523,0,Top,MANUAL
+ySM1,";;;;;;;;","THT",5186.98,4502.34,0,Top,THT
+Power Source,";;;;;;;;","",5529.46,2513.58,-90,Top,MANUAL
+Via3,";;;;;;;;","",5636.97,4802.34,0,Top,MANUAL
+sC2,";100µF;;50V;;;;;","0405 [SMD, electrolytic]",1236.97,5073.2,90,Top,SMT
+xSM2,";;;;;;;;","THT",2186.98,4502.34,0,Top,THT
+z-axis SMD1,";;;;;;;;","",2738.58,4491.36,0,Top,MANUAL
+buzzer,";;;;;;;;","",886.978,1953.21,91,Top,MANUAL
+Via8,";;;;;;;;","",3286.97,1502.34,0,Top,MANUAL
+zSM2,";;;;;;;;","THT",4186.98,4502.34,0,Top,THT
+xSM1,";;;;;;;;","THT",1186.98,4502.34,0,Top,THT
+Via6,";;;;;;;;","",4286.97,1502.34,0,Top,MANUAL
+sC8,";100µF;;50V;;;;;","0405 [SMD, electrolytic]",1886.97,1273.2,90,Top,SMT
