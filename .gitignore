@@ -3,3 +3,4 @@
 /code/solver/*.depths
 .vscode/*
 .python-version
+.DS_Store
