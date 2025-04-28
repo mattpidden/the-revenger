@@ -34,3 +34,31 @@ To run the master program use `python main.py` inside the `code/master` director
 To run the computer vision scanning use `python manual_scan.py` inside the `code/scanner` directory. It is important that you calibrate your cameras first using `python calibrate_cameras.py`.
 
 Upload the microcontroller code to an Arduino using the offical software.
+
+# Parts List
+Along with the parts provided that you will need to 3D print, there are also a selection of parts to source from elsewhere.
+- 360x20x20mm extrusion (14 pcs)
+- 480x20x20mm extrusion (4 pcs)
+- 150x20x20mm extrusion (5 pcs)
+- 200x20x20mm extrusion (1 pcs)
+- MGN12 100mm linear rail (5 pcs)
+- MGN12 150mm linear rail (1 pcs)
+- MGN12H sliding carriage blocks (6 pcs)
+- Corner connections for 20x20mm extrusion
+- 2GTx160x6mm timing belt (6 pcs)
+- 2GTx6mm spool timing belt
+- 2GT pulley, 20 teeth, 5mm bore (6 pcs)
+- 2GT idler, 5mm bore (6 pcs)
+- 2GT pulley, 40 teeth, 12mm bore, 28mm dia (4 pcs)
+- 2GT pulley, 40 teeth, 5mm bore, 30mm dia (4 pcs)
+- NEMA 17 0.65 Nm stepper motor (6 pcs)
+- NEMA 17 0.45 Nm stepper motor (4 pcs)
+- Endstop mechanical limit switch (6 pcs)
+- 2 Lenovo Essential FHD webameras
+- Arduino Due (1 pcs)
+- DRV8825 stepper motor driver (10 pcs)
+- TM1637 4 digit 7 segment display (1 pcs)
+- DC buzzer (1 pcs)
+- LED ring light (2 pcs)
+- Capacitors
+- Male and female header pins
