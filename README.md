@@ -22,7 +22,8 @@ code/
   scanner/ 
   master/
   microcontroller/ 
-parts/ 
+parts/
+  pcb/
 media/
 ```
 
@@ -37,6 +38,7 @@ Upload the microcontroller code to an Arduino using the offical software.
 
 # Parts List
 Along with the parts provided that you will need to 3D print, there are also a selection of parts to source from elsewhere.
+- Custom PCB (see files) (1 pcs)
 - 360x20x20mm extrusion (14 pcs)
 - 480x20x20mm extrusion (4 pcs)
 - 150x20x20mm extrusion (5 pcs)
