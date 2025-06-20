@@ -15,6 +15,18 @@ These results demonstrate that the robot, named 'The Revenger', has achieved an 
 
 A video demonstration of the robot is available on [YouTube](https://youtu.be/tE4DD7Fw6SM).
 
+# Publicity
+- [BBC News](https://www.bbc.co.uk/news/articles/cvgnlvevj5ro)
+- [ITV News](https://www.itv.com/watch/news/computer-science-student-builds-rubiks-cube-solving-robot/rpgy89p)
+- [Press Release](https://www.bristol.ac.uk/news/2025/may/rubiks-cube-world-record.html)
+- [Interesting Engineering](https://interestingengineering.com/innovation/students-robot-beats-4x4-rubiks-cube-world-record)
+- [Bristol 247](https://www.bristol247.com/news-and-features/news/world-record-solving-rubiks-cube-using-robot-smashed-bristol-student/)
+- [The Tab](https://thetab.com/2025/05/14/bristol-uni-student-breaks-world-record-with-dissertation-project)
+- [Epigram](https://epigram.org.uk/university-of-bristol-student-breaks-world-record/)
+- [Newsroomin](https://newsroomin.eu/en/bristol-students-robot-rubiks-cube-world-record/)
+- [Linkedin](https://www.linkedin.com/posts/university-of-bristol_now-thats-how-to-nail-your-dissertation-ugcPost-7328061358967590914-5NA0?utm_source=share&utm_medium=member_desktop&rcm=ACoAAB49w38BtYxwj7Bp4-EsDsFL2CtKWY5PnKE)
+
+
 # Project Structure
 ```
 code/ 
