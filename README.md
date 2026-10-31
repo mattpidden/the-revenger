@@ -15,6 +15,56 @@ These results demonstrate that the robot, named 'The Revenger', has achieved an 
 
 A video demonstration of the robot is available on [YouTube](https://youtu.be/tE4DD7Fw6SM).
 
+# Development Progress
+
+## Mechanical Design
+The robot started as hand drawn concept sketches exploring how to grip and turn the cube, then went through several 3D printed prototypes before arriving at the finished design.
+
+<p align="center">
+  <img src="media/robot_hand_drawings.png" width="80%" alt="Hand drawn concept sketches">
+  <br><em>Initial hand drawn concept sketches</em>
+</p>
+
+<table>
+  <tr>
+    <td align="center" width="33%"><img src="media/prototype1.jpg" alt="Prototype 1"><br><em>1. First 3D printed gripper test</em></td>
+    <td align="center" width="33%"><img src="media/prototype2.jpg" alt="Prototype 2"><br><em>2. Belt driven rotating gripper</em></td>
+    <td align="center" width="33%"><img src="media/prototype3.jpg" alt="Prototype 3"><br><em>3. Stepper powered gripper turning a cube</em></td>
+  </tr>
+  <tr>
+    <td align="center" width="33%"><img src="media/prototype4.jpg" alt="Prototype 4"><br><em>4. Refined gripper with linear actuation</em></td>
+    <td align="center" width="33%"><img src="media/prototype5.jpg" alt="Prototype 5"><br><em>5. Opposing grippers mounted in the extrusion frame</em></td>
+    <td align="center" width="33%"><img src="media/prototype6_finished.jpg" alt="Finished robot"><br><em>6. The finished robot</em></td>
+  </tr>
+</table>
+
+## Electrical System
+The electronics began as a single stepper driver on a breadboard and grew into a custom PCB that hosts the Arduino Due, all ten stepper drivers, limit switches, display and buzzer.
+
+<table>
+  <tr>
+    <td align="center" width="33%"><img src="media/electrical_prototype1.jpg" alt="Breadboard prototype"><br><em>1. Breadboard prototype with a single stepper driver</em></td>
+    <td align="center" width="33%"><img src="media/pcb_design.png" alt="PCB design"><br><em>2. Custom PCB design</em></td>
+    <td align="center" width="33%"><img src="media/electrical_prototype2.jpg" alt="Bare PCB"><br><em>3. Manufactured PCB</em></td>
+  </tr>
+  <tr>
+    <td align="center" width="33%"><img src="media/electrical_prototype3.jpg" alt="Populated PCB"><br><em>4. PCB populated with headers and components</em></td>
+    <td align="center" width="33%"><img src="media/electrical_prototype4_finished.jpg" alt="Finished wiring"><br><em>5. Fully wired into the finished robot</em></td>
+    <td></td>
+  </tr>
+</table>
+
+# Publicity
+- [BBC News](https://www.bbc.co.uk/news/articles/cvgnlvevj5ro)
+- [ITV News](https://www.itv.com/watch/news/computer-science-student-builds-rubiks-cube-solving-robot/rpgy89p)
+- [Press Release](https://www.bristol.ac.uk/news/2025/may/rubiks-cube-world-record.html)
+- [Interesting Engineering](https://interestingengineering.com/innovation/students-robot-beats-4x4-rubiks-cube-world-record)
+- [Bristol 247](https://www.bristol247.com/news-and-features/news/world-record-solving-rubiks-cube-using-robot-smashed-bristol-student/)
+- [The Tab](https://thetab.com/2025/05/14/bristol-uni-student-breaks-world-record-with-dissertation-project)
+- [Epigram](https://epigram.org.uk/university-of-bristol-student-breaks-world-record/)
+- [Newsroomin](https://newsroomin.eu/en/bristol-students-robot-rubiks-cube-world-record/)
+- [Linkedin](https://www.linkedin.com/posts/university-of-bristol_now-thats-how-to-nail-your-dissertation-ugcPost-7328061358967590914-5NA0?utm_source=share&utm_medium=member_desktop&rcm=ACoAAB49w38BtYxwj7Bp4-EsDsFL2CtKWY5PnKE)
+
 # Project Structure
 ```
 code/ 
